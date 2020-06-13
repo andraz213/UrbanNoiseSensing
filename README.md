@@ -1,2 +1,2 @@
-# Senzorsko-omre-je-za-analizo-hrupa
+# Senzorsko omrežje za merjenje hrupa v urbanem okolju
 Diplomska naloga 
