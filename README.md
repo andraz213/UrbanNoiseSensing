@@ -84,7 +84,7 @@ Proti:
 - Najbolje deluje, ko je med oddajnikom in sprejemnikom line of sight (to bi reševal z večjim številom centralnih postaj, ki so tu cenejše in manjše od LoRa in manj odvisne od postavitve kot nrf24)
 
 
-
+![Domet na Zoisovi cesti](/assets/img/zoisova_cesta_802_200m.jpg)
 
 
 
