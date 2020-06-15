@@ -37,7 +37,51 @@ Prav ta ko imam doma nekaj ESP32 modulov s katerimi sem testiral domet 802.11LR 
 
 Zaenkrat se je 802.11LR izkazal za boljšega. Domet je vsaj še enkrat daljši.
 
+Oba modula sem imel na okenjski polici svoje sobe. Hodil sem po kraju in opazoval koliko sporočil je prišlo do sprejemnika. 
 
+nrf24 z vgrajenim ojačevalnikom signala in cca 3dBi anteno:
+- Takoj ko je bila med mano in oddajnikom hiša, je sperjemnik izgubil signal
+- Line of sight doseg je bil približno 80m 
+
+802.11LR ESP32 z vgrajeno anteno na tiskanem vezju s cca 2dBi:
+- Je deloval tudi na drugem koncu hiše in do neke mere celo ko je bila med mano in oddajnikom sosedova hiša
+- Line of sight doseg je bil približno 160m
+
+Test sem z 802.11LR ponovil doma v hiši. Oddajnik sem postavil na podstrešju na skrajno vzhodni strani. 
+- V istem nadstropju je signal brezhiben
+- Eno nadstropje nižje je signal brezhiben in se sprejemnik poveže v vseh delih nadstropja razen v najbolj zahodnih delih hiše.
+- V spodnjem nadstropju se sprejemnik poveže in brezhibno sprejema signal povsod razen v 1/3 najbolj zahodnega dela hiše 
+
+Testirano je bilo na razvojnih ploščah, ki imajo na tiskanem vezju vgrajene antene. Te antene najverjetneje niso najboljše, kar poemni, da bi z boljšimi antenami dosegli še boljše rezultate.
+
+
+
+#### Trenutnne možnosti
+
+##### LoRa 
+
+Zaenkkrat odpade, razen če zmanjšamo količino poslanih podatkov pod 15kbps.
+
+
+##### NRF24 
+
+Pogojno bi se dalo, če bi strateškko postavili senzorje in zbirnike podatkov.
+
+
+
+##### 802.11LR
+
+Zaenkrat se mi zdi to najboljša opcija.
+
+Za:
+- Daljši domet od nrf24 brez dodatnih optimizacij
+- Cenejši od LoRa (7€ za MCU in oddajanje vs. 15€ za MCU in LoRa)
+- Cenejša in bolj preprosta centralna postaja kot LoRa (dva ESP32 modula, eden je povezan na iinternet, eden pa zbira podatke iz senzorjev in jih preko I2C ali SPI vmesnika pošilja drugemu)
+
+
+Proti:
+- Večja poraba energije (to bi reševal s paketnim pošiljanjem podatkov)
+- Najbolje deluje, ko je med oddajnikom in sprejemnikom line of sight (to bi reševal z večjim številom centralnih postaj, ki so tu cenejše in manjše od LoRa in manj odvisne od postavitve kot nrf24)
 
 
 
