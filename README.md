@@ -36,3 +36,33 @@ Ker imam doma nekaj nrf24l01+ modulov z vgrajenim ojačevalnikom moči, sem test
 Prav ta ko imam doma nekaj ESP32 modulov s katerimi sem testiral domet 802.11LR protokola. 
 
 Zaenkrat se je 802.11LR izkazal za boljšega. Domet je vsaj še enkrat daljši.
+
+
+
+
+
+
+
+
+
+
+
+## Zapisek s sestanka
+
+Strojna in programska infrastruktura za sledenje in analizo hrupa v urbanih okoljih
+Cilj: sistem med seboj vsaj deset časovno sinhronizirinah senzorjev, ki jih postavimo na različne lokacije v nekem lokalnem okolju. Meritve gredo v oblak, najbrž preko centralne naprave, ki naprej meritve shrani lokalno. Dva načina dela: po deset meritev na sekundo (spremljamo lahko vpliv mimoidočega avtobusa) ali ena meritev na minuto. Iz oblaka meritve preberemo v Orange, spremljamo časovni potek za dano okno in v geo karti spreminjanje hrupa v času.
+- poiskati ustrezni senzor
+- casing
+- fft
+- kombinacija z ESP32 ali podobnim, avtonomna enota
+- poiskati tudi referenčni merilec in narediti sistem za umerjanje instrumenta (tudi vir zvoka), morda lahko pomaga kdo iz FE
+- seznam opreme za nakup (čimprej)
+- sestaviti merilno enoto, ki je avtonomna (baterija) in se poveže na centralno vozlišče
+- sestaviti centralno vozlišče
+- testiranje na FRI
+- sistem za umerjanje
+
+- kateri problem rešujemo
+- zasnova arhitekture
+- seznam stvari za nakup
+- ali lahko začnete s prototipom: senzor, komunikacija, iot platforma ali baza, branje v orange-u (python)
