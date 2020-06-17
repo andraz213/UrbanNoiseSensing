@@ -22,6 +22,8 @@ const getLastNMeasurements = (req, res) => {
 
     Data.find().sort('date').exec( (err, data) => {
         console.log(data.length);
+        n = Math.min(n, data.length);
+        console.log(n);
         data = data.slice(-n);
         console.log(data.length);
         res.status(200).json(data);
