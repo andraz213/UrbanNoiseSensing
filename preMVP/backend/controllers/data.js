@@ -16,6 +16,23 @@ const getMeasurements = (req, res) => {
 
 };
 
+const getLastNMeasurements = (req, res) => {
+    let n = req.params.nLast;
+    console.log(n);
+
+    Data.find().sort('date').exec( (err, data) => {
+        console.log(data.length);
+        data = data.slice(-n);
+        console.log(data.length);
+        res.status(200).json(data);
+
+
+    })
+
+
+}
+
+
 const getMeasurementsById = (req, res) => {
     Data.find().exec((err, msrs) => {
         res.status(200).json(msrs);
@@ -44,7 +61,8 @@ const newMeasurement = (req, res) => {
 module.exports = {
     getMeasurements,
     getMeasurementsById,
-    newMeasurement
+    newMeasurement,
+    getLastNMeasurements
 
 };
 

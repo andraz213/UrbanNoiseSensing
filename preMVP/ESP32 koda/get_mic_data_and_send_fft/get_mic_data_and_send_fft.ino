@@ -185,7 +185,7 @@ String createJSON() {
 
   int decibels = 0;
   for (int i = 0; i < BLOCK_SIZE; i++) {
-    decibels += (int)(samples[i] / BLOCK_SIZE);
+    decibels += (int)(abs(samples[i]) / BLOCK_SIZE);
   }
   doc["decibels"] = decibels;
   String jsn;
