@@ -4,6 +4,7 @@ const measurementSchema = new mongoose.Schema({
     location: {type: [Number], required: true},
     fftValues: [Number],
     fftFrequencies: [Number],
+    decibels: Number,
     measured_at: { type : Date, default: Date.now },
     sensor: {String, required: false}
 });
