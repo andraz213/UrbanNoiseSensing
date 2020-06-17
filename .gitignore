@@ -1,2 +1,3 @@
-preMVP/backend/node_moodules/
-preMVP/backend/.idea/
+\preMVP\backend\node_moodules\*
+\preMVP\backend\.idea\*
+preMVP/backend/node_modules/
