@@ -1,12 +1,12 @@
 var mongoose = require('mongoose');
 
 const measurementSchema = new mongoose.Schema({
-    location: {type: [Number], required: true},
+    location: {type: [Number], required: true, index: '2dsphere'},
     fftValues: [Number],
     fftFrequencies: [Number],
     decibels: Number,
     measured_at: { type : Date, default: Date.now },
-    sensor: {String, required: false}
+    sensor: {type: String, required: false}
 });
 
 const sensorSchema = new mongoose.Schema({

@@ -18,14 +18,15 @@ const getMeasurements = (req, res) => {
 
 const getLastNMeasurements = (req, res) => {
     let n = req.params.nLast;
+    n = parseInt(n);
     console.log(n);
 
-    Data.find().sort('date').exec( (err, data) => {
-        console.log(data.length);
-        n = Math.min(n, data.length);
+    Data.find().sort('date').limit(n).exec( (err, data) => {
+        console.log(err);
+        /*n = Math.min(n, data.length);
         console.log(n);
         data = data.slice(-n);
-        console.log(data.length);
+        console.log(data.length);*/
         res.status(200).json(data);
 
 
@@ -46,6 +47,7 @@ const getMeasurementsById = (req, res) => {
 
 
 const newMeasurement = (req, res) => {
+    console.log(req.body);
     var newData = new Data(req.body);
     console.log(newData);
     // save model to database
