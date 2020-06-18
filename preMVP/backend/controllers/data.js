@@ -21,7 +21,7 @@ const getLastNMeasurements = (req, res) => {
     n = parseInt(n);
     console.log(n);
 
-    Data.find().sort('date').limit(n).exec( (err, data) => {
+    Data.find().sort({'measured_at': -1}).limit(n).exec( (err, data) => {
         console.log(err);
         /*n = Math.min(n, data.length);
         console.log(n);
