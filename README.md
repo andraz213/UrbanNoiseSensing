@@ -56,6 +56,99 @@ This is the main goal of the whole project and is the simplest overveiw of what 
 
 ### Gateway routine 
 
+Honestly not really sure about this one. I really want to only have one esp32, but I think that might not be possible. I just hope two esps won't be too much of a clusterfuck.
+
+In case I need two esps, I will use PJON through serial https://www.pjon.org/ThroughSerial.php
+It is a protocol that will help transfer data from one esp to the other.
+
+
+## Senosr node
+
+### Setting up
+
+When the sensor node is first programmed, it should have generic settings. 
+The only thing set is what wifi it should connect to. 
+What's next?
+
+Firstly, it needs a unique classifier or id, so server knows which node sent the data. Luckly, every esp comes with a unique mac address. I can use it as an id.
+
+Then it needs to send telemitry data like firmware version, battery voltage, mac address,...
+
+It should go something like this:
+
+1. Connect to wifi
+2. Send a "do you know me" message to server with mac address
+3. Wait for a response
+4. If ok, send telemitry data 
+
+
+### Provisioning 
+
+Once the sensor node is set up, it needs to get some more information before it can start measuring and sending the data.
+
+It needs:
+
+- Gateway mac address. In order to send data with ESPNOW protocol the device needs to know the MAC address of the reciever
+- Sampling rate. While one measurement per second might be fine, it really needs to be modifiable to make it more robust
+- Frequency range. While most noise we're interested in is below 1kHz, this needs to be modifiable as well
+
+Most provisioniing work is done on the backend, so this is probably all that is needed here.
+
+
+### Sensing 
+
+
+
+### Hardware 
+
+#### MCU
+
+I chose ESP32 mcu for this project. 
+It has eccelent library support, wifi range is quite large, it has i2s for the microphone, it has great low power capabilities, it is powerful enough for all fft calculations, price.
+
+
+The exact specific model is WROOM 32U because it has an external antenna connector. PCB antennas tend to be spotty and have a lot of signal shape peculiarities that are less than ideal in this kind of application. 
+The bad thing about this is that all of the development boards have a very inefficient LDO AMS1117. It is a voltage regulator with a high quiescent current. It connsumes 5mA of power at all times. That is unacceptable. I will have to replace those with a more efficient model like MCP1825S. It has a quiescent current of only 220uA, which is far from the lowest, but it's good enough for this application. 
+
+#### Antenna
+
+This is yet to be determined. I have a few antennas ordered off of aliexpress, but I have to test them first. A lot of antennas are poorly made or just plain wrong. 
+
+
+#### Battery
+
+Sensors will be powered by one or two 18650 batteries. They seem to be a good choice because of their low price and availability. I'm not sure wether ordering them off aliexpress is a good idea tho.
+Battery management will be done with a cheap tp4056 board. It hase a charging circuit, overcharge protection, overcurrent protection and overdischarge protection built in to a small footprint.
+I will use battery holders since I'm not comfortable with welding wires directly to the batteries.
+
+
+#### Microphone
+
+A MEMS i2s microphone was chosen. MEMS microphones generally have very tight manufacturing tolerances and a flat frequency respose curve. They are weather resistant and can work under extreme temperature conditions.
+
+INMP441 was chosen for an affordable price, great performance, compatibility with esp32 and because it comes on an easy to use breakout board. 
+
+Decibel meter project: https://github.com/ikostoski/esp32-i2s-slm
+
+
+#### Enclosure
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
