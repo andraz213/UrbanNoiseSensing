@@ -3,6 +3,7 @@
 #include <ArduinoJson.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include "esp_wifi.h"
 
 const char* ssid = "A1";
 const char* password = "siol2004";
@@ -13,8 +14,9 @@ const char* serverName = "http://noise-sensing-pre-mvp.herokuapp.com/api/measure
 
 arduinoFFT FFT = arduinoFFT(); /* Create FFT object */
 const i2s_port_t I2S_PORT = I2S_NUM_0;
-const int BLOCK_SIZE = 1024;
-const int SAMPLING_FREQUENCY = 10000;
+
+const int SAMPLING_FREQUENCY = 3000;
+const int BLOCK_SIZE = 256;
 int32_t samples[BLOCK_SIZE];
 double vReal[BLOCK_SIZE];
 double vImag[BLOCK_SIZE];
@@ -33,12 +35,35 @@ void setup() {
 void loop() {
 
   if (millis() - previous > 1000) {
-    previous = millis();
+    previous = millis(); 
+    long start = micros();
     getSamples();
+    Serial.println("Getting samples lasted: ");
+    Serial.println(micros()- start);
+
+    start = micros();
     analyzeData();
+    Serial.println("Analyzing data lasted: ");
+    Serial.println(micros()- start);
+
+    start = micros();
     String dataToSend = createJSON();
+    Serial.println("Creating JSON lasted: ");
+    Serial.println(micros()- start);
+
+    
+    start = micros();
     connectWifi();
+    Serial.println("Connecting to WiFi lasted: ");
+    Serial.println(micros()- start);
+    
+
+    start = micros();
     sendDataToServer(dataToSend);
+    Serial.println("Sending data lasted: ");
+    Serial.println(micros()- start);
+    Serial.println();
+    Serial.println();
   }
   delay(10);
 }
@@ -47,13 +72,13 @@ void loop() {
 void connectWifi() {
 
   if (WiFi.status() != WL_CONNECTED) {
-
     WiFi.begin(ssid, password);
     Serial.println("Connecting");
     while (WiFi.status() != WL_CONNECTED) {
       delay(500);
       Serial.print(".");
     }
+    //esp_wifi_set_ps(WIFI_PS_MAX_MODEM);
   }
 
 
@@ -167,9 +192,9 @@ String createJSON() {
 
 
   JsonArray fftValues = doc.createNestedArray("fftValues");
-  JsonArray fftFrequencies = doc.createNestedArray("fftFrequencies");
+  //JsonArray fftFrequencies = doc.createNestedArray("fftFrequencies");
 
-  for (int i = 0; i < 50; i++) {
+  for (int i = 0; i < BLOCK_SIZE / 20; i++) {
     double val = 0;
     double freq = 0;
 
@@ -177,8 +202,8 @@ String createJSON() {
       val += vReal[i * 10 + j] / 10.0;
       freq += (i * 10 + j);
     }
-    fftValues.add(val);
-    fftFrequencies.add(freq);
+    fftValues.add(log(val));
+    //fftFrequencies.add(freq * SAMPLING_FREQUENCY / 10000);
 
 
   }
@@ -190,7 +215,7 @@ String createJSON() {
   doc["decibels"] = decibels;
   String jsn;
   serializeJson(doc, jsn);
-  Serial.println(jsn);
+  //Serial.println(jsn);
 
   return jsn;
   //serializeJsonPretty(doc, Serial);
