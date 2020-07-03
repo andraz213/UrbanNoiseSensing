@@ -1,19 +1,19 @@
 # Senzorsko omrežje za merjenje hrupa v urbanem okolju
-Diplomska naloga 
+Diplomska naloga
 
 
 
-## Overview
+# Overview
 
 The main goal of this project is to build a sensor network for noise sampling and analysis.
 
 A few main goals:
 
 - affordable sensor nodes
-- one sample per second 
+- one sample per second
 - synchornized nodes
 - fft and decibel data
-- battery powered 
+- battery powered
 - wireless
 - REST API interface to port data into Orange
 - support for geospatial data
@@ -21,25 +21,25 @@ A few main goals:
 Additional goals:
 
 - as long battery life as possbile
-- simple user interface 
-- useful and efficient data storage structure 
+- simple user interface
+- useful and efficient data storage structure
 - simple node firmware updates
 - as few central stations as possible
 - local server deployment
 
 
-### Basic structure
+## Basic structure
 
 Everything starts with a good backend. The heart of this project will be a node.js and express app deployed on a local server. It will be packed in a docker container for a more streamlined deployment.
 This server will handle all the requests from sensor nodes and serve data to the front end app used fir managing sensors and data.
 
-Since sensors won't be directly connected to wifi because of connection overhead, there will be gateways that will send recieved data from the special protocol to the main server. These gateways will consist of one or two ESP32 microcontrollers. 
-There might be two needed because one can't coommunicate through the special protocol and through wifi at the same time. 
+Since sensors won't be directly connected to wifi because of connection overhead, there will be gateways that will send recieved data from the special protocol to the main server. These gateways will consist of one or two ESP32 microcontrollers.
+There might be two needed because one can't coommunicate through the special protocol and through wifi at the same time.
 
-Sensor nodes are at the edge of this system. Their main purpouse is to collect data and send it through the protocol to the gateways. These nodes will have administration mode, where they connect to a designated wifi and recieve instructiions and OTA updates. 
+Sensor nodes are at the edge of this system. Their main purpouse is to collect data and send it through the protocol to the gateways. These nodes will have administration mode, where they connect to a designated wifi and recieve instructiions and OTA updates.
 
 
-## Functionality overview
+# Functionality overview
 
 
 This is the main goal of the whole project and is the simplest overveiw of what will be going on.
@@ -47,14 +47,14 @@ This is the main goal of the whole project and is the simplest overveiw of what 
 ![The simplest overview](/assets/img/simplest_overview.png)
 
 
-### Sensor lifetime 
+## Sensor lifetime
 
 
 
 ![Sensor routine](/assets/img/sensor_routine.png)
 
 
-### Gateway routine 
+## Gateway routine
 
 Honestly not really sure about this one. I really want to only have one esp32, but I think that might not be possible. I just hope two esps won't be too much of a clusterfuck.
 
@@ -62,12 +62,12 @@ In case I need two esps, I will use PJON through serial https://www.pjon.org/Thr
 It is a protocol that will help transfer data from one esp to the other.
 
 
-## Senosr node
+# Senosr node
 
-### Setting up
+## Setting up
 
-When the sensor node is first programmed, it should have generic settings. 
-The only thing set is what wifi it should connect to. 
+When the sensor node is first programmed, it should have generic settings.
+The only thing set is what wifi it should connect to.
 What's next?
 
 Firstly, it needs a unique classifier or id, so server knows which node sent the data. Luckly, every esp comes with a unique mac address. I can use it as an id.
@@ -79,10 +79,10 @@ It should go something like this:
 1. Connect to wifi
 2. Send a "do you know me" message to server with mac address
 3. Wait for a response
-4. If ok, send telemitry data 
+4. If ok, send telemitry data
 
 
-### Provisioning 
+## Provisioning
 
 Once the sensor node is set up, it needs to get some more information before it can start measuring and sending the data.
 
@@ -95,43 +95,43 @@ It needs:
 Most provisioniing work is done on the backend, so this is probably all that is needed here.
 
 
-### Sensing 
+## Sensing
 
 
 
-### Hardware 
+## Hardware
 
-#### MCU
+### MCU
 
-I chose ESP32 mcu for this project. 
+I chose ESP32 mcu for this project.
 It has eccelent library support, wifi range is quite large, it has i2s for the microphone, it has great low power capabilities, it is powerful enough for all fft calculations, price.
 
 
-The exact specific model is WROOM 32U because it has an external antenna connector. PCB antennas tend to be spotty and have a lot of signal shape peculiarities that are less than ideal in this kind of application. 
-The bad thing about this is that all of the development boards have a very inefficient LDO AMS1117. It is a voltage regulator with a high quiescent current. It connsumes 5mA of power at all times. That is unacceptable. I will have to replace those with a more efficient model like MCP1825S. It has a quiescent current of only 220uA, which is far from the lowest, but it's good enough for this application. 
+The exact specific model is WROOM 32U because it has an external antenna connector. PCB antennas tend to be spotty and have a lot of signal shape peculiarities that are less than ideal in this kind of application.
+The bad thing about this is that all of the development boards have a very inefficient LDO AMS1117. It is a voltage regulator with a high quiescent current. It connsumes 5mA of power at all times. That is unacceptable. I will have to replace those with a more efficient model like MCP1825S. It has a quiescent current of only 220uA, which is far from the lowest, but it's good enough for this application.
 
-#### Antenna
+### Antenna
 
-This is yet to be determined. I have a few antennas ordered off of aliexpress, but I have to test them first. A lot of antennas are poorly made or just plain wrong. 
+This is yet to be determined. I have a few antennas ordered off of aliexpress, but I have to test them first. A lot of antennas are poorly made or just plain wrong.
 
 
-#### Battery
+### Battery
 
 Sensors will be powered by one or two 18650 batteries. They seem to be a good choice because of their low price and availability. I'm not sure wether ordering them off aliexpress is a good idea tho.
 Battery management will be done with a cheap tp4056 board. It hase a charging circuit, overcharge protection, overcurrent protection and overdischarge protection built in to a small footprint.
 I will use battery holders since I'm not comfortable with welding wires directly to the batteries.
 
 
-#### Microphone
+### Microphone
 
 A MEMS i2s microphone was chosen. MEMS microphones generally have very tight manufacturing tolerances and a flat frequency respose curve. They are weather resistant and can work under extreme temperature conditions.
 
-INMP441 was chosen for an affordable price, great performance, compatibility with esp32 and because it comes on an easy to use breakout board. 
+INMP441 was chosen for an affordable price, great performance, compatibility with esp32 and because it comes on an easy to use breakout board.
 
 Decibel meter project: https://github.com/ikostoski/esp32-i2s-slm
 
 
-#### Enclosure
+### Enclosure
 
 
 
@@ -233,9 +233,9 @@ Decibel meter project: https://github.com/ikostoski/esp32-i2s-slm
 
 
 
-## Izbira tehnologije 
+# Izbira tehnologije
 
-### Povezava senzorjev z internetom
+## Povezava senzorjev z internetom
 
 Zahteve:
 - obratovanje na baterije
@@ -243,75 +243,75 @@ Zahteve:
 - hitrost prenosa podatkov, vsak senzor generira cca. 200B/s ... 20 senzorjev generira 4KB/s
 
 
-#### LoRa
+### LoRa
 
-Na prvi pogled izgleda obetavno z zelo majhno porabo energije in velikim dometom (2-3km). 
+Na prvi pogled izgleda obetavno z zelo majhno porabo energije in velikim dometom (2-3km).
 Problem je izredno počasna povezava. V najboljših razmerah je 20kbps. Naše zahteve so 4KB/s * 8 = 32kbps.
 LoRa po mojem mnenju potem odpade zaradi prepočasnega prenosa podatov
 
-#### NRF24l01+
+### NRF24l01+
 
 Je dokaj preprosta tehnologija, ki omogoča hitro povezavo na srednje dolge razdalje, je dovolj hitro, ampak ima dve pomankljivsoti.
 Tehnologija dovoljuje največ 6 povezav na vsak modul. Za potrebe naše uprabe bi načeloma lahko uporabili mrežo takih točk, ampak to poveča kompleksnost projekta in oteži postavljanje senzorjev
 
-#### 802.11LR
+### 802.11LR
 
 Espressif, proizvajalec čipa ESP32 je implementiral poseben protokol, ki je kkompatibilen z 802.11, ampak ga navadne wifi točke ne zaznajo. Omogočal naj bi daljši domet kot navaden wifi.
 To je doseženo z zmanjševanjem hitrosti pod 1Mbps, kar bi bilo za ta projekt še zmeraj dovolj. Problem tega je, da je še zmeraj prisoten overhead od wifija, kar močno poveča količino porabljene energije. Tu bi moral podatke pošiljati recimo enkrat na minuto, kar ne bi bilo več real time, ampak zaradi porabe energije ne bi šlo drugače. Tu bi tudi potreboval gateway, ki bi sporočila preko tea protokola sprejela in potem poslala na internet.
 
 
-#### Kreativne alternative
+### Kreativne alternative
 
-##### SD kartice
+#### SD kartice
 
 V modulu je RTC, ki se ga enkrat nastavi in potem zansljivo drži pravilen čas in podatki se beležijo na SD kartico, s katere se podatki poberejo ob polnenju baterij.
 
-##### GSM moduli
+#### GSM moduli
 
 Naprava komunicira preko GSM vmesnika in tako pošilja podatke na strežnik. Tu je še dodatni strošek recimo 7€ na mesec na senzor. Plus GSM modul, ki stane 5€. Ne vem kako je s porabo energije, ampak če bi podatke pošiljal pv paketih, bi lahko to minimiziral.
 
-#### Testiranje tehnologij
+### Testiranje tehnologij
 
 Ker imam doma nekaj nrf24l01+ modulov z vgrajenim ojačevalnikom moči, sem testiral domet in zanesljivost.
-Prav ta ko imam doma nekaj ESP32 modulov s katerimi sem testiral domet 802.11LR protokola. 
+Prav ta ko imam doma nekaj ESP32 modulov s katerimi sem testiral domet 802.11LR protokola.
 
 Zaenkrat se je 802.11LR izkazal za boljšega. Domet je vsaj še enkrat daljši.
 
-Oba modula sem imel na okenjski polici svoje sobe. Hodil sem po kraju in opazoval koliko sporočil je prišlo do sprejemnika. 
+Oba modula sem imel na okenjski polici svoje sobe. Hodil sem po kraju in opazoval koliko sporočil je prišlo do sprejemnika.
 
 nrf24 z vgrajenim ojačevalnikom signala in cca 3dBi anteno:
 - Takoj ko je bila med mano in oddajnikom hiša, je sperjemnik izgubil signal
-- Line of sight doseg je bil približno 80m 
+- Line of sight doseg je bil približno 80m
 
 802.11LR ESP32 z vgrajeno anteno na tiskanem vezju s cca 2dBi:
 - Je deloval tudi na drugem koncu hiše in do neke mere celo ko je bila med mano in oddajnikom sosedova hiša
 - Line of sight doseg je bil približno 160m
 
-Test sem z 802.11LR ponovil doma v hiši. Oddajnik sem postavil na podstrešju na skrajno vzhodni strani. 
+Test sem z 802.11LR ponovil doma v hiši. Oddajnik sem postavil na podstrešju na skrajno vzhodni strani.
 - V istem nadstropju je signal brezhiben
 - Eno nadstropje nižje je signal brezhiben in se sprejemnik poveže v vseh delih nadstropja razen v najbolj zahodnih delih hiše.
-- V spodnjem nadstropju se sprejemnik poveže in brezhibno sprejema signal povsod razen v 1/3 najbolj zahodnega dela hiše 
+- V spodnjem nadstropju se sprejemnik poveže in brezhibno sprejema signal povsod razen v 1/3 najbolj zahodnega dela hiše
 
-Ob ponovitvi testa 802.11LR z oddajnikom na podstrešju, sem izmeril line of sight domet 200m, ampak le če je bil modul obrnjen v pravo smer. Zunanja antena bi pri tem precej pomagala. 
+Ob ponovitvi testa 802.11LR z oddajnikom na podstrešju, sem izmeril line of sight domet 200m, ampak le če je bil modul obrnjen v pravo smer. Zunanja antena bi pri tem precej pomagala.
 
 Testirano je bilo na razvojnih ploščah, ki imajo na tiskanem vezju vgrajene antene. Te antene najverjetneje niso najboljše, kar poemni, da bi z boljšimi antenami dosegli še boljše rezultate.
 
 
 
-#### Trenutnne možnosti
+### Trenutnne možnosti
 
-##### LoRa 
+#### LoRa
 
 Zaenkkrat odpade, razen če zmanjšamo količino poslanih podatkov pod 15kbps.
 
 
-##### NRF24 
+#### NRF24
 
 Pogojno bi se dalo, če bi strateškko postavili senzorje in zbirnike podatkov.
 
 
 
-##### 802.11LR
+#### 802.11LR
 
 Zaenkrat se mi zdi to najboljša opcija.
 
@@ -333,7 +333,7 @@ Proti:
 
 
 
-## Zapisek s sestanka
+# Zapisek s sestanka
 
 Strojna in programska infrastruktura za sledenje in analizo hrupa v urbanih okoljih
 Cilj: sistem med seboj vsaj deset časovno sinhronizirinah senzorjev, ki jih postavimo na različne lokacije v nekem lokalnem okolju. Meritve gredo v oblak, najbrž preko centralne naprave, ki naprej meritve shrani lokalno. Dva načina dela: po deset meritev na sekundo (spremljamo lahko vpliv mimoidočega avtobusa) ali ena meritev na minuto. Iz oblaka meritve preberemo v Orange, spremljamo časovni potek za dano okno in v geo karti spreminjanje hrupa v času.
