@@ -11,16 +11,16 @@ A few main goals:
 
 - affordable sensor nodes
 - one sample per second
-- synchornized nodes
+- synchronized nodes
 - fft and decibel data
-- battery powered
+- battery-powered
 - wireless
 - REST API interface to port data into Orange
 - support for geospatial data
 
 Additional goals:
 
-- as long battery life as possbile
+- as long battery life as possible
 - simple user interface
 - useful and efficient data storage structure
 - simple node firmware updates
@@ -30,19 +30,19 @@ Additional goals:
 
 ## Basic structure
 
-Everything starts with a good backend. The heart of this project will be a node.js and express app deployed on a local server. It will be packed in a docker container for a more streamlined deployment.
-This server will handle all the requests from sensor nodes and serve data to the front end app used fir managing sensors and data.
+Everything starts with good backend. The heart of this project will be a node.js and express app deployed on a local server. It will be packed in a docker container for more streamlined deployment.
+This server will handle all the requests from sensor nodes and serve data to the front end app used for managing sensors and data.
 
-Since sensors won't be directly connected to wifi because of connection overhead, there will be gateways that will send recieved data from the special protocol to the main server. These gateways will consist of one or two ESP32 microcontrollers.
-There might be two needed because one can't coommunicate through the special protocol and through wifi at the same time.
+Since sensors won't be directly connected to wifi because of connection overhead, there will be gateways that will send received data from the special protocol to the main server. These gateways will consist of one or two ESP32 microcontrollers.
+There might be two needed because one can't communicate through the special protocol and wifi at the same time.
 
-Sensor nodes are at the edge of this system. Their main purpouse is to collect data and send it through the protocol to the gateways. These nodes will have administration mode, where they connect to a designated wifi and recieve instructiions and OTA updates.
+Sensor nodes are at the edge of this system. Their main purpose is to collect data and send it through the protocol to the gateways. These nodes will have administration mode, where they connect to designated wifi and receive instructions and OTA updates.
 
 
 # Functionality overview
 
 
-This is the main goal of the whole project and is the simplest overveiw of what will be going on.
+This is the main goal of the whole project and is the simplest overview of what will be going on.
 
 ![The simplest overview](/assets/img/simplest_overview.png)
 
@@ -56,13 +56,13 @@ This is the main goal of the whole project and is the simplest overveiw of what 
 
 ## Gateway routine
 
-Honestly not really sure about this one. I really want to only have one esp32, but I think that might not be possible. I just hope two esps won't be too much of a clusterfuck.
+Honestly not sure about this one. I want to only have one esp32, but I think that might not be possible. I just hope two esps won't be too much of a clusterfuck.
 
 In case I need two esps, I will use PJON through serial https://www.pjon.org/ThroughSerial.php
 It is a protocol that will help transfer data from one esp to the other.
 
 
-# Senosr node
+# Sensor node
 
 ## Setting up
 
@@ -70,16 +70,16 @@ When the sensor node is first programmed, it should have generic settings.
 The only thing set is what wifi it should connect to.
 What's next?
 
-Firstly, it needs a unique classifier or id, so server knows which node sent the data. Luckly, every esp comes with a unique mac address. I can use it as an id.
+Firstly, it needs a unique classifier or id, so the server knows which node sent the data. Luckily, every esp comes with a unique mac address. I can use it as an id.
 
-Then it needs to send telemitry data like firmware version, battery voltage, mac address,...
+Then it needs to send telemetry data like firmware version, battery voltage, mac address,...
 
 It should go something like this:
 
 1. Connect to wifi
-2. Send a "do you know me" message to server with mac address
+2. Send a "do you know me" message to the server with mac address
 3. Wait for a response
-4. If ok, send telemitry data
+4. If ok, send telemetry data
 
 
 ## Provisioning
@@ -88,11 +88,11 @@ Once the sensor node is set up, it needs to get some more information before it 
 
 It needs:
 
-- Gateway mac address. In order to send data with ESPNOW protocol the device needs to know the MAC address of the reciever
-- Sampling rate. While one measurement per second might be fine, it really needs to be modifiable to make it more robust
+- Gateway mac address. To send data with ESPNOW protocol, the device needs to know the MAC address of the receiver
+- Sampling rate. While one measurement per second might be fine, it needs to be modifiable to make it more robust
 - Frequency range. While most noise we're interested in is below 1kHz, this needs to be modifiable as well
 
-Most provisioniing work is done on the backend, so this is probably all that is needed here.
+Most provisioning work is done on the backend, so this is probably all that is needed here.
 
 
 ## Sensing
@@ -103,12 +103,12 @@ Most provisioniing work is done on the backend, so this is probably all that is 
 
 ### MCU
 
-I chose ESP32 mcu for this project.
-It has eccelent library support, wifi range is quite large, it has i2s for the microphone, it has great low power capabilities, it is powerful enough for all fft calculations, price.
+I chose ESP32 MCU for this project.
+It has excellent library support, wifi range is quite large, it has i2s for the microphone, it has great low power capabilities, it is powerful enough for all fft calculations, price.
 
 
 The exact specific model is WROOM 32U because it has an external antenna connector. PCB antennas tend to be spotty and have a lot of signal shape peculiarities that are less than ideal in this kind of application.
-The bad thing about this is that all of the development boards have a very inefficient LDO AMS1117. It is a voltage regulator with a high quiescent current. It connsumes 5mA of power at all times. That is unacceptable. I will have to replace those with a more efficient model like MCP1825S. It has a quiescent current of only 220uA, which is far from the lowest, but it's good enough for this application.
+The bad thing about this is that all of the development boards have a very inefficient LDO AMS1117. It is a voltage regulator with a high quiescent current. It consumes 5mA of power at all times. That is unacceptable. I will have to replace those with a more efficient model like MCP1825S. It has a quiescent current of only 220uA, which is far from the lowest, but it's good enough for this application.
 
 ### Antenna
 
@@ -117,28 +117,21 @@ This is yet to be determined. I have a few antennas ordered off of aliexpress, b
 
 ### Battery
 
-Sensors will be powered by one or two 18650 batteries. They seem to be a good choice because of their low price and availability. I'm not sure wether ordering them off aliexpress is a good idea tho.
-Battery management will be done with a cheap tp4056 board. It hase a charging circuit, overcharge protection, overcurrent protection and overdischarge protection built in to a small footprint.
+Sensors will be powered by one or two 18650 batteries. They seem to be a good choice because of their low price and availability. I'm not sure whether ordering them off aliexpress is a good idea tho.
+Battery management will be done with a cheap tp4056 board. It has a charging circuit, overcharge protection, overcurrent protection, and over-discharge protection built into a small footprint.
 I will use battery holders since I'm not comfortable with welding wires directly to the batteries.
 
 
 ### Microphone
 
-A MEMS i2s microphone was chosen. MEMS microphones generally have very tight manufacturing tolerances and a flat frequency respose curve. They are weather resistant and can work under extreme temperature conditions.
+A MEMS i2s microphone was chosen. MEMS microphones generally have very tight manufacturing tolerances and a flat frequency response curve. They are weather-resistant and can work under extreme temperature conditions.
 
-INMP441 was chosen for an affordable price, great performance, compatibility with esp32 and because it comes on an easy to use breakout board.
+INMP441 was chosen for an affordable price, great performance, compatibility with esp32, and because it comes on an easy to use a breakout board.
 
 Decibel meter project: https://github.com/ikostoski/esp32-i2s-slm
 
 
 ### Enclosure
-
-
-
-
-
-
-
 
 
 
