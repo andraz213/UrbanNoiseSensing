@@ -3,6 +3,143 @@ Diplomska naloga
 
 
 
+## Overview
+
+The main goal of this project is to build a sensor network for noise sampling and analysis.
+
+A few main goals:
+
+- affordable sensor nodes
+- one sample per second 
+- synchornized nodes
+- fft and decibel data
+- battery powered 
+- wireless
+- REST API interface to port data into Orange
+- support for geospatial data
+
+Additional goals:
+
+- as long battery life as possbile
+- simple user interface 
+- useful and efficient data storage structure 
+- simple node firmware updates
+- as few central stations as possible
+- local server deployment
+
+
+### Basic structure
+
+Everything starts with a good backend. The heart of this project will be a node.js and express app deployed on a local server. It will be packed in a docker container for a more streamlined deployment.
+This server will handle all the requests from sensor nodes and serve data to the front end app used fir managing sensors and data.
+
+Since sensors won't be directly connected to wifi because of connection overhead, there will be gateways that will send recieved data from the special protocol to the main server. These gateways will consist of one or two ESP32 microcontrollers. 
+There might be two needed because one can't coommunicate through the special protocol and through wifi at the same time. 
+
+Sensor nodes are at the edge of this system. Their main purpouse is to collect data and send it through the protocol to the gateways. These nodes will have administration mode, where they connect to a designated wifi and recieve instructiions and OTA updates. 
+
+
+## Functionality overview
+
+
+This is the main goal of the whole project and is the simplest overveiw of what will be going on.
+
+![The simplest overview](/assets/img/simplest_overview.png)
+
+
+### Sensor lifetime 
+
+
+
+![Sensor routine](/assets/img/sensor_routine.png)
+
+
+### Gateway routine 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Izbira tehnologije 
 
 ### Povezava senzorjev z internetom
