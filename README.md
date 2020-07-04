@@ -285,12 +285,164 @@ data is an array of meaasurements, each measurement will have its own timestamp 
 I might impllement this as a linked list. Just to make it easier to get the data in the right order. I'm not sure wether this is a good idea yet, but it might be useful. 
 
 
+## Exposed data 
+
+Data about measurements, sensors and gateways will be available through REST API for analysis in Orange or other platform.
+
+I don't know what exact data will be needed, but here are my guesses.
+
+### All deloyments
+
+Will probably eb available on GET /api/deployment
+It will return an array of basic deployment data from all deployments.
+
+```
+[
+id: number
+name: string
+number_of_sensors: number
+start: time
+finish: time
+number_of_measurements: number
+]
+```
+
+### Single deployment
+
+It will a single document with the same data as the deployment model.
+It will be available on GET /api/deployment/{deployment.id}
+
+```
+id: number
+name: string
+description: string
+sensors: [sensor.id, coordinates]
+gateways: [gateway.id, coordinates]
+start: time
+finish: time
+measurement_num: number
+tags: [string]
+```
+
+### All sensors
+
+It will return an array of all sensors with basic data.
+It will be available on GET /api/sensor
+
+```
+[
+id: number
+name: string
+current_deployment: deployment.id
+battery_voltage: number
+]
+```
+
+### Single sensor
+
+It will return all data that is in the sensor model 
+It will be available on GET /api/sensor/{sensor.id}
+
+```
+id: number
+name: string
+mac: [number] (maybe string)
+deployments: [deployment.id]
+current_deployment: deployment.id
+current_location: [number]
+last_telemetry: time
+last_data: data.id
+firmware_version: string
+battery_voltage: number
+```
+
+### All gateways
+
+It will return an array of all gateways with basic data.
+It will be available on GET /api/gateway
+
+```
+[
+id: number
+name: string
+current_deployment: deployment.id
+]
+```
+
+### Single gateway
+
+It will return all data that is in the gateway model 
+It will be available on GET /api/gateway/{gateway.id}
+
+```
+id: number
+name: string
+mac: [number] (maybe string)
+deployments: [deployment.id]
+current_deployment: deployment.id
+current_location: [number]
+last_telemetry: time
+firmware_version: string
+```
 
 
+### Data 
+
+Querying data will be the major part of backend work. 
+
+It's more or less a guessing game at this point, but here are my predictions as to which endpoints will be needed.
 
 
+#### GET /api/data/deployment/{deployment.id}
+
+It will return all the data from a single deployment. 
 
 
+```
+[
+sensor: sensor.id
+deployment: deployment.id
+location: [number]
+size: number
+first: time
+last: time
+data: [data structure]
+]
+
+```
+
+The structure will be similar to the one seen in the data model, but all the data from a single sensor will be in a single array.
+
+
+#### GET /api/data/deployment/{deployment.id}/{last_n}
+
+It will return the last n measurements.
+Note that onw measurement is actually one measurement per sensor, so this method will return last n measurements for each sensor.
+
+
+```
+[
+sensor: sensor.id
+deployment: deployment.id
+location: [number]
+size: number
+first: time
+last: time
+data: [data structure]
+]
+
+```
+
+
+#### POST /api/data/deployment/{deployment.id}/
+
+The request body will contain additional query data. 
+
+Possible additional parameters:
+- return measurements before this time
+- return measurements after this time
+- return measurements from these sensors 
+- return last n measurements
 
 
 
