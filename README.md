@@ -243,6 +243,7 @@ name: string
 mac: [number] (maybe string)
 deployments: [deployment.id]
 current_deployment: deployment.id
+wifi_credentials: [string]
 current_location: [number]
 last_telemetry: time
 firmware_version: string
@@ -253,6 +254,7 @@ name is a randommoly generated name that will make identification easier to huma
 mas is a mac address of this sensor
 deployments is an array of all past deployments
 current_deployment is the id of the current deployment
+wifi_credentials is to let the gateway know which wifi it should connect to when it is deployed 
 current_location is the current location of the sensor
 last_telemitry is the time and date of the last recieved telemitry
 firmware_version is the version of currently installed firmware
@@ -481,6 +483,41 @@ Server will respodn with appropriate gateway data.
 
 An endppoint for gateways to send their telemitry data. 
 
+
+
+
+# How will admins and users actually use this
+
+## First step
+
+At first, there will be no registerd sensors or gateways. The first step is to turn them all on. Gateways in their normal and only mode and sensors in their administration modes.
+When all of them connect to the designated wifi hotspot, they will connect to the backend and get their unique ids, check for updates and send their telemitry data. 
+The first step is the easiset and will allow for all the sensors and gateways to be programmed in the same way with the same firmware (sensors and gateways will have separate firmware).
+
+## Create a deployment
+
+Deployment is a way to manage the data and sensors. 
+It will help structure and navigate the data and it will make senosr managment a lot easier. 
+
+Here are the steps to creating a deployment:
+1. Set the deployment name and descrition
+2. Check which sensors will be used in this deployment
+3. Place these sensors on a map to set their location
+4. Check which gateways will be used 
+5. Place gateways on the map and type in wifi credentials
+6. Save changes
+
+When the cahnges are saved, the new deployment and appropriate new data buckets will be created.
+
+
+## Before sensing
+
+All of the sensors must be turned on in the administration mode to collect all the necessary setup data. 
+After the data has been transfered, the sensors can be turned off until they're mounted in their spots. 
+
+## Afer sensing
+
+After the sensing is over, the deployment can be marked as finsished. All the sensors and gateways will be released and their location and current deployment will be set to nulll to indicate that they are ready to be deployed again. 
 
 
 
