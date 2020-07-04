@@ -443,6 +443,44 @@ Possible additional parameters:
 - return measurements after this time
 - return measurements from these sensors 
 - return last n measurements
+- more?? @@@
+
+
+
+
+
+## Exposed sensor and gateway endpoints
+
+More REST API endpoints will be needed to set up the sensors and gateways and to make them work.
+
+
+### POST /api/sensor/
+
+This is where it all starts for the sensor. When the sensor is first turned on in administration mode, it will send its mac address to the server to register as a sensor node.
+Server will return its generated id and name.
+If the sensor is deployed, the server will also return basic configuration data like the nearest gateway mac address. 
+
+### POST /api/sensor/telemitry/{sensor.id}
+
+After the first call, the sensor will enter a loop, where it will report it's battery voltage and fitmware version every few minutes. The server will return data about the latest firmware version. If there is a new firmawre version, the sensor will enter ota mode where it watis for the update to strat.
+If it is already running the latest firmware, it will only report its voltage every few minutes. It is useful to have remote battery charging status. 
+
+
+### POST /api/sensor/data/
+
+This is a gateway endpoint. It will send an array of measurements. When testing, I noticed that each POST request took almost half a second. That is way too much if the sensors are sending data every second and there are 10 sensors, it would take 5 seconds to send data each second. So gateway will send an array of measurements that it has collected since the last time it sent data. Each measurement will have sensor id and the actual data. The server will then insert the data into apropriate buckets.
+
+
+### POST /api/gateway/
+
+Similar to sensor, this is where all gateways will start. The gateway will send its mac address to the server to either get its id and deployment data or register for the first time as a gateway. 
+Server will respodn with appropriate gateway data.
+
+
+### POST /api/gateway/telemitry/{sensor.id}
+
+An endppoint for gateways to send their telemitry data. 
+
 
 
 
