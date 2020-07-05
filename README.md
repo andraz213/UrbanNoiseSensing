@@ -47,9 +47,20 @@ The end users and researchers will be able to access the data thorugh REST API e
 
 # System usage
 
+The general concept is to create deployments. Since batteries in the sensors will only last a few days, the act of sensing can be considered as a sort of a deployment or a study.
+The system will be used to study one street, or one feature at a time, so these deployments can be considered as studies of individial micro elements that have an effect on the noise. 
+
+The general overveiw is then: 
+1. Choose the sensors
+2. Mount the sensors and get the data 
+3. Access the data when doing the analysis
+
+
+
+
 ## First step
 
-At first, there will be no registerd sensors or gateways. The first step is to turn them all on. Gateways in their normal and only mode and sensors in their administration modes.
+At first, there will be no registerd sensors or gateways. The first step is to turn them all on. Gateways in their normal and only mode and sensors in their administration mode.
 When all of them connect to the designated wifi hotspot, they will connect to the backend and get their unique ids, check for updates and send their telemitry data. 
 The first step is the easiset and will allow for all the sensors and gateways to be programmed in the same way with the same firmware (sensors and gateways will have separate firmware).
 
@@ -60,13 +71,13 @@ It will help structure and navigate the data and it will make senosr managment a
 
 Here are the steps to creating a deployment:
 1. Set the deployment name and descrition
-2. Check which sensors will be used in this deployment
-3. Place these sensors on a map to set their location
-4. Check which gateways will be used 
+2. Select sensors that will be used in this deployment
+3. Place the sensors on a map to set their location
+4. Select which gateways will be used 
 5. Place gateways on the map and type in wifi credentials
 6. Save changes
 
-When the cahnges are saved, the new deployment and appropriate new data buckets will be created.
+When the cahnges are saved, the new deployment and appropriate new data buckets will be created. Deployments will allow a quick overview of the latest data and sensor status after sensors are deployed on location.
 
 
 ## Before sensing
@@ -76,27 +87,11 @@ After the data has been transfered, the sensors can be turned off until they're 
 
 ## Afer sensing
 
-After the sensing is over, the deployment can be marked as finsished. All the sensors and gateways will be released and their location and current deployment will be set to nulll to indicate that they are ready to be deployed again. 
+After the sensing is over, the deployment can be marked as finsished. All the sensors and gateways will be released and their location and current deployment will be set to null to indicate that they are ready to be deployed again. 
+
+The data is available while the depployment is active and after the sensing is over.
 
 
-
-# Functionality overview
-
-
-This is the main goal of the whole project and is the simplest overview of what will be going on.
-
-![The simplest overview](/assets/img/simplest_overview.png)
-
-
-
-
-
-## Gateway routine
-
-Honestly not sure about this one. I want to only have one esp32, but I think that might not be possible. I just hope two esps won't be too much of a clusterfuck.
-
-In case I need two esps, I will use PJON through serial https://www.pjon.org/ThroughSerial.php
-It is a protocol that will help transfer data from one esp to the other.
 
 
 # Sensor node
@@ -106,13 +101,15 @@ It is a protocol that will help transfer data from one esp to the other.
 
 ![Sensor routine](/assets/img/sensor_routine.png)
 
+A general overview of how the firmware on the sensor node will operate.
+
 ### Setting up
 
 When the sensor node is first programmed, it should have generic settings.
 The only thing set is what wifi it should connect to.
 What's next?
 
-Firstly, it needs a unique classifier or id, so the server knows which node sent the data. Luckily, every esp comes with a unique mac address. I can use it as an id.
+Firstly, it needs a unique classifier or id, so the server knows which node sent the data. Luckily, every esp comes with a unique mac address. It will be used to acquire a unique identifier from the backend. 
 
 Then it needs to send telemetry data like firmware version, battery voltage, mac address,...
 
@@ -136,9 +133,75 @@ It needs:
 
 Most provisioning work is done on the backend, so this is probably all that is needed here.
 
+This provisioning data is sent when senosr node is turned on in the administration mode and connected to the wifi.
+
 
 ### Sensing
 
+The other mode of operation is sensing.
+Before it can start collecting the data and sending it to the gateways, it needs setup data. This data is sent after the deployment is created in the frontend and the sensor node has been turned on in the administration mode.
+
+Sensing mode is a contious cycle of four activities:
+1. Getting the readings
+2. Processing the data 
+3. Sending the data 
+4. Sleeping
+
+
+#### Getting the readings
+
+The sensor of choice here is a MEMS microphone (INMP441). It communicates through i2s protocol. This protocol is a specialised protocol for transffering sound data.
+Before actually getting the data, the i2s driver needs to be initialized. 
+Once the driver has been initialized, the DMA transferrs data from the i2s peripheral device to the designated buffer. 
+After the buffer is full, it needs to be read. 
+
+The whole operation should go like this:
+1. Initialize 12s driver
+2. Wait 100ms
+3. Read the data from the buffer
+
+#### Processing the data 
+
+Once the data has been collected from the i2s buffer, it needs to get processed. 
+There are three main processing task that need to be done in this stage. 
+
+1. Calculate the fft
+2. Caclulate the decibles
+3. Lower the fft resolution to 10-20 frequency ranges
+
+
+#### Sending the data 
+
+After the data has been processed, it needs to be sent. 
+
+the data will be packaged into a struct and sent.
+
+```
+struct data_transfer_struct
+{	
+	float decibels;
+	long time;
+	int fft_spectrum [10-20];
+};
+
+``` 
+
+When the data is sent, an automatic acknowledgment is done. If the data was sucessfully sent, the outgoing packet is discarded and device can sleep.
+If data transmission failed, the data must be saved and sent at a later time. It will be done in this stage when the next data transffer is successful.  
+
+
+#### Sleeping
+
+After sending is done, the mcu needs to go to sleep to conserve power and extend battery life. 
+ESP32 supports different types of sleep:
+- modem sleep
+- light sleep
+- deep sleep
+- hibernation
+
+Each has its own advantages. I chose light sleep for this application. It does have much higher consumption than deep sleep, but it wakes up faster. 
+Waking up from deep sleep takes about 250ms. That is a significant portion of the sensing mode operating cycle. 
+Light sleep retains all the data in ram and execution can be resumed right after the light sleep function call. 
 
 
 ## Hardware
@@ -183,6 +246,13 @@ Haven't found one yet.
 
 
 
+
+# Gateway
+
+Honestly not sure about this one. I want to only have one esp32, but I think that might not be possible. I just hope two esps won't be too much of a clusterfuck.
+
+In case I need two esps, I will use PJON through serial https://www.pjon.org/ThroughSerial.php
+It is a protocol that will help transfer data from one esp to the other.
 
 
 
