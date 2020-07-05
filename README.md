@@ -5,27 +5,28 @@ Diplomska naloga
 
 # Overview
 
-The main goal of this project is to build a sensor network for noise sampling and analysis.
+Noise is a huge health and quality of life hazard. It is most prominent in big cities, especially in city centers. 
+There are ways do manage the amoutn and type of noise being present in these envirmonets.
+Material and architectural choices can have a tremendous impact on noise. 
+But good decisions can only be made with appropriate amount of information. A lot of times, there's not enough data to show that something needs to be done, let alone what kind of impact a specific choice will have on overall noise.
 
-A few main goals:
+This system will help city planners and architects discover where most changes are needed and what kind of impact their past choices have on overall noise levels. 
+There are a lot of systems that measure noise on a macro level. There are sensors palced one on each street and research is done on a city level. 
+This system will take a different approach. There will be multiplle sensors on each street, meaning that research will be done on a micro level. We want to figure out how very specific materials and structure inpact noise levels in the real world. That is possible by deploying a lot of affordable sensors and using the latest machine learning methoods that take into account spatial and temporal dimensions. 
+
+This is a highly speccialised system with tightly defined goals and sepcifications.
+Here are most of these goals:
 
 - affordable sensor nodes
-- one sample per second
-- synchronized nodes
-- fft and decibel data
-- battery-powered
-- wireless
-- REST API interface to port data into Orange
+- synchornised data sampling 
+- fft spectral analysis and noise volume data
+- battery powered and autonomous operation for at least a few days at a time
+- wireless 
+- REST API interface for data collection and querying
 - support for geospatial data
+- backend deployment on local server
+- easy and intuitive sensor deployment
 
-Additional goals:
-
-- as long battery life as possible
-- simple user interface
-- useful and efficient data storage structure
-- simple node firmware updates
-- as few central stations as possible
-- local server deployment
 
 
 ## Basic structure
@@ -37,6 +38,9 @@ Since sensors won't be directly connected to wifi because of connection overhead
 There might be two needed because one can't communicate through the special protocol and wifi at the same time.
 
 Sensor nodes are at the edge of this system. Their main purpose is to collect data and send it through the protocol to the gateways. These nodes will have administration mode, where they connect to designated wifi and receive instructions and OTA updates.
+
+![System overview](/assets/img/system_overview.png)
+
 
 
 # How will admins and users actually use this
