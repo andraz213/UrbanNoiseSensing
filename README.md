@@ -39,6 +39,41 @@ There might be two needed because one can't communicate through the special prot
 Sensor nodes are at the edge of this system. Their main purpose is to collect data and send it through the protocol to the gateways. These nodes will have administration mode, where they connect to designated wifi and receive instructions and OTA updates.
 
 
+# How will admins and users actually use this
+
+## First step
+
+At first, there will be no registerd sensors or gateways. The first step is to turn them all on. Gateways in their normal and only mode and sensors in their administration modes.
+When all of them connect to the designated wifi hotspot, they will connect to the backend and get their unique ids, check for updates and send their telemitry data. 
+The first step is the easiset and will allow for all the sensors and gateways to be programmed in the same way with the same firmware (sensors and gateways will have separate firmware).
+
+## Create a deployment
+
+Deployment is a way to manage the data and sensors. 
+It will help structure and navigate the data and it will make senosr managment a lot easier. 
+
+Here are the steps to creating a deployment:
+1. Set the deployment name and descrition
+2. Check which sensors will be used in this deployment
+3. Place these sensors on a map to set their location
+4. Check which gateways will be used 
+5. Place gateways on the map and type in wifi credentials
+6. Save changes
+
+When the cahnges are saved, the new deployment and appropriate new data buckets will be created.
+
+
+## Before sensing
+
+All of the sensors must be turned on in the administration mode to collect all the necessary setup data. 
+After the data has been transfered, the sensors can be turned off until they're mounted in their spots. 
+
+## Afer sensing
+
+After the sensing is over, the deployment can be marked as finsished. All the sensors and gateways will be released and their location and current deployment will be set to nulll to indicate that they are ready to be deployed again. 
+
+
+
 # Functionality overview
 
 
@@ -293,9 +328,8 @@ Data about measurements, sensors and gateways will be available through REST API
 
 I don't know what exact data will be needed, but here are my guesses.
 
-### All deloyments
+### GET /api/deployment
 
-Will probably eb available on GET /api/deployment
 It will return an array of basic deployment data from all deployments.
 
 ```
@@ -309,10 +343,9 @@ number_of_measurements: number
 ]
 ```
 
-### Single deployment
+### GET /api/deployment/{deployment.id}
 
-It will a single document with the same data as the deployment model.
-It will be available on GET /api/deployment/{deployment.id}
+It will return a single document with the same data as the deployment model.
 
 ```
 id: number
@@ -326,10 +359,10 @@ measurement_num: number
 tags: [string]
 ```
 
-### All sensors
+### GET /api/sensor
+
 
 It will return an array of all sensors with basic data.
-It will be available on GET /api/sensor
 
 ```
 [
@@ -340,10 +373,9 @@ battery_voltage: number
 ]
 ```
 
-### Single sensor
+### GET /api/sensor/{sensor.id}
 
 It will return all data that is in the sensor model 
-It will be available on GET /api/sensor/{sensor.id}
 
 ```
 id: number
@@ -358,10 +390,9 @@ firmware_version: string
 battery_voltage: number
 ```
 
-### All gateways
+### GET /api/gateway
 
 It will return an array of all gateways with basic data.
-It will be available on GET /api/gateway
 
 ```
 [
@@ -371,10 +402,9 @@ current_deployment: deployment.id
 ]
 ```
 
-### Single gateway
+### GET /api/gateway/{gateway.id}
 
 It will return all data that is in the gateway model 
-It will be available on GET /api/gateway/{gateway.id}
 
 ```
 id: number
@@ -486,38 +516,6 @@ An endppoint for gateways to send their telemitry data.
 
 
 
-# How will admins and users actually use this
-
-## First step
-
-At first, there will be no registerd sensors or gateways. The first step is to turn them all on. Gateways in their normal and only mode and sensors in their administration modes.
-When all of them connect to the designated wifi hotspot, they will connect to the backend and get their unique ids, check for updates and send their telemitry data. 
-The first step is the easiset and will allow for all the sensors and gateways to be programmed in the same way with the same firmware (sensors and gateways will have separate firmware).
-
-## Create a deployment
-
-Deployment is a way to manage the data and sensors. 
-It will help structure and navigate the data and it will make senosr managment a lot easier. 
-
-Here are the steps to creating a deployment:
-1. Set the deployment name and descrition
-2. Check which sensors will be used in this deployment
-3. Place these sensors on a map to set their location
-4. Check which gateways will be used 
-5. Place gateways on the map and type in wifi credentials
-6. Save changes
-
-When the cahnges are saved, the new deployment and appropriate new data buckets will be created.
-
-
-## Before sensing
-
-All of the sensors must be turned on in the administration mode to collect all the necessary setup data. 
-After the data has been transfered, the sensors can be turned off until they're mounted in their spots. 
-
-## Afer sensing
-
-After the sensing is over, the deployment can be marked as finsished. All the sensors and gateways will be released and their location and current deployment will be set to nulll to indicate that they are ready to be deployed again. 
 
 
 
