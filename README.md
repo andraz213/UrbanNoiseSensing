@@ -1,9 +1,9 @@
-# Senzorsko omrežje za merjenje hrupa v urbanem okolju
-Diplomska naloga
+# Sensor network for urban noise sensing with IOT
+Bachelors thesis
 
 
 
-# Overview
+## Overview
 
 Noise is a huge health and quality of life hazard. It is most prominent in big cities, especially in city centers. 
 There are ways do manage the amoutn and type of noise being present in these envirmonets.
@@ -31,19 +31,21 @@ Here are most of these goals:
 
 ## Basic structure
 
-Everything starts with good backend. The heart of this project will be a node.js and express app deployed on a local server. It will be packed in a docker container for more streamlined deployment.
-This server will handle all the requests from sensor nodes and serve data to the front end app used for managing sensors and data.
-
-Since sensors won't be directly connected to wifi because of connection overhead, there will be gateways that will send received data from the special protocol to the main server. These gateways will consist of one or two ESP32 microcontrollers.
-There might be two needed because one can't communicate through the special protocol and wifi at the same time.
-
-Sensor nodes are at the edge of this system. Their main purpose is to collect data and send it through the protocol to the gateways. These nodes will have administration mode, where they connect to designated wifi and receive instructions and OTA updates.
-
 ![System overview](/assets/img/system_overview.png)
 
 
+The heart of this system is a backend that is deployed on a local server. It is using Node.js, Express and MongoDB to expose the appropriate endpoints, do basic data processing and data storage.
 
-# How will admins and users actually use this
+Gateways are needed to overlay the data from sensors to the backend. Direct wifi connection is way too inefficient for this application, that's why a special low power, low overhead wireless protocol will be used to transefer captured data from the sensors to the gateway and the to the backend. 
+
+Sensors will consist of a low powered MCU that supports wifi-like protocols used in this system and offer enough processing power to do the fft spectral analysis as close to the source of data to cut down on bandwith power cost, a low cost microphone with a flat frequency response curve and tight manufacturer tolerances, a battery to power the sensor node and some other miscelaneous components. 
+
+Front end will enable administrators to check sensor staus and create sensor deployments. Deployments are a way of provisioning sensors on a project. 
+
+The end users and researchers will be able to access the data thorugh REST API endpoints and use it in Orange or other machine learning or research tool. 
+
+
+# System usage
 
 ## First step
 
