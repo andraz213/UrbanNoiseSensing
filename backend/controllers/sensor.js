@@ -6,22 +6,22 @@ const deploymentModel = mongoose.model('deployment');
 
 const getAllSensor = (req, res) => {
     sensorModel.find({}, (error, sensors) => {
-    if (error) {
-        return res.status(500).json(error);
-    } else if (!sensors || sensors.length === 0)
-        return res.status(404).json({'message': 'No sensors existing'});
-    else {
-        let sensorsObj = JSON.parse(JSON.stringify(sensors));
-        for (let i = 0; i < sensorsObj.length; ++i) {
-            delete sensorsObj[i]['mac'];
-            delete sensorsObj[i]['deployments'];
-            delete sensorsObj[i]['last_data'];
-            delete sensorsObj[i]['all_data'];
-            delete sensorsObj[i]['firmware_version'];
+        if (error) {
+            return res.status(500).json(error);
+        } else if (!sensors || sensors.length === 0)
+            return res.status(404).json({'message': 'No sensors existing'});
+        else {
+            let sensorsObj = JSON.parse(JSON.stringify(sensors));
+            for (let i = 0; i < sensorsObj.length; ++i) {
+                delete sensorsObj[i]['mac'];
+                delete sensorsObj[i]['deployments'];
+                delete sensorsObj[i]['last_data'];
+                delete sensorsObj[i]['all_data'];
+                delete sensorsObj[i]['firmware_version'];
+            }
+            return res.status(200).json(sensorsObj);
         }
-        return res.status(200).json(sensorsObj);
-    }
-});
+    });
 }
 const getAllByIdSensor = (req, res) => {
 
@@ -48,12 +48,11 @@ This function checks whether the sensor with the mac address exists or not. If t
 
 const postSensor = (req, res) => {
     let {mac} = req.body;
-    sensorModel.find({mac: mac}, (error, sensor) =>{
-        if(error){
+    sensorModel.find({mac: mac}, (error, sensor) => {
+        if (error) {
             console.log(error);
             return res.status(500).json(error);
-        }
-        else{
+        } else {
             console.log("hej senzor ni nič", sensor.length);
             if (sensor.length == 0) {
                 console.log("hej senzor je nič");
@@ -68,6 +67,32 @@ const postSensor = (req, res) => {
             }
 
             if (sensor.length == 1) {
+
+                var gw_macs = [];
+
+                /* get macs for deployment data */
+                /*if(sensor.current_deployment != null){
+                    deploymentModel.findById(sensor.current_deployment, (error, deployment) => {
+                        if(error){
+                            console.log(error);
+                            return res.status(500).json(error);
+                        }
+                        else{
+                            for (var i = 0; i< deployment.gateways.length; i++){
+                                gw_macs.push(deployment.gateways[i]["mac"]);
+                            }
+
+
+
+
+                        }
+
+
+
+                    })
+
+
+                }*/
                 console.log("hejj");
                 console.log(sensor);
                 let sensorObj = JSON.parse(JSON.stringify(sensor));
@@ -76,14 +101,15 @@ const postSensor = (req, res) => {
             }
 
 
-
-        }});
+        }
+    });
 
 
 }
-const postTelemetrySensor = (req, res) => {}
-const postDataSensorSensor = (req, res) => {}
-
+const postTelemetrySensor = (req, res) => {
+}
+const postDataSensorSensor = (req, res) => {
+}
 
 
 module.exports = {

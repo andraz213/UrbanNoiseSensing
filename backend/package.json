@@ -9,7 +9,8 @@
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "helmet": "^3.23.3",
     "mongoose": "^5.9.22",
-    "morgan": "~1.9.1"
+    "morgan": "^1.9.1"
   }
 }

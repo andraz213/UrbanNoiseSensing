@@ -45,7 +45,8 @@ const gatewaySchema = new mongoose.Schema({
 const dataDeploymentSchema = new mongoose.Schema({
     sensor_id: {type: mongoose.Types.ObjectId, required: true},
     location: {type: [Number], required: true, index: '2dsphere'},
-    delivered: {Type: Boolean, default: false}
+    delivered: {Type: Boolean, default: false},
+    mac: {type: [Number], required: true}
 });
 
 
