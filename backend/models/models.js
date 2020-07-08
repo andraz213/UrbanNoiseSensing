@@ -8,7 +8,6 @@ const measurementSchema = new mongoose.Schema({
 });
 
 const dataSchema = new mongoose.Schema({
-    id: {type: mongoose.Types.ObjectId, required: true},
     sensor: {type: mongoose.Types.ObjectId, required: true},
     deployment: {type: mongoose.Types.ObjectId, required: true},
     location: {type: [Number], required: true, index: '2dsphere'},
@@ -19,7 +18,6 @@ const dataSchema = new mongoose.Schema({
 });
 
 const sensorSchema = new mongoose.Schema({
-    id: {type: mongoose.Types.ObjectId, required: true},
     name: {type: String, required: true},
     mac: {type: [Number], required: true},
     deployments: [mongoose.Types.ObjectId],
@@ -34,7 +32,6 @@ const sensorSchema = new mongoose.Schema({
 
 
 const gatewaySchema = new mongoose.Schema({
-    id: {type: mongoose.Types.ObjectId, required: true},
     name: {type: String, required: true},
     mac: {type: [Number], required: true},
     deployments: [mongoose.Types.ObjectId],
