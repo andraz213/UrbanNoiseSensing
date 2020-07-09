@@ -10,12 +10,13 @@ Returns partial data about all the gateways
  */
 const getAllGateway = (req, res) => {
     gatewayModel.find({}, (err, gateways) => {
+        console.log(gateways);
             if (err) {
                 return res.status(500).json(err);
             } else if (!gateways || gateways.length === 0)
                 return res.status(404).json({'message': 'No gateways existing'});
             else {
-                let gatewaysObj = JSON.parse(JSON.stringify(sensors));
+                let gatewaysObj = JSON.parse(JSON.stringify(gateways));
                 for (let i = 0; i < gatewaysObj.length; ++i) {
                     delete gatewaysObj[i]['deployments'];
                     delete gatewaysObj[i]['wifi_credentials'];

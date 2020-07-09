@@ -63,9 +63,9 @@ const deploymentSchema = new mongoose.Schema({
     tags: [String]
 });
 
-mongoose.model('measurement', measurementSchema, 'database');
-mongoose.model('data', dataSchema, 'database');
-mongoose.model('sensor', sensorSchema, 'database');
-mongoose.model('gateway', gatewaySchema, 'database');
-mongoose.model('deploymentData', dataDeploymentSchema, 'database');
-mongoose.model('deployment', deploymentSchema, 'database');
+mongoose.model('measurement', measurementSchema, 'measurement');
+mongoose.model('data', dataSchema, 'data');
+mongoose.model('sensor', sensorSchema, 'sensor');
+mongoose.model('gateway', gatewaySchema, 'gateway');
+mongoose.model('deploymentData', dataDeploymentSchema, 'deploymentData');
+mongoose.model('deployment', deploymentSchema, 'deployment');

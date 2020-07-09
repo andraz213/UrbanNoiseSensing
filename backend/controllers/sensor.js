@@ -3,6 +3,7 @@ const dataModel = mongoose.model('data');
 const sensorModel = mongoose.model('sensor');
 const gatewayModel = mongoose.model('gateway');
 const deploymentModel = mongoose.model('deployment');
+const nameGenerator = require('../misc/names');
 
 const getAllSensor = (req, res) => {
     sensorModel.find({}, (error, sensors) => {
@@ -47,17 +48,16 @@ This function checks whether the sensor with the mac address exists or not. If t
  */
 
 const postSensor = (req, res) => {
+
     let {mac} = req.body;
     sensorModel.find({mac: mac}, (error, sensor) => {
         if (error) {
             console.log(error);
             return res.status(500).json(error);
         } else {
-            console.log("hej senzor ni nič", sensor.length);
             if (sensor.length == 0) {
-                console.log("hej senzor je nič");
                 var novSensor = new sensorModel({
-                    name: "micka3",
+                    name: nameGenerator.newRandomName(),
                     mac: mac
                 });
                 novSensor.save(novSensor).then(data => {
