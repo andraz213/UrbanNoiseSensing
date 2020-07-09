@@ -4,20 +4,13 @@ const sensorModel = mongoose.model('sensor');
 const gatewayModel = mongoose.model('gateway');
 const deploymentModel = mongoose.model('deployment');
 
-const getAllSensor = (req, res) => {}
-const getAllByIdSensor = (req, res) => {}
-const postSensor = (req, res) => {}
-const postTelemetrySensor = (req, res) => {}
-const postDataSensorSensor = (req, res) => {}
-
-
-
+const getAllDataByDeployment = (req, res) => {}
+const getSpeceficDataByDeployment = (req, res) => {}
+const getLastnNyDeployment = (req, res) => {}
 
 
 module.exports = {
-    getAllSensor,
-    getAllByIdSensor,
-    postSensor,
-    postTelemetrySensor,
-    postDataSensorSensor
+    getAllDataByDeployment,
+    getSpeceficDataByDeployment,
+    getLastnNyDeployment
 };
