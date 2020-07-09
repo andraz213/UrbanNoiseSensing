@@ -44,7 +44,7 @@ const getAllByIdSensor = (req, res) => {
 /*
 This function checks whether the sensor with the mac address exists or not. If there is no such sensor, it creates a new sensor and returns the data.
 
-
+Still have to figure out how exactly to get the gateway mac addresses.
  */
 
 const postSensor = (req, res) => {
@@ -69,34 +69,17 @@ const postSensor = (req, res) => {
             if (sensor.length == 1) {
 
                 var gw_macs = [];
+                if (sensor.current_deployment != null) {
+                    gw_macs = getGWMacs(se);
 
-                /* get macs for deployment data */
-                /*if(sensor.current_deployment != null){
-                    deploymentModel.findById(sensor.current_deployment, (error, deployment) => {
-                        if(error){
-                            console.log(error);
-                            return res.status(500).json(error);
-                        }
-                        else{
-                            for (var i = 0; i< deployment.gateways.length; i++){
-                                gw_macs.push(deployment.gateways[i]["mac"]);
-                            }
+                }
 
-
-
-
-                        }
-
-
-
-                    })
-
-
-                }*/
                 console.log("hejj");
                 console.log(sensor);
                 let sensorObj = JSON.parse(JSON.stringify(sensor));
-                res.send(sensor);
+                sensorObj[0]["gateways"] = gw_macs;
+                console.log(sensorObj);
+                return res.status(200).json(sensorObj);
 
             }
 
@@ -107,8 +90,88 @@ const postSensor = (req, res) => {
 
 }
 const postTelemetrySensor = (req, res) => {
+    let id = req.params.sensor_id;
+    let {voltage, version} = req.body;
+
+    sensorModel.findById(id, (err, sensor) => {
+        if (err) {
+            return res.status(500).json(err);
+        } else {
+            if (!sensor || sensor.length == 0) {
+                console.log(`Could not find sensor with id: ${id}}`);
+                return res.status(404).json({'message': `Could not find sensor with id: ${id}`});
+            } else {
+                if(voltage) {
+                    sensor.battery_voltage = voltage;
+                }
+                if(version) {
+                    sensor.firmware_version = version;
+                }
+                sensor.last_telemetry = Date.now();
+                sensor.save((err, sensor_sv) => {
+                    if (err) {
+                        return res.status(500).json(err);
+                    } else {
+                        return res.status(200).json(sensor_sv);
+                    }
+                })
+
+            }
+        }
+
+    });
+
+
 }
 const postDataSensorSensor = (req, res) => {
+}
+
+const putSensor = (req, res) => {
+    let id = req.params.sensor_id;
+    let new_s = req.body;
+
+    sensorModel.findById(id, (err, sensor) => {
+        if(err){
+            console.log(err);
+            return res.status(400).json(err);
+        } else{
+            console.log(sensor);
+            if(!sensor || sensor.length == 0){
+                return res.status(204).json({'message': `Sensor ${id} dose not exist!`});
+            }
+            for(let element in new_s){
+                sensor[element] = new_s[element];
+            }
+            sensor.save((err, sensor_sv) => {
+                if(err){
+                    return res.status(500).json(err);
+                }else{
+                    return res.status(200).json(sensor_sv);
+                }
+            })
+
+        }
+
+    })
+}
+
+
+const getGWMacs = (deploymentid) => {
+    let gw_macs = [];
+
+    deploymentModel.findById(deploymentid, (err, dep) => {
+        if (err) {
+            return [];
+        } else {
+            let gws = dep.gateways;
+            for (let i = 0; i < gws.length; i++) {
+                gw_macs.push(gws[i].mac);
+            }
+        }
+
+
+    });
+    return gw_macs;
 }
 
 
@@ -117,5 +180,6 @@ module.exports = {
     getAllByIdSensor,
     postSensor,
     postTelemetrySensor,
-    postDataSensorSensor
+    postDataSensorSensor,
+    putSensor
 };

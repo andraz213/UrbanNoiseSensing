@@ -67,6 +67,8 @@ router.get('/sensor/:sensor_id', sensorController.getAllByIdSensor);
 
 router.post('/sensor', sensorController.postSensor);
 
+router.put('/sensor/:sensor_id', sensorController.putSensor);
+
 router.post('/sensor/telemetry/:sensor_id', sensorController.postTelemetrySensor);
 
 router.post('/sensor/data', sensorController.postDataSensorSensor);
