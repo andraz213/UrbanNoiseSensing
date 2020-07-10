@@ -52,7 +52,6 @@ const dataDeploymentSchema = new mongoose.Schema({
 
 
 const deploymentSchema = new mongoose.Schema({
-    id: {type: mongoose.Types.ObjectId, required: true},
     name: {type: String, required: true},
     description: String,
     sensors: [dataDeploymentSchema],

@@ -15,14 +15,15 @@ GET /api/deployment/{deployment.id}
 GET /api/deployment
 */
 
-router.get('/deployment', function (req, res){
-    res.send("hej tole je deppp");
-});
+router.get('/deployment', deploymentController.getAllDeployment);
 
-router.get('/deployment/:deploymant_id', function (req, res){
-    let id = req.params.deploymant_id;
-    res.send(id);
-});
+router.post('/deployment', deploymentController.postDeployment);
+
+router.put('/deployment/:deployment_id', deploymentController.updateDeployment);
+
+router.get('/deployment/:deployment_id', deploymentController.getDeploymentById);
+
+
 
 /*
 GET /api/data/deployment/{deployment.id}
