@@ -2,6 +2,7 @@
 import { DataDeployment } from './data-deployment';
 
 export class Deployment{
+    _id: string;
     name: string;
     description: string;
     sensors: [DataDeployment];

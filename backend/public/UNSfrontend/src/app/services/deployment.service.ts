@@ -42,6 +42,15 @@ export class DeploymentService {
       .catch(this.obdelajNapako);
   }
 
+  public createDeployment(body: any): Promise<Deployment>{
+    const url = `${this.apiUrl}/deployment/`;
+    return this.http
+      .post(url, body)
+      .toPromise()
+      .then(answer => answer as Deployment[])
+      .catch(this.obdelajNapako);
+  }
+
 
   private obdelajNapako(napaka: any): Promise<any> {
     console.error('Error ', napaka.error.sporočilo || napaka.error.errmsg || napaka);

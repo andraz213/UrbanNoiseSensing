@@ -9,6 +9,7 @@ import { DeploymentsComponent } from './components/deployments/deployments.compo
 import { HomeComponent } from './components/home/home.component';
 import { CreateDeploymentComponent } from './components/create-deployment/create-deployment.component';
 import {FormsModule} from "@angular/forms";
+import { EditDeploymentComponent } from './components/edit-deployment/edit-deployment.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import {FormsModule} from "@angular/forms";
     GatewaysComponent,
     DeploymentsComponent,
     HomeComponent,
-    CreateDeploymentComponent
+    CreateDeploymentComponent,
+    EditDeploymentComponent
   ],
   imports: [
     BrowserModule,
