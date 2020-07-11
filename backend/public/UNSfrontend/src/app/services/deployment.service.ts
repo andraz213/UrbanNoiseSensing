@@ -33,7 +33,7 @@ export class DeploymentService {
       .catch(this.obdelajNapako);
   }
 
-  public updateDeployment(id: string, body: string): Promise<Deployment[]>{
+  public updateDeployment(id: string, body: any): Promise<Deployment[]>{
     const url = `${this.apiUrl}/deployment/` + id;
     return this.http
       .put(url, body)

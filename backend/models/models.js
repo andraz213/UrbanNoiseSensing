@@ -56,6 +56,7 @@ const deploymentSchema = new mongoose.Schema({
     description: String,
     sensors: [dataDeploymentSchema],
     gateways: [dataDeploymentSchema],
+    status: {type: String, default: 'pending'},
     start: Date,
     finish: Date,
     measurement_num: Number,

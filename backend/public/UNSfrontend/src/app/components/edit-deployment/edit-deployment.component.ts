@@ -13,6 +13,8 @@ export class EditDeploymentComponent implements OnInit {
   private id:string;
   constructor(private activatedRoute: ActivatedRoute, private deploymentService: DeploymentService) { }
 
+  public depDTO: Deployment;
+
   ngOnInit() {
     this.id = this.activatedRoute.snapshot.paramMap.get("id");
     console.log(this.id);
@@ -22,9 +24,20 @@ export class EditDeploymentComponent implements OnInit {
   private getDeployment(){
     this.deploymentService.getOneDeployment(this.id).then(result => {
       this.deployment = result;
+      this.depDTO = result;
       console.log(this.deployment);
     })
 
   }
+  public discardChanges(){
+    this.getDeployment();
+  }
 
+  public saveChangesForm(){
+    this.deploymentService.updateDeployment(this.deployment._id, this.depDTO).then(res => {
+      console.log(res);
+      this.getDeployment();
+    });
+
+  }
 }

@@ -1,1 +1,16 @@
-<p>edit-deployment works!</p>
+
+<div *ngIf="deployment">
+  <h2>{{deployment.name}}</h2>
+<form (submit)="saveChangesForm()">
+  <div class="form-group">
+    <label for="deploymentName">Deployment name</label>
+    <input [(ngModel)]="depDTO.name" name="name" type="text" class="form-control" id="deploymentName" placeholder="Enter deployment name">
+  </div>
+  <div class="form-group">
+    <label for="deploymentDescription">Deployment description</label>
+    <input [(ngModel)]="depDTO.description" name="deploymentDescription" type="textarea" class="form-control" id="deploymentDescription" placeholder="Enter deployment description">
+  </div>
+  <button type="submit" class="btn btn-primary mr-4">Save Changes</button>
+  <button (click)="discardChanges()" class="btn btn-danger">Discard Changes</button>
+</form>
+</div>
