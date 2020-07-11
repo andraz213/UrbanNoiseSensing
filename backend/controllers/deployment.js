@@ -49,9 +49,29 @@ const deployDeployment = (req, res) =>{
        } else {
            console.log(dep);
            this.deployment = dep;
+            if(updateSensors(dep, res) == 0){
+                console.log("DEPLOYED SENSORS");
+                if (updateGateways(dep, res) == 0){
 
-           updateSensors(dep, res);
-           //updateGateways(dep.gateways);
+                    console.log("DEPLOYED GATEWAYS")
+                    dep.status = 'deployed';
+
+                    dep.save((err, data) => {
+                        if(err){
+                            console.log(err);
+                            return res.status(400).json({'messate': 'could not deploy it'});
+                        }
+                        console.log(data);
+                            return res.status(200).json(data);
+                    });
+                }
+                else {
+                    return res.status(400).json({'messate': 'could not deploy it and gateways'});
+                }
+            } else {
+                return res.status(400).json({'messate': 'could not deploy it and sensors and gateways'});
+            }
+
        }
     });
 
@@ -70,42 +90,44 @@ const deployDeployment = (req, res) =>{
 
 
 }
-/*
+
+
 const updateGateways = (dep, res) => {
-    for(let sen of dep.sensors){
-        sensorModel.findById(sen.sensor_id, (err, sens)=> {
+    for(let gw of dep.gateways){
+        console.log(gw);
+        gatewayModel.findById(gw.sensor_id, (err, gwy)=> {
             if(err){
-                return res.status(404).json({'message': 'Could not find the senosr'});
+                console.log(err);
+                return -1;// res.status(404).json({'message': 'Could not find the gateway'});
             } else {
-                console.log(sens);
-                sens.current_deployment = dep._id;
-                sens.current_location = sens.current_location;
-                if(sens.deployments.indexOf(dep._id) === -1) {
-                    sens.deployments.push(dep._id);
+                gwy.current_deployment = dep._id;
+                if(gwy.deployments.indexOf(dep._id) === -1) {
+                    gwy.deployments.push(dep._id);
                 }
+                gwy.current_location = [0,0];
+                console.log(gwy);
                 // @@@ še data bucket je treba ustvarit
-                sens.save((err, data) => {
+                gwy.save((err, data) => {
                     if(err){
-                        return res.status(500).json({'message': 'could not update sensor'});
+                        console.log(err);
+                        return -1;
                     }
                     console.log(data);
 
                 });
-
             }
         });
-
-
     }
-
-}*/
+    return 0;
+}
 
 
 const updateSensors = (dep, res) => {
     for(let sen of dep.sensors){
         sensorModel.findById(sen.sensor_id, (err, sens)=> {
             if(err){
-                return res.status(404).json({'message': 'Could not find the senosr'});
+                console.log(err);
+                return -1;//res.status(404).json({'message': 'Could not find the senosr'});
             } else {
 
                 sens.current_deployment = dep._id;
@@ -114,17 +136,22 @@ const updateSensors = (dep, res) => {
                     sens.deployments.push(dep._id);
                 }
                 // @@@ še data bucket je treba ustvarit
-                console.log(sens);
+
                 sens.save((err, data) => {
                     if(err){
-                        return res.status(500).json({'message': 'could not update sensor'});
+                        console.log(err);
+                        return -1; //res.status(500).json({'message': 'could not update sensor'});
                     }
                     console.log(data);
                 });
             }
         });
     }
+    return 0;
 }
+
+
+
 
 
 
