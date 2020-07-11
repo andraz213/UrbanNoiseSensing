@@ -41,8 +41,13 @@ export class DeploymentsComponent implements OnInit {
       this.newdep.name = '';
       this.creating = false;
       this.deployments.unshift(result);
+      this.navigateToEdit(result._id);
     });
 
+  }
+
+  public navigateToEdit(id:string){
+    this.router.navigateByUrl(`editdeployment/${id}`);
   }
 
 
