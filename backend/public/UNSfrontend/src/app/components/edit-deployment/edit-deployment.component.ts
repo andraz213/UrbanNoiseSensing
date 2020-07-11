@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, TemplateRef} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {DeploymentService} from "../../services/deployment.service";
 import {Deployment} from "../../models/deployment";
@@ -25,6 +25,7 @@ export class EditDeploymentComponent implements OnInit {
               private gatewayService: GatewayService) {
   }
 
+  public errorMessages: string[];
   public depDTO: Deployment;
   public sensors: { sensor: Sensor, chosen: boolean, latitude: number, longitude: number, alpha: number }[];
   public gateways: { gateway: Gateway, chosen: boolean,}[];
@@ -51,6 +52,50 @@ export class EditDeploymentComponent implements OnInit {
       }
       console.log(this.sensors);
     });
+  }
+
+  openModal(not_ok: TemplateRef<any>, ok: TemplateRef<any>) {
+    this.errorMessages = [];
+
+    let gw_num = 0;
+    for(let gw of this.gateways){
+      if(gw.chosen == true){
+        gw_num++;
+      }
+    }
+    if(gw_num < 1){
+      this.errorMessages.push("You don't have any gateways selected!");
+    }
+
+    let sn_num = 0;
+    for(let sn of this.sensors){
+      if(sn.chosen == true){
+        sn_num++;
+      }
+    }
+    if(sn_num < 1){
+      this.errorMessages.push("Place at least one sensor!");
+    }
+
+    if(!this.deployment.name || this.deployment.name == ''){
+      this.errorMessages.push("Save the name of this deployment!");
+    }
+
+    if(this.deployment.status != 'pending'){
+        this.errorMessages.push("Something went wrong with your deployment. Is it already deployed?");
+    }
+
+    if(this.errorMessages.length != 0) {
+      this.modalRef = this.modalService.show(not_ok, {class: 'modal-sm'});
+    } else {
+
+      this.modalRef = this.modalService.show(ok, {class: 'modal-sm'});
+    }
+
+  }
+
+  decline(): void {
+    this.modalRef.hide();
   }
 
   private getGateways() {
