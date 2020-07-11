@@ -10,6 +10,9 @@ import { HomeComponent } from './components/home/home.component';
 import { CreateDeploymentComponent } from './components/create-deployment/create-deployment.component';
 import {FormsModule} from "@angular/forms";
 import { EditDeploymentComponent } from './components/edit-deployment/edit-deployment.component';
+import { AgmCoreModule } from '@agm/core';
+import {environment} from "../environments/environment";
+import { SensorMapComponent } from './components/sensor-map/sensor-map.component';
 
 @NgModule({
   declarations: [
@@ -19,13 +22,15 @@ import { EditDeploymentComponent } from './components/edit-deployment/edit-deplo
     DeploymentsComponent,
     HomeComponent,
     CreateDeploymentComponent,
-    EditDeploymentComponent
+    EditDeploymentComponent,
+    SensorMapComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    AgmCoreModule.forRoot({apiKey: environment.mapsKey})
   ],
   providers: [],
   bootstrap: [AppComponent]

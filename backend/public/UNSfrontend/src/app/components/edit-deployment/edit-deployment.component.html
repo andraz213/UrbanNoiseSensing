@@ -14,3 +14,40 @@
   <button (click)="discardChanges()" class="btn btn-danger">Discard Changes</button>
 </form>
 </div>
+
+<h4>Sensors</h4>
+<div>
+  <agm-map
+    [latitude]="lat"
+    [longitude]="lng"
+    [zoom]="2"
+    (mapClick)="addMarker($event.coords.lat, $event.coords.lng)"
+  >
+    <agm-marker
+      *ngFor="let marker of markers"
+      [latitude]="marker.lat"
+      [longitude]="marker.lng"
+      [opacity]="marker.alpha"
+      [markerDraggable]="true"
+      (markerClick)="selectMarker($event)"
+    >
+    </agm-marker>
+  </agm-map>
+  <p *ngIf="selectedMarker">
+    Lat: {{ selectedMarker.lat }} Lng: {{ selectedMarker.lng }}
+  </p>
+</div>
+
+sensors: [dataDeploymentSchema],
+gateways: [dataDeploymentSchema],
+
+
+tole bo z deploymentom
+status: type: String, default: 'pending'
+start: Date,
+finish: Date,
+
+tole bo samodejno sam je treba prikazat
+measurement_num: Number,
+
+
