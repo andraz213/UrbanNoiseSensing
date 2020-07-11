@@ -8,6 +8,7 @@ import {SensorsComponent} from "../app/components/sensors/sensors.component";
 import {GatewaysComponent} from "../app/components/gateways/gateways.component";
 import {CreateDeploymentComponent} from "./components/create-deployment/create-deployment.component";
 import {EditDeploymentComponent} from "./components/edit-deployment/edit-deployment.component";
+import {ReviewDeploymentComponent} from "./components/review-deployment/review-deployment.component";
 
 
 const routes: Routes = [
@@ -34,6 +35,10 @@ const routes: Routes = [
       {
         path: 'editdeployment/:id',
         component: EditDeploymentComponent
+      },
+      {
+        path: 'reviewdeployent/:id',
+        component: ReviewDeploymentComponent
       }
 
     ]

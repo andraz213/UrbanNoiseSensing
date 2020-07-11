@@ -4,6 +4,8 @@ const sensorModel = mongoose.model('sensor');
 const gatewayModel = mongoose.model('gateway');
 const deploymentModel = mongoose.model('deployment');
 
+const nameGenerator = require('../misc/names');
+
 
 /*
 Returns partial data about all the gateways
@@ -54,6 +56,46 @@ const getAllByIdGateway = (req, res) => {
 Creates a new gateway, this is the same method as the one used in sensor where it only gets the mac address and then either returns useful information or creates a new gateway.
  */
 const postGateway = (req, res) => {
+
+    let {mac} = req.body;
+    gatewayModel.find({mac: mac}, (error, gateway) => {
+        if (error) {
+            console.log(error);
+            return res.status(500).json(error);
+        } else {
+            if (gateway.length == 0) {
+                var newGateway = new gatewayModel({
+                    name: nameGenerator.newRandomName(),
+                    mac: mac
+                });
+                newGateway.save(newGateway).then(data => {
+                    console.log(data);
+                    res.send(data);
+                });
+            }
+
+            /*if (sensor.length == 1) {
+
+                var gw_macs = [];
+                if (sensor.current_deployment != null) {
+                    gw_macs = getGWMacs(se);
+
+                }
+
+                console.log("hejj");
+                console.log(sensor);
+                let sensorObj = JSON.parse(JSON.stringify(sensor));
+                sensorObj[0]["gateways"] = gw_macs;
+                console.log(sensorObj);
+                return res.status(200).json(sensorObj);
+
+            }*/
+
+
+        }
+    });
+
+
 }
 
 /*

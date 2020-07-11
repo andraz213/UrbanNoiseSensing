@@ -51,6 +51,8 @@ const updateDeployment = (req, res) => {
             for(let element in new_d){
                 deployment[element] = new_d[element];
             }
+            console.log(deployment);
+            console.log(new_d);
             deployment.save((err, deployment_sv) => {
                 if(err){
                     return res.status(500).json(err);

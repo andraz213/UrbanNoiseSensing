@@ -127,6 +127,7 @@ export class EditDeploymentComponent implements OnInit {
       if(gw.chosen == true){
         let data_dep = new DataDeployment();
         data_dep.sensor_id = gw.gateway._id;
+        data_dep.location = [0, 0];
         this.deployment.gateways.push(data_dep);
       }
     }
