@@ -24,12 +24,12 @@ export class DeploymentService {
       .catch(this.obdelajNapako);
   }
 
-  public getOneDeployment(id: string): Promise<Deployment[]>{
+  public getOneDeployment(id: string): Promise<Deployment>{
     const url = `${this.apiUrl}/deployment/` + id;
     return this.http
       .get(url)
       .toPromise()
-      .then(answer => answer as Deployment[])
+      .then(answer => answer as Deployment)
       .catch(this.obdelajNapako);
   }
 

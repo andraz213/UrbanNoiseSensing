@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
+import { DeploymentService} from "../../services/deployment.service";
+import {Deployment} from "../../models/deployment";
 
 @Component({
   selector: 'app-edit-deployment',
@@ -7,11 +9,22 @@ import {ActivatedRoute} from "@angular/router";
   styleUrls: ['./edit-deployment.component.css']
 })
 export class EditDeploymentComponent implements OnInit {
-
-  constructor(private activatedRoute: ActivatedRoute,) { }
+  public deployment: Deployment;
+  private id:string;
+  constructor(private activatedRoute: ActivatedRoute, private deploymentService: DeploymentService) { }
 
   ngOnInit() {
-    let id = this.activatedRoute.snapshot.paramMap.get("id");
+    this.id = this.activatedRoute.snapshot.paramMap.get("id");
+    console.log(this.id);
+    this.getDeployment();
+  }
+
+  private getDeployment(){
+    this.deploymentService.getOneDeployment(this.id).then(result => {
+      this.deployment = result;
+      console.log(this.deployment);
+    })
+
   }
 
 }

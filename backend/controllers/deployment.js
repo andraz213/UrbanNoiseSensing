@@ -63,7 +63,21 @@ const updateDeployment = (req, res) => {
 
     });
 }
-const getDeploymentById = (req, res) => {}
+const getDeploymentById = (req, res) => {
+    let id = req.params.deployment_id;;
+    deploymentModel.findById(id, (error, deployment) => {
+        if (error) {
+            return res.status(500).json(error);
+        } else if (!deployment || deployment.length === 0 || deployment.length > 1)
+            return res.status(404).json({'message': 'No such deployment!'});
+        else if (deployment.length > 1)
+            return res.status(404).json({'message': 'More than one gateway with this id!'});
+        else {
+            let deploymentObj = JSON.parse(JSON.stringify(deployment));
+            return res.status(200).json(deploymentObj);
+        }
+    });
+}
 
 
 
