@@ -3,7 +3,20 @@
 <div class="row m-4">
   <div class="col">
     <div class="m-5">
-    <button  type="button" class="btn btn-outline-primary" routerLink="/createdeployment">Create Deployment</button>
+      <div *ngIf="creating == false">
+    <button  type="button" class="btn btn-outline-primary" (click)="switchCreating()">+</button>
+      </div>
+      <div *ngIf="creating == true">
+        <button  type="button" class="btn btn-outline-danger" (click)="switchCreating()"> - </button>
+        <form (submit)="createDeployment()">
+          <div class="form-group">
+            <label for="deploymentName">Deployment name</label>
+            <input [(ngModel)]="newdep.name" name="name" type="text" class="form-control" id="deploymentName" placeholder="Enter deployment name">
+          </div>
+          <button type="submit" class="btn btn-primary">Create Deloyment</button>
+        </form>
+
+      </div>
     <div *ngIf="deployments && deployments.length == 0">
       <p>There are no deployments yet!</p>
     </div>
@@ -17,7 +30,7 @@
             <p>{{deployment.description}}</p>
           </div>
           <div class="col-5">
-
+          <small>tags</small>
           </div>
           <div class="col-4">
 

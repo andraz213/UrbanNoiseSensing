@@ -8,6 +8,7 @@ import { GatewaysComponent } from './components/gateways/gateways.component';
 import { DeploymentsComponent } from './components/deployments/deployments.component';
 import { HomeComponent } from './components/home/home.component';
 import { CreateDeploymentComponent } from './components/create-deployment/create-deployment.component';
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { CreateDeploymentComponent } from './components/create-deployment/create
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
