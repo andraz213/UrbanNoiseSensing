@@ -14,6 +14,8 @@ import { AgmCoreModule } from '@agm/core';
 import {environment} from "../environments/environment";
 import { SensorMapComponent } from './components/sensor-map/sensor-map.component';
 
+import { ModalModule } from 'ngx-bootstrap/modal';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,6 +31,7 @@ import { SensorMapComponent } from './components/sensor-map/sensor-map.component
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    ModalModule.forRoot(),
     FormsModule,
     AgmCoreModule.forRoot({apiKey: environment.mapsKey})
   ],

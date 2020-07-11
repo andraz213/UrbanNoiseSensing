@@ -64,16 +64,43 @@
   </p>
 </div>
 
-sensors: [dataDeploymentSchema],
-gateways: [dataDeploymentSchema],
+
+<div>
+  <h4>Gateways</h4>
+  <small>Select the gateways by clicking on them. <br>Unselect the gateways in similar fashion. <br>Gateway location is not saved. Please remember it or write it down in deployment description. </small>
+  <div *ngIf="gateways.length > 0">
+  <p>Free gateways</p>
+  <div class="row">
+    <div *ngFor="let gw of gateways">
+      <div class="col-1" *ngIf="gw.chosen == false">
+        <button type="button" (click)="addGatewayToDeploy(gw.gateway._id)" class="btn btn-outline-primary">{{gw.gateway.name}}</button>
+      </div>
+    </div>
+  </div>
 
 
-tole bo z deploymentom
-status: type: String, default: 'pending'
-start: Date,
-finish: Date,
 
-tole bo samodejno sam je treba prikazat
-measurement_num: Number,
+  <p>Selected gateways</p>
+  <div class="row">
+    <div *ngFor="let gw of gateways">
+      <div class="col-1" *ngIf="gw.chosen == true">
+        <button type="button" (click)="addGatewayToDeploy(gw.gateway._id)" class="btn btn-outline-success">{{gw.gateway.name}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<div *ngIf="gateways.length == 0">
+  <p>No free gateways currently availale.</p>
+</div>
+
+<h4>NOTE: Once the deployment is deployed, it cannot be changed!!!</h4>
+<button type="button" (click)="deployDeployment()" class="btn btn-outline-danger">DEPLOY</button>
 
 
+<ng-template #too_many_bots>
+  <div class="modal-body text-center bg-custom">
+    <p>You own too many bots!</p>
+    <button type="button" class="btn btn-modal btn-disagree" (click)="decline()">Close</button>
+  </div>
+</ng-template>

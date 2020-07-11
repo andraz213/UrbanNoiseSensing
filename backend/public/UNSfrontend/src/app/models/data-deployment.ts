@@ -1,6 +1,6 @@
 export class DataDeployment {
     sensor_id: string;
-    location: [number];
+    location: number[];
     delivered: boolean;
-    mac: [number];
+    mac: number[];
 }
