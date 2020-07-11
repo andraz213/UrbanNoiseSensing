@@ -15,21 +15,47 @@
 </form>
 </div>
 
-<h4>Sensors</h4>
+
 <div>
+  <h4>Sensors</h4>
+  <small>To place a sensor: <br>1. Click on the map to place a marker <br> 2. Click on the marker to remove it <br> 3. Click on senor name to show its position</small>
+  <div class="m-3">
+  <p>Free senosrs</p>
+    <div class="row">
+    <div *ngFor="let sn of sensors">
+      <div class="col-1" *ngIf="sn.chosen == false">
+      <button type="button" (click)="addSensorToDeploy(sn.sensor._id)" class="btn btn-outline-dark" disabled>{{sn.sensor.name}}</button>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="m-3">
+    <p>Placed senosrs</p>
+    <div class="row">
+      <div *ngFor="let sn of sensors">
+        <div class="col-1" *ngIf="sn.chosen == true">
+          <button type="button" (click)="showLocation(sn.sensor._id)" class="btn btn-outline-success">{{sn.sensor.name}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <agm-map
-    [latitude]="lat"
-    [longitude]="lng"
-    [zoom]="2"
+    [latitude]="46.04840798323542"
+    [longitude]="14.506113341719598"
+    [zoom]="13"
     (mapClick)="addMarker($event.coords.lat, $event.coords.lng)"
+    [mapTypeId]='mapType'
   >
     <agm-marker
-      *ngFor="let marker of markers"
-      [latitude]="marker.lat"
-      [longitude]="marker.lng"
-      [opacity]="marker.alpha"
-      [markerDraggable]="true"
-      (markerClick)="selectMarker($event)"
+      *ngFor="let sn of sensors"
+      [latitude]="sn.latitude"
+      [longitude]="sn.longitude"
+      [opacity]="sn.alpha"
+      [markerDraggable]="false"
+      (markerClick)="removeSensor($event)"
     >
     </agm-marker>
   </agm-map>

@@ -29,4 +29,7 @@ export class SensorsComponent implements OnInit {
     });
 
   }
+
+
+
 }

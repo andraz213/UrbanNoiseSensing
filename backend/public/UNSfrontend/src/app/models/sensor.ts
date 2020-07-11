@@ -1,4 +1,5 @@
 export class Sensor {
+  _id: string;
   name: string;
   mac: [number];
   deployments: [string];
