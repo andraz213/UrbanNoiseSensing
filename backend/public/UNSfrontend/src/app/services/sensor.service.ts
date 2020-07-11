@@ -13,11 +13,12 @@ export class SensorService {
   constructor(private http: HttpClient, ) { }
 
   public getSensors(): Promise<Sensor[]>{
+    console.log(this.apiUrl);
     const url = `${this.apiUrl}/sensor`;
     return this.http
       .get(url)
       .toPromise()
-      .then(anwser => anwser as Sensor[])
+      .then(answer => answer as Sensor[])
       .catch(this.obdelajNapako);
   }
 
@@ -26,7 +27,7 @@ export class SensorService {
     return this.http
       .get(url)
       .toPromise()
-      .then(anwser => anwser as Sensor[])
+      .then(answer => answer as Sensor[])
       .catch(this.obdelajNapako);
   }
 
@@ -35,7 +36,7 @@ export class SensorService {
     return this.http
       .put(url, body)
       .toPromise()
-      .then(anwser => anwser as Sensor[])
+      .then(answer => answer as Sensor[])
       .catch(this.obdelajNapako);
   }
 

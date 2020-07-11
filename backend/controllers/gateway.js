@@ -13,8 +13,7 @@ const getAllGateway = (req, res) => {
         console.log(gateways);
             if (err) {
                 return res.status(500).json(err);
-            } else if (!gateways || gateways.length === 0)
-                return res.status(404).json({'message': 'No gateways existing'});
+            }
             else {
                 let gatewaysObj = JSON.parse(JSON.stringify(gateways));
                 for (let i = 0; i < gatewaysObj.length; ++i) {

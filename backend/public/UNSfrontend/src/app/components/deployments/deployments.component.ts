@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Deployment } from "../../models/deployment";
+import { DeploymentService } from "../../services/deployment.service";
 
 @Component({
   selector: 'app-deployments',
@@ -7,9 +9,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DeploymentsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private deploymentService: DeploymentService) { }
+
+  public deployments: Deployment[];
 
   ngOnInit() {
+    this.getDeployments();
   }
+  private getDeployments(){
+    this.deploymentService.getDeployments().then(result => {
+      this.deployments = result;
+      console.log(result);
+    });
 
+  }
 }

@@ -6,6 +6,7 @@ import {HomeComponent} from "../app/components/home/home.component";
 import {DeploymentsComponent} from "../app/components/deployments/deployments.component";
 import {SensorsComponent} from "../app/components/sensors/sensors.component";
 import {GatewaysComponent} from "../app/components/gateways/gateways.component";
+import {CreateDeploymentComponent} from "./components/create-deployment/create-deployment.component";
 
 
 const routes: Routes = [
@@ -24,7 +25,12 @@ const routes: Routes = [
       {
         path: 'gateways',
         component: GatewaysComponent
+      },
+      {
+        path: 'createdeployment',
+        component: CreateDeploymentComponent
       }
+
     ]
   },
   { path: '**', redirectTo: '' }

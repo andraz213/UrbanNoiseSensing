@@ -1,1 +1,70 @@
-<p>deployments works!</p>
+
+
+<div class="row m-4">
+  <div class="col">
+    <div class="m-5">
+    <button  type="button" class="btn btn-outline-primary" routerLink="/createdeployment">Create Deployment</button>
+    <div *ngIf="deployments && deployments.length == 0">
+      <p>There are no deployments yet!</p>
+    </div>
+    </div>
+    <div *ngFor="let deployment of deployments">
+      <a a routerLink="/deployments">
+      <div class="deployment-div mb-4">
+        <div class="row m-3">
+          <div class="col-3">
+            <h4>{{deployment.name}}</h4>
+            <p>{{deployment.description}}</p>
+          </div>
+          <div class="col-5">
+
+          </div>
+          <div class="col-4">
+
+          </div>
+        </div>
+      </div>
+      </a>
+    </div>
+
+
+    <div *ngFor="let deployment of deployments">
+      <a a routerLink="/deployments">
+        <div class="deployment-div mb-4">
+          <div class="row m-3">
+            <div class="col-3">
+              <h4>{{deployment.name}}</h4>
+              <p>{{deployment.description}}</p>
+            </div>
+            <div class="col-5">
+
+            </div>
+            <div class="col-4">
+
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+
+    <div *ngFor="let deployment of deployments">
+      <a a routerLink="/deployments">
+        <div class="deployment-div mb-4">
+          <div class="row m-3">
+            <div class="col-3">
+              <h4>{{deployment.name}}</h4>
+              <p>{{deployment.description}}</p>
+            </div>
+            <div class="col-5">
+
+            </div>
+            <div class="col-4">
+
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,1 +1,21 @@
-<p>sensors works!</p>
+<div class="row m-4">
+  <div class="col">
+    <div *ngFor="let sensori of sensors">
+    <div class="sensor-div mb-4">
+      <div class="row m-3">
+        <div class="col-3">
+        <p>Name: {{sensori.name}}</p>
+        </div>
+        <div class="col-5">
+          <p>Deployment: {{sensori.current_deployment}}</p>
+          <p>Location: {{sensori.current_location[0]}}, {{sensori.current_location[1]}}</p>
+          <p>Battery voltage: {{sensori.battery_voltage}}V</p>
+        </div>
+        <div class="col-4">
+
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>

@@ -19,7 +19,7 @@ export class GatewayService {
     return this.http
       .get(url)
       .toPromise()
-      .then(anwser => anwser as Gateway[])
+      .then(answer => answer as Gateway[])
       .catch(this.obdelajNapako);
   }
 
@@ -28,7 +28,7 @@ export class GatewayService {
     return this.http
       .get(url)
       .toPromise()
-      .then(anwser => anwser as Gateway[])
+      .then(answer => answer as Gateway[])
       .catch(this.obdelajNapako);
   }
 
@@ -37,7 +37,7 @@ export class GatewayService {
     return this.http
       .put(url, body)
       .toPromise()
-      .then(anwser => anwser as Gateway[])
+      .then(answer => answer as Gateway[])
       .catch(this.obdelajNapako);
   }
 

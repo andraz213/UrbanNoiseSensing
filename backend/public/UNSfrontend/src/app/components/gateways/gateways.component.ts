@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Gateway } from "../../models/gateway";
+import { GatewayService } from "../../services/gateway.service";
 
 @Component({
   selector: 'app-gateways',
@@ -7,9 +9,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GatewaysComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private gatewayService: GatewayService
+  ) { }
+
+  public gateways: Gateway[];
 
   ngOnInit() {
+    console.log("hej");
+    this.getGateways();
+  }
+
+  private getGateways(){
+    this.gatewayService.getGateways().then(result => {
+      this.gateways = result;
+    });
+
   }
 
 }

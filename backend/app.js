@@ -18,6 +18,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/api', (req, res, next) => {
+    console.log("sem v Access-Controlu");
+    console.log(res);
+    res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    next();
+});
+
+
+
 app.use('/', indexRouter);
 app.use('/api/', apiRouter);
 

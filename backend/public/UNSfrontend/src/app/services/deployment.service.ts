@@ -20,7 +20,7 @@ export class DeploymentService {
     return this.http
       .get(url)
       .toPromise()
-      .then(anwser => anwser as Deployment[])
+      .then(answer => answer as Deployment[])
       .catch(this.obdelajNapako);
   }
 
@@ -29,7 +29,7 @@ export class DeploymentService {
     return this.http
       .get(url)
       .toPromise()
-      .then(anwser => anwser as Deployment[])
+      .then(answer => answer as Deployment[])
       .catch(this.obdelajNapako);
   }
 
@@ -38,7 +38,7 @@ export class DeploymentService {
     return this.http
       .put(url, body)
       .toPromise()
-      .then(anwser => anwser as Deployment[])
+      .then(answer => answer as Deployment[])
       .catch(this.obdelajNapako);
   }
 
