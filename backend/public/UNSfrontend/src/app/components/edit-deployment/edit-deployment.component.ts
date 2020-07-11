@@ -132,7 +132,6 @@ export class EditDeploymentComponent implements OnInit {
       }
     }
 
-    this.deployment.status = 'deployed';
     this.deploymentService.updateDeployment(this.deployment._id, this.deployment).then(res => {
       console.log(res);
       this.getDeployment();

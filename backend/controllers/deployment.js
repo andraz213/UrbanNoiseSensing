@@ -31,8 +31,101 @@ const postDeployment = (req, res) => {
         }
         return res.status(200).json(data);
     });
+}
+
+
+/*
+This is the moneymaker
+
+ */
+const deployDeployment = (req, res) =>{
+    let id = req.params.deployment_id;
+
+    let deployment;
+
+    deploymentModel.findById(id, (err, dep) => {
+       if(err){
+           return res.status(404).json({'message': 'Couldnt find the deployment'});
+       } else {
+           console.log(dep);
+           this.deployment = dep;
+
+           updateSensors(dep, res);
+           //updateGateways(dep.gateways);
+       }
+    });
+
+    // udpate all the sensors
+
+
+
+    // update all the gateways
+
+    // create all the data buckets
+
+    // update the deployment to deployed
+
+
+
+
 
 }
+
+const updateSensors = (dep, res) => {
+    for(let sen of dep.sensors){
+        sensorModel.findById(sen.sensor_id, (err, sens)=> {
+            if(err){
+                return res.status(404).json({'message': 'Could not find the senosr'});
+            } else {
+                console.log(sens);
+                sens.current_deployment = dep._id;
+                sens.current_location = sens.current_location;
+                if(sens.deployments.indexOf(dep._id) === -1) {
+                    sens.deployments.push(dep._id);
+                }
+                // @@@ še data bucket je treba ustvarit
+                sens.save((err, data) => {
+                    if(err){
+                        return res.status(500).json({'message': 'could not update sensor'});
+                    }
+                    console.log(data);
+
+                });
+
+            }
+        });
+
+
+    }
+
+}
+
+
+const updateSensors = (dep, res) => {
+    for(let sen of dep.sensors){
+        sensorModel.findById(sen.sensor_id, (err, sens)=> {
+            if(err){
+                return res.status(404).json({'message': 'Could not find the senosr'});
+            } else {
+                console.log(sens);
+                sens.current_deployment = dep._id;
+                sens.current_location = sens.current_location;
+                if(sens.deployments.indexOf(dep._id) === -1) {
+                    sens.deployments.push(dep._id);
+                }
+                // @@@ še data bucket je treba ustvarit
+                sens.save((err, data) => {
+                    if(err){
+                        return res.status(500).json({'message': 'could not update sensor'});
+                    }
+                    console.log(data);
+                });
+            }
+        });
+    }
+}
+
+
 
 const updateDeployment = (req, res) => {
 
@@ -89,5 +182,6 @@ module.exports = {
     getAllDeployment,
     postDeployment,
     updateDeployment,
-    getDeploymentById
+    getDeploymentById,
+    deployDeployment
 };
