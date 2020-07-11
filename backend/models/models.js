@@ -22,7 +22,7 @@ const sensorSchema = new mongoose.Schema({
     mac: {type: [Number], required: true},
     deployments: [mongoose.Types.ObjectId],
     current_deployment: mongoose.Types.ObjectId,
-    current_location: [Number],
+    current_location: {type:[Number], index: '2dsphere'},
     last_telemetry: Date,
     last_data: mongoose.Types.ObjectId,
     all_data: [mongoose.Types.ObjectId],

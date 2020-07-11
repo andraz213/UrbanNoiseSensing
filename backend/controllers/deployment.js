@@ -70,8 +70,8 @@ const deployDeployment = (req, res) =>{
 
 
 }
-
-const updateSensors = (dep, res) => {
+/*
+const updateGateways = (dep, res) => {
     for(let sen of dep.sensors){
         sensorModel.findById(sen.sensor_id, (err, sens)=> {
             if(err){
@@ -98,7 +98,7 @@ const updateSensors = (dep, res) => {
 
     }
 
-}
+}*/
 
 
 const updateSensors = (dep, res) => {
@@ -107,13 +107,14 @@ const updateSensors = (dep, res) => {
             if(err){
                 return res.status(404).json({'message': 'Could not find the senosr'});
             } else {
-                console.log(sens);
+
                 sens.current_deployment = dep._id;
-                sens.current_location = sens.current_location;
+                sens.current_location = sen.location;
                 if(sens.deployments.indexOf(dep._id) === -1) {
                     sens.deployments.push(dep._id);
                 }
                 // @@@ še data bucket je treba ustvarit
+                console.log(sens);
                 sens.save((err, data) => {
                     if(err){
                         return res.status(500).json({'message': 'could not update sensor'});
