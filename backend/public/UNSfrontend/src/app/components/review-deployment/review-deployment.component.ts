@@ -26,6 +26,9 @@ export class ReviewDeploymentComponent implements OnInit {
   public gateways: Gateway[];
   private id:string;
   public mapType = "hybrid";
+  public longitude = 0;
+  public latitude = 0;
+
 
   ngOnInit() {
     this.id = this.activatedRoute.snapshot.paramMap.get("id");
@@ -46,6 +49,9 @@ export class ReviewDeploymentComponent implements OnInit {
     for(let sen of this.deployment.sensors){
       this.sensorService.getOneSensor(sen.sensor_id).then((res) => {
         this.sensors.push({sensor: res, alpha:0.4});
+        this.longitude += res.current_location[0]/this.deployment.sensors.length;
+        // @ts-ignore
+        this.latitude += res.current_location[1]/this.deployment.sensors.length;
         console.log(res);
       });
     }
@@ -56,7 +62,7 @@ export class ReviewDeploymentComponent implements OnInit {
     this.gateways = [];
     for(let gw of this.deployment.gateways){
       this.gatewayService.getOneGateway(gw.sensor_id).then((res) => {
-        this.gateways.push(res[0]);
+        this.gateways.push(res);
       });
     }
   }

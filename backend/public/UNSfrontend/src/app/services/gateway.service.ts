@@ -23,12 +23,12 @@ export class GatewayService {
       .catch(this.obdelajNapako);
   }
 
-  public getOneGateway(id: string): Promise<Gateway[]>{
+  public getOneGateway(id: string): Promise<Gateway>{
     const url = `${this.apiUrl}/gateway/` + id;
     return this.http
       .get(url)
       .toPromise()
-      .then(answer => answer as Gateway[])
+      .then(answer => answer as Gateway)
       .catch(this.obdelajNapako);
   }
 

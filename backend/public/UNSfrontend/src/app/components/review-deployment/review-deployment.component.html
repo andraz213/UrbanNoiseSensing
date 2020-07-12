@@ -5,9 +5,10 @@
 
 <div class="deployment-div m-3">
   <div class="m-2">
-    <h4>Sensors</h4>
+
 
     <div class="m-3">
+      <h4>Sensors</h4>
       <p>Placed senosrs</p>
       <div class="row" *ngIf="sensors">
         <div *ngFor="let sn of sensors">
@@ -18,10 +19,10 @@
         </div>
       </div>
 
-
+      <div *ngIf="sensors" class="my-3">
       <agm-map
-        [latitude]="46.04840798323542"
-        [longitude]="14.506113341719598"
+        [latitude]="longitude"
+        [longitude]="latitude"
         [zoom]="13"
         [mapTypeId]='mapType'
       >
@@ -36,30 +37,23 @@
       </agm-map>
     </div>
   </div>
+  </div>
 </div>
 
 
 <div class="deployment-div m-3" *ngIf="gateways">
-  <div class="m-2">
+  <div class="m-4">
     <h4>Gateways</h4>
-    <small>Select the gateways by clicking on them. <br>Unselect the gateways in similar fashion. <br>Gateway location
-      is
-      not saved. Please remember it or write it down in deployment description. </small>
-    <div *ngIf="gateways.length > 0">
-
+    <div *ngIf="gateways.length > 0" >
 
       <p>Selected gateways</p>
       <div class="row">
-        <div *ngFor="let gw of gateways">
+        <div *ngFor="let gw of gateways" class="m-2">
           <button type="button"
                   class="btn btn-outline-success">{{gw.name}}</button>
         </div>
       </div>
     </div>
-  </div>
-
-  <div *ngIf="gateways.length == 0">
-    <p>No free gateways currently availale.</p>
   </div>
 </div>
 
