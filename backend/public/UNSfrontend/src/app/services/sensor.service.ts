@@ -22,12 +22,12 @@ export class SensorService {
       .catch(this.obdelajNapako);
   }
 
-  public getOneSensor(id: string): Promise<Sensor[]>{
+  public getOneSensor(id: string): Promise<Sensor>{
     const url = `${this.apiUrl}/sensor/` + id;
     return this.http
       .get(url)
       .toPromise()
-      .then(answer => answer as Sensor[])
+      .then(answer => answer as Sensor)
       .catch(this.obdelajNapako);
   }
 

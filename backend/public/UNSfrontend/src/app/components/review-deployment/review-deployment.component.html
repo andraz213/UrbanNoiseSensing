@@ -1,120 +1,76 @@
 <div *ngIf="deployment">
   <h2>{{deployment.name}}</h2>
-  <div class="deployment-div m-3">
-    <div class="m-2">
-      <form (submit)="saveChangesForm()">
-        <div class="form-group">
-          <label for="deploymentName">Deployment name</label>
-          <input [(ngModel)]="depDTO.name" name="name" type="text" class="form-control" id="deploymentName"
-                 placeholder="Enter deployment name">
-        </div>
-        <div class="form-group">
-          <label for="deploymentDescription">Deployment description</label>
-          <input [(ngModel)]="depDTO.description" name="deploymentDescription" type="textarea" class="form-control"
-                 id="deploymentDescription" placeholder="Enter deployment description">
-        </div>
-        <button type="submit" class="btn btn-primary mr-4">Save Changes</button>
-        <button (click)="discardChanges()" class="btn btn-danger">Discard Changes</button>
-      </form>
-    </div>
-  </div>
+  <p>{{deployment.description}}</p>
 </div>
 
 <div class="deployment-div m-3">
   <div class="m-2">
     <h4>Sensors</h4>
-    <small>To place a sensor: <br>1. Click on the map to place a marker <br> 2. Click on the marker to remove it <br> 3.
-      Click on senor name to show its position</small>
-    <div class="m-3">
-      <p>Free senosrs</p>
-      <div class="row">
-        <div *ngFor="let sn of sensors">
-          <div class="col-1" *ngIf="sn.chosen == false">
-            <button type="button" (click)="addSensorToDeploy(sn.sensor._id)" class="btn btn-outline-dark"
-                    disabled>{{sn.sensor.name}}</button>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <div class="m-3">
       <p>Placed senosrs</p>
-      <div class="row">
+      <div class="row" *ngIf="sensors">
         <div *ngFor="let sn of sensors">
-          <div class="col-1" *ngIf="sn.chosen == true">
+          <div class="col-1">
             <button type="button" (click)="showLocation(sn.sensor._id)"
                     class="btn btn-outline-success">{{sn.sensor.name}}</button>
           </div>
         </div>
       </div>
-    </div>
 
 
-    <agm-map
-      [latitude]="46.04840798323542"
-      [longitude]="14.506113341719598"
-      [zoom]="13"
-      (mapClick)="addMarker($event.coords.lat, $event.coords.lng)"
-      [mapTypeId]='mapType'
-    >
-      <agm-marker
-        *ngFor="let sn of sensors"
-        [latitude]="sn.latitude"
-        [longitude]="sn.longitude"
-        [opacity]="sn.alpha"
-        [markerDraggable]="false"
-        (markerClick)="removeSensor($event)"
+      <agm-map
+        [latitude]="46.04840798323542"
+        [longitude]="14.506113341719598"
+        [zoom]="13"
+        [mapTypeId]='mapType'
       >
-      </agm-marker>
-    </agm-map>
-    <p *ngIf="selectedMarker">
-      Lat: {{ selectedMarker.lat }} Lng: {{ selectedMarker.lng }}
-    </p>
+        <agm-marker
+          *ngFor="let sn of sensors"
+          [latitude]="sn.sensor.current_location[0]"
+          [longitude]="sn.sensor.current_location[1]"
+          [opacity]="sn.alpha"
+          [markerDraggable]="false"
+        >
+        </agm-marker>
+      </agm-map>
+    </div>
   </div>
 </div>
 
 
-<div class="deployment-div m-3">
+<div class="deployment-div m-3" *ngIf="gateways">
   <div class="m-2">
     <h4>Gateways</h4>
     <small>Select the gateways by clicking on them. <br>Unselect the gateways in similar fashion. <br>Gateway location
       is
       not saved. Please remember it or write it down in deployment description. </small>
     <div *ngIf="gateways.length > 0">
-      <p>Free gateways</p>
-      <div class="row">
-        <div *ngFor="let gw of gateways">
-          <div class="col-1" *ngIf="gw.chosen == false">
-            <button type="button" (click)="addGatewayToDeploy(gw.gateway._id)"
-                    class="btn btn-outline-primary">{{gw.gateway.name}}</button>
-          </div>
-        </div>
-      </div>
 
 
       <p>Selected gateways</p>
       <div class="row">
         <div *ngFor="let gw of gateways">
-          <div class="col-1" *ngIf="gw.chosen == true">
-            <button type="button" (click)="addGatewayToDeploy(gw.gateway._id)"
-                    class="btn btn-outline-success">{{gw.gateway.name}}</button>
-          </div>
+          <button type="button"
+                  class="btn btn-outline-success">{{gw.name}}</button>
         </div>
       </div>
     </div>
+  </div>
 
-    <div *ngIf="gateways.length == 0">
-      <p>No free gateways currently availale.</p>
-    </div>
+  <div *ngIf="gateways.length == 0">
+    <p>No free gateways currently availale.</p>
   </div>
 </div>
+
 <div class="deployment-div m-3">
   <div class="m-2">
     <h4>NOTE: Once the deployment is deployed, it cannot be changed!!!</h4>
-    <button type="button" (click)="openModal(not_ok, ok)" class="btn btn-outline-danger">DEPLOY</button>
+    <!---<button type="button" (click)="openModal(not_ok, ok)" class="btn btn-outline-danger">DEPLOY</button>--->
   </div>
 </div>
 
+<!---
 <ng-template #not_ok>
   <div class="modal-body text-center bg-custom">
     <div *ngFor="let err of errorMessages">
@@ -131,3 +87,4 @@
     <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Not yet</button>
   </div>
 </ng-template>
+--->
