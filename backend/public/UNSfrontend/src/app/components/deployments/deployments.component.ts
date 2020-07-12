@@ -50,5 +50,8 @@ export class DeploymentsComponent implements OnInit {
     this.router.navigateByUrl(`editdeployment/${id}`);
   }
 
+  public navigateToReview(id:string){
+    this.router.navigateByUrl(`reviewdeployment/${id}`);
+  }
 
 }

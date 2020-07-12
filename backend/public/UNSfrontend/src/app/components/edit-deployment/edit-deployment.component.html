@@ -127,7 +127,22 @@
   <ng-template #ok>
     <div class="modal-body text-center bg-custom">
       <p>You are about to deploy this deployment.</p>
-      <button type="button" class="btn btn-outline-primary m-1 " (click)="deployDeployment()">Deploy</button>
+      <button type="button" class="btn btn-outline-primary m-1 " (click)="deployDeployment(done, error)">Deploy</button>
       <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Not yet</button>
     </div>
   </ng-template>
+
+<ng-template #done>
+  <div class="modal-body text-center bg-custom">
+    <p>Deployment was successfully deployed!</p>
+    <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Close</button>
+  </div>
+</ng-template>
+
+<ng-template #error>
+  <div class="modal-body text-center bg-custom">
+    <p>Error</p>
+
+    <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Close</button>
+  </div>
+</ng-template>

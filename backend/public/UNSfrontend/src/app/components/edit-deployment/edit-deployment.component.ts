@@ -1,5 +1,5 @@
 import {Component, OnInit, TemplateRef} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {DeploymentService} from "../../services/deployment.service";
 import {Deployment} from "../../models/deployment";
 import {Sensor} from "../../models/sensor";
@@ -22,7 +22,8 @@ export class EditDeploymentComponent implements OnInit {
               private activatedRoute: ActivatedRoute,
               private deploymentService: DeploymentService,
               private sensorService: SensorService,
-              private gatewayService: GatewayService) {
+              private gatewayService: GatewayService,
+              private router: Router) {
   }
 
   public errorMessages: string[];
@@ -113,7 +114,7 @@ export class EditDeploymentComponent implements OnInit {
   }
 
 
-  public deployDeployment(){
+  public deployDeployment(done: TemplateRef<any>, error: TemplateRef<any>){
     for(let sn of this.sensors){
       if(sn.chosen == true){
         let data_dep = new DataDeployment();
@@ -155,6 +156,9 @@ export class EditDeploymentComponent implements OnInit {
       this.deployment = result;
       this.depDTO = result;
       console.log(this.deployment);
+      if(this.deployment.status == 'deployed'){
+        this.router.navigateByUrl(`reviewdeployment/${this.deployment._id}`);
+      }
     })
 
   }

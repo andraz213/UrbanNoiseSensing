@@ -48,6 +48,9 @@ const deployDeployment = (req, res) =>{
            return res.status(404).json({'message': 'Couldnt find the deployment'});
        } else {
            console.log(dep);
+           if(dep.status != 'pending'){
+               return res.status(400).json({'message': 'Deployment already deployed!'});
+           }
            this.deployment = dep;
             if(updateSensors(dep, res) == 0){
                 console.log("DEPLOYED SENSORS");
@@ -59,17 +62,17 @@ const deployDeployment = (req, res) =>{
                     dep.save((err, data) => {
                         if(err){
                             console.log(err);
-                            return res.status(400).json({'messate': 'could not deploy it'});
+                            return res.status(400).json({'message': 'could not deploy it'});
                         }
                         console.log(data);
                             return res.status(200).json(data);
                     });
                 }
                 else {
-                    return res.status(400).json({'messate': 'could not deploy it and gateways'});
+                    return res.status(400).json({'message': 'could not deploy it and gateways'});
                 }
             } else {
-                return res.status(400).json({'messate': 'could not deploy it and sensors and gateways'});
+                return res.status(400).json({'message': 'could not deploy it and sensors and gateways'});
             }
 
        }
