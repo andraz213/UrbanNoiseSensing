@@ -19,9 +19,9 @@ const dataSchema = new mongoose.Schema({
 
 const sensorSchema = new mongoose.Schema({
     name: {type: String, required: true},
-    mac: {type: [Number], required: true},
+    mac: {type: [Number], required: true, index: true},
     deployments: [mongoose.Types.ObjectId],
-    current_deployment: mongoose.Types.ObjectId,
+    current_deployment: {type: mongoose.Types.ObjectId,  index: true},
     current_location: {type:[Number], index: '2dsphere'},
     last_telemetry: Date,
     last_data: mongoose.Types.ObjectId,

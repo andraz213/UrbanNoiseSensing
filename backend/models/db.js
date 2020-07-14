@@ -6,7 +6,8 @@ mongoose.connect(dbURI, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useUnifiedTopology: true,
-    useFindAndModify: false
+    useFindAndModify: false,
+    poolSize: 100
 });
 
 

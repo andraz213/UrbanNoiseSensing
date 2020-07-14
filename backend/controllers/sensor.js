@@ -124,16 +124,53 @@ const postTelemetrySensor = (req, res) => {
 
 }
 
+const  compareMacs = (mac1, mac2)=>{
+
+    if(mac1.length != mac2.length){
+        return false;
+    }
+    for(let i = 0; i<mac2.length; i++){
+        if(mac1[i] != mac2[i]){
+
+
+            return false;
+        }
+    }
+    return true;
+
+}
+
 const postDataSensorSensor = async (req, res) => {
     let dataObj = JSON.parse(JSON.stringify(req.body));
     let statusreport = {"success": 0, "failure": 0, "messages": []};
+
+    let macs = [];
+    for(let data of dataObj){
+        if(macs.indexOf(data.mac) === -1) {
+            macs.push(data.mac);
+        }
+    }
+
+    let sensors = await sensorModel.find({mac: {$in: macs}}).exec();
+
+    console.log(sensors);
+
+
     for(let data of dataObj){
 
         // najdi senzor
-        let sensorMac = data.mac;
-        let currentSensor = await sensorModel.find({mac: sensorMac}).limit(1).exec();
-        if(currentSensor != null && currentSensor.length == 1){
-            let oneSensor = currentSensor[0];
+        /*let sensorMac = data.mac;
+        let currentSensor = await sensorModel.find({mac: sensorMac}).limit(1).exec();*/
+        let currentSensor = null;
+
+        for(let sn of sensors){
+            if(compareMacs(sn.mac, data.mac)){
+                currentSensor = sn;
+            }
+        }
+
+        if(currentSensor != null){
+            let oneSensor = currentSensor;
             if(oneSensor.current_deployment != null && oneSensor.current_deployment != '') {
                 let currentData;
                 if (oneSensor.last_data != null) {
@@ -146,7 +183,7 @@ const postDataSensorSensor = async (req, res) => {
                     currentData.sensor = oneSensor._id;
                     currentData.size = 0;
                     oneSensor.last_data = currentData._id;
-                    oneSensor.save();
+                    let res = await oneSensor.save();
                 }
 
                 currentData.size += 1;
@@ -169,13 +206,10 @@ const postDataSensorSensor = async (req, res) => {
                         statusreport.failure +=1;
                         statusreport.messages.push({"messge": `could not save data`});
                     }
-                    console.log(data);
                         statusreport.success +=1;
-
+                        console.log("yay");
                 });
 
-                console.log(currentData);
-                console.log(currentSensor);
             } else {
                 statusreport.failure +=1;
                 statusreport.messages.push({"messge": `sensor ${oneSensor.name} is not deployed`});
