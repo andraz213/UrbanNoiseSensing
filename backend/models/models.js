@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 const measurementSchema = new mongoose.Schema({
-    location: {type: [Number], required: true, index: '2dsphere'},
+    frequencyRange: Number,
     fftValues: [Number],
     decibels: Number,
     measured_at: { type : Date, default: Date.now },
@@ -12,8 +12,8 @@ const dataSchema = new mongoose.Schema({
     deployment: {type: mongoose.Types.ObjectId, required: true},
     location: {type: [Number], required: true, index: '2dsphere'},
     size: Number,
-    first: Date,
-    last: Date,
+    first: { type : Date, default: Date.now },
+    last: { type : Date, default: Date.now },
     data: [measurementSchema]
 });
 

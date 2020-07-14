@@ -123,7 +123,95 @@ const postTelemetrySensor = (req, res) => {
 
 
 }
-const postDataSensorSensor = (req, res) => {
+/*
+let createNewData = new Promise(resolve => {
+    let NewData = new dataSchema();
+    NewData.save((err, res)=>{
+        resolve(res);
+    });
+
+
+});*/
+
+const postDataSensorSensor = async (req, res) => {
+    let dataObj = JSON.parse(JSON.stringify(req.body));
+    let statusreport = {"success": 0, "failure": 0, "messages": []};
+    for(let data of dataObj){
+
+        // najdi senzor
+        let sensorMac = data.mac;
+        let currentSensor = await sensorModel.find({mac: sensorMac}).limit(1).exec();
+        if(currentSensor != null && currentSensor.length == 1){
+            let oneSensor = currentSensor[0];
+            let currentData;
+            if(oneSensor.last_data != null){
+                currentData = await dataModel.findById(oneSensor.last_data).exec();
+            }
+            if(currentData == null || currentData.length == 0 || currentData.size >= 10){
+                currentData = new dataModel();
+                currentData.deployment = oneSensor.current_deployment;
+                currentData.location = oneSensor.current_location;
+                currentData.sensor = oneSensor._id;
+                currentData.size = 0;
+                oneSensor.last_data = currentData._id;
+                oneSensor.save();
+            }
+
+            currentData.size += 1;
+            currentData.data.push({
+                frequencyRange: data.data.frequencyRange,
+                fftValues: data.data.fftValues,
+                decibels: data.data.decibels,
+                measured_at: data.data.measured_at,
+            });
+            currentData.save();
+
+            console.log(currentData);
+            console.log(currentSensor);
+        } else {
+            statusreport.failure +=1;
+            statusreport.messages.push({"messge": `could not find sensor ${data.mac}`});
+        }
+
+        /*
+
+        sensorModel.find({"mac": data.mac}, (err, sensor) => {
+            if(err){
+                return res.status(404).json({"message": "could not find sensor"});
+            }
+
+            if(sensor){
+                if(sensor.last_data){
+                    dataModel.findById(sensor.last_data, (err, data) =>{
+                        if(err){
+                            return res.status(404).json(err);
+                        }else{
+                            if(data.size < 1000){
+                                data.
+                            }
+                        }
+
+
+
+                    });
+                }
+            }
+
+        });*/
+
+        // poglej če ma last data
+
+        // poglej če ma last data mn k 1000 vpisov
+
+        // če nima last data al pa ma una že 1000 vpisov nared novo
+
+        // shran podatke v last data
+
+        // save
+    }
+
+    res.status(200).json(statusreport);
+
 }
 
 const putSensor = (req, res) => {
