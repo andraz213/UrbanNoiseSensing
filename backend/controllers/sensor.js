@@ -155,58 +155,64 @@ const postDataSensorSensor = async (req, res) => {
 
     console.log(sensors);*/
 
-    for(let jk = 0; jk<1000; jk++) {
+    for(let jk = 0; jk<1; jk++) {
 
         for (let data of dataObj) {
 
             // najdi senzor
             let sensorMac = data.mac;
             let currentSensor = await sensorModel.find({mac: sensorMac}).limit(1).exec();
-
+            let newSize = 1;
 
             if (currentSensor != null) {
                 let oneSensor = currentSensor[0];
                 if (oneSensor.current_deployment != null && oneSensor.current_deployment != '') {
                     let currentData;
                     if (oneSensor.last_data != null) {
-                        currentData = await dataModel.findById(oneSensor.last_data).exec();
+                        currentData = await dataModel.findById(oneSensor.last_data).select({_id: 1, size: 1, last: 1, first: 1}).exec();
                     }
                     if (currentData == null || currentData.length == 0 || currentData.size >= 1000) {
                         currentData = new dataModel();
                         currentData.deployment = oneSensor.current_deployment;
                         currentData.location = oneSensor.current_location;
                         currentData.sensor = oneSensor._id;
-                        currentData.size = 0;
+                        currentData.size = 1;
+                        let oo = await currentData.save();
                         oneSensor.all_data.push(currentData._id);
                         oneSensor.last_data = currentData._id;
                         let res = await oneSensor.save();
+                    } else {
+                        newSize = (await dataModel.aggregate([{$match: {_id: currentData._id}}, {$project: {data: {$size: '$data'}}}]))[0].data + 1;
                     }
+                    console.log(currentData);
 
 
-                    currentData.data.push({
+
+                    let measurement = {
                         frequencyRange: data.data.frequencyRange,
                         fftValues: data.data.fftValues,
                         decibels: data.data.decibels,
-                        measured_at: data.data.measured_at,
-                    });
+                        //measured_at: data.data.measured_at,
+                        measured_at: Date.now()
+                    };
 
-                    currentData.size = currentData.data.length;
 
-                    if (currentData.last < data.data.measured_at) {
-                        currentData.last = data.data.measured_at;
+                    if (currentData.last < measurement.measured_at) {
+                        currentData.last = measurement.measured_at;
                     }
-                    if (currentData.first > data.data.measured_at) {
-                        currentData.first = data.data.measured_at;
+                    if (currentData.first > measurement.measured_at) {
+                        currentData.first = measurement.measured_at;
                     }
 
-                    currentData = await currentData.save((err, data) => {
+                    await dataModel.updateOne({_id: currentData._id}, {size: newSize, last: currentData.last, first: currentData.first, $addToSet: {data: measurement}}, (err, data) => {
                         if (err) {
                             statusreport.failure += 1;
                             statusreport.messages.push({"messge": `could not save data`});
                         }
+
                         statusreport.success += 1;
-                        console.log("yay");
                     });
+
 
                 } else {
                     statusreport.failure += 1;
