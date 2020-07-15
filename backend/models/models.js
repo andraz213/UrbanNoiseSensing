@@ -27,7 +27,8 @@ const sensorSchema = new mongoose.Schema({
     last_data: mongoose.Types.ObjectId,
     all_data: [mongoose.Types.ObjectId],
     firmware_version: String,
-    battery_voltage: Number
+    battery_voltage: Number,
+    latest_measurement: measurementSchema
 });
 
 

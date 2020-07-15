@@ -1,4 +1,7 @@
-<div class="row m-1">
+<h2 class="ml-5 mt-5">Deployments</h2>
+
+<div class="row ml-4">
+
   <div class="col">
     <div class="m-5">
       <div *ngIf="creating == false">
@@ -20,6 +23,10 @@
         <p>There are no deployments yet!</p>
       </div>
     </div>
+
+
+
+
     <h3>Not yet deployed</h3>
     <div *ngFor="let deployment of deployments">
       <div *ngIf="deployment.status == 'pending'">

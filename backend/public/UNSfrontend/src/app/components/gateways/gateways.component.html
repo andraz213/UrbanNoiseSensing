@@ -1,4 +1,6 @@
-<div class="row m-4">
+<h2 class="m-5">Gateways</h2>
+<div class="row mb-4">
+
   <div class="col">
     <div *ngIf="gateways && gateways.length == 0">
       <p>There are no gateways!</p>
@@ -6,18 +8,20 @@
     <div *ngFor="let gateway of gateways">
       <div class="gateway-div mb-4">
         <div class="row m-3">
+          <div class="col-12">
+            <h3>{{gateway.name}}</h3>
+          </div>
           <div class="col-3">
-            <small>Name: </small>
-            <p class="gateway-spec">{{gateway.name}}</p>
             <small>MAC:  </small>
             <p class="gateway-spec"><span *ngFor="let num of gateway.mac; index as i">{{num.toString(16)}}<span *ngIf="i<5">:</span></span> </p>
+            <small>Location: </small>
+            <p class="gateway-spec">{{gateway.current_location[0].toFixed(3)}}, {{gateway.current_location[1].toFixed(3) | uppercase}}</p>
+
           </div>
           <div class="col-5">
             <div *ngIf="gateway.current_deployment">
             <small>Deployment: </small>
             <p class="gateway-spec">{{gateway.current_deployment}}</p>
-            <small>Location: </small>
-            <p class="gateway-spec">{{gateway.current_location[0].toFixed(3)}}, {{gateway.current_location[1].toFixed(3)}}</p>
             </div>
           </div>
           <div class="col-4">

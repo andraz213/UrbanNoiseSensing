@@ -189,9 +189,10 @@ const updateDeployment = (req, res) => {
 
     });
 }
-const getDeploymentById = (req, res) => {
-    let id = req.params.deployment_id;;
-    deploymentModel.findById(id, (error, deployment) => {
+const getDeploymentById = async (req, res) => {
+    let id = await req.params.deployment_id;
+    let numbers = await dataModel.aggregate([{$match: {deployment: mongoose.Types.ObjectId(id)}}, {$project: {data: {$size: '$data'}, sensor: "$sensor"}}]);
+    deploymentModel.findById(id, async (error, deployment) => {
         if (error) {
             return res.status(500).json(error);
         } else if (!deployment || deployment.length === 0 || deployment.length > 1)
@@ -200,6 +201,9 @@ const getDeploymentById = (req, res) => {
             return res.status(404).json({'message': 'More than one gateway with this id!'});
         else {
             let deploymentObj = JSON.parse(JSON.stringify(deployment));
+
+            deploymentObj.numbers = numbers;
+
             return res.status(200).json(deploymentObj);
         }
     });

@@ -124,36 +124,11 @@ const postTelemetrySensor = (req, res) => {
 
 }
 
-const  compareMacs = (mac1, mac2)=>{
 
-    if(mac1.length != mac2.length){
-        return false;
-    }
-    for(let i = 0; i<mac2.length; i++){
-        if(mac1[i] != mac2[i]){
-
-
-            return false;
-        }
-    }
-    return true;
-
-}
 
 const postDataSensorSensor = async (req, res) => {
     let dataObj = JSON.parse(JSON.stringify(req.body));
     let statusreport = {"success": 0, "failure": 0, "messages": []};
-
-    /*let macs = [];
-    for(let data of dataObj){
-        if(macs.indexOf(data.mac) === -1) {
-            macs.push(data.mac);
-        }
-    }
-
-    let sensors = await sensorModel.find({mac: {$in: macs}}).exec();
-
-    console.log(sensors);*/
 
     for(let jk = 0; jk<1; jk++) {
 
@@ -161,10 +136,11 @@ const postDataSensorSensor = async (req, res) => {
 
             // najdi senzor
             let sensorMac = data.mac;
-            let currentSensor = await sensorModel.find({mac: sensorMac}).limit(1).exec();
+            let currentSensor = await sensorModel.find({mac: sensorMac}).select({_id:1, current_deployment:1, last_data:1, current_location:1, name:1}).limit(1).exec();
             let newSize = 1;
+            console.log(currentSensor);
 
-            if (currentSensor != null) {
+            if (currentSensor != null && currentSensor.length == 1) {
                 let oneSensor = currentSensor[0];
                 if (oneSensor.current_deployment != null && oneSensor.current_deployment != '') {
                     let currentData;
@@ -182,7 +158,8 @@ const postDataSensorSensor = async (req, res) => {
                         oneSensor.last_data = currentData._id;
                         let res = await oneSensor.save();
                     } else {
-                        newSize = (await dataModel.aggregate([{$match: {_id: currentData._id}}, {$project: {data: {$size: '$data'}}}]))[0].data + 1;
+                        //newSize = (await dataModel.aggregate([{$match: {_id: currentData._id}}, {$project: {data: {$size: '$data'}}}]))[0].data + 1;
+                        newSize = currentData.size + 1;
                     }
                     console.log(currentData);
 
@@ -203,11 +180,11 @@ const postDataSensorSensor = async (req, res) => {
                     if (currentData.first > measurement.measured_at) {
                         currentData.first = measurement.measured_at;
                     }
-
+                    sensorModel.updateOne({_id: oneSensor._id}, {latest_measurement: measurement});
                     await dataModel.updateOne({_id: currentData._id}, {size: newSize, last: currentData.last, first: currentData.first, $addToSet: {data: measurement}}, (err, data) => {
                         if (err) {
                             statusreport.failure += 1;
-                            statusreport.messages.push({"messge": `could not save data`});
+                            statusreport.messages.push({"messge": `could not save data`, 'data': measurement});
                         }
 
                         statusreport.success += 1;
@@ -216,11 +193,11 @@ const postDataSensorSensor = async (req, res) => {
 
                 } else {
                     statusreport.failure += 1;
-                    statusreport.messages.push({"messge": `sensor ${oneSensor.name} is not deployed`});
+                    statusreport.messages.push({"messge": `sensor ${oneSensor.name} is not deployed`, 'data': data.data });
                 }
             } else {
                 statusreport.failure += 1;
-                statusreport.messages.push({"messge": `could not find sensor ${data.mac}`});
+                statusreport.messages.push({"messge": `could not find sensor ${data.mac}`, 'data': data.data });
             }
 
         }

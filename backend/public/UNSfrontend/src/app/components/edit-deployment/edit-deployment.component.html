@@ -1,7 +1,7 @@
 <div *ngIf="deployment">
-  <h2>{{deployment.name}}</h2>
+  <h2 class="m-5">{{deployment.name}}</h2>
   <div class="deployment-div m-3">
-    <div class="m-2">
+    <div class="m-3">
       <form (submit)="saveChangesForm()">
         <div class="form-group">
           <label for="deploymentName">Deployment name</label>
@@ -21,7 +21,7 @@
 </div>
 
 <div class="deployment-div m-3">
-  <div class="m-2">
+  <div class="m-3">
     <h4>Sensors</h4>
     <small>To place a sensor: <br>1. Click on the map to place a marker <br> 2. Click on the marker to remove it <br> 3.
       Click on senor name to show its position</small>
@@ -75,7 +75,7 @@
 
 
   <div class="deployment-div m-3">
-    <div class="m-2">
+    <div class="m-3">
       <h4>Gateways</h4>
       <small>Select the gateways by clicking on them. <br>Unselect the gateways in similar fashion. <br>Gateway location
         is
@@ -109,7 +109,7 @@
     </div>
   </div>
   <div class="deployment-div m-3">
-    <div class="m-2">
+    <div class="m-3">
       <h4>NOTE: Once the deployment is deployed, it cannot be changed!!!</h4>
       <button type="button" (click)="openModal(not_ok, ok)" class="btn btn-outline-danger">DEPLOY</button>
     </div>
