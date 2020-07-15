@@ -16,7 +16,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public', 'UNSfrontend', 'dist', 'UNSfrontend')));
 
 app.use('/api', (req, res, next) => {
     console.log("sem v Access-Controlu");
@@ -31,6 +31,10 @@ app.use('/api', (req, res, next) => {
 
 app.use('/', indexRouter);
 app.use('/api/', apiRouter);
+
+app.get('*', (req, res, next) => {
+    res.sendFile(path.join(__dirname, 'public', 'UNSfrontend', 'dist', 'UNSfrontend', 'index.html'));
+});
 
 app.use((req, res, next) => {
     const error = new Error(`Not fount - ${req.originalUrl}`);
