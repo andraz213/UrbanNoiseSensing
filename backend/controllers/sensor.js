@@ -144,7 +144,7 @@ const postDataSensorSensor = async (req, res) => {
     let dataObj = JSON.parse(JSON.stringify(req.body));
     let statusreport = {"success": 0, "failure": 0, "messages": []};
 
-    let macs = [];
+    /*let macs = [];
     for(let data of dataObj){
         if(macs.indexOf(data.mac) === -1) {
             macs.push(data.mac);
@@ -153,72 +153,71 @@ const postDataSensorSensor = async (req, res) => {
 
     let sensors = await sensorModel.find({mac: {$in: macs}}).exec();
 
-    console.log(sensors);
+    console.log(sensors);*/
+
+    for(let jk = 0; jk<1000; jk++) {
+
+        for (let data of dataObj) {
+
+            // najdi senzor
+            let sensorMac = data.mac;
+            let currentSensor = await sensorModel.find({mac: sensorMac}).limit(1).exec();
 
 
-    for(let data of dataObj){
-
-        // najdi senzor
-        /*let sensorMac = data.mac;
-        let currentSensor = await sensorModel.find({mac: sensorMac}).limit(1).exec();*/
-        let currentSensor = null;
-
-        for(let sn of sensors){
-            if(compareMacs(sn.mac, data.mac)){
-                currentSensor = sn;
-            }
-        }
-
-        if(currentSensor != null){
-            let oneSensor = currentSensor;
-            if(oneSensor.current_deployment != null && oneSensor.current_deployment != '') {
-                let currentData;
-                if (oneSensor.last_data != null) {
-                    currentData = await dataModel.findById(oneSensor.last_data).exec();
-                }
-                if (currentData == null || currentData.length == 0 || currentData.size >= 10) {
-                    currentData = new dataModel();
-                    currentData.deployment = oneSensor.current_deployment;
-                    currentData.location = oneSensor.current_location;
-                    currentData.sensor = oneSensor._id;
-                    currentData.size = 0;
-                    oneSensor.last_data = currentData._id;
-                    let res = await oneSensor.save();
-                }
-
-                currentData.size += 1;
-                currentData.data.push({
-                    frequencyRange: data.data.frequencyRange,
-                    fftValues: data.data.fftValues,
-                    decibels: data.data.decibels,
-                    measured_at: data.data.measured_at,
-                });
-
-                if(currentData.last < data.data.measured_at){
-                    currentData.last = data.data.measured_at;
-                }
-                if(currentData.first > data.data.measured_at){
-                    currentData.first = data.data.measured_at;
-                }
-
-                 currentData = await currentData.save((err, data) => {
-                    if(err){
-                        statusreport.failure +=1;
-                        statusreport.messages.push({"messge": `could not save data`});
+            if (currentSensor != null) {
+                let oneSensor = currentSensor[0];
+                if (oneSensor.current_deployment != null && oneSensor.current_deployment != '') {
+                    let currentData;
+                    if (oneSensor.last_data != null) {
+                        currentData = await dataModel.findById(oneSensor.last_data).exec();
                     }
-                        statusreport.success +=1;
+                    if (currentData == null || currentData.length == 0 || currentData.size >= 1000) {
+                        currentData = new dataModel();
+                        currentData.deployment = oneSensor.current_deployment;
+                        currentData.location = oneSensor.current_location;
+                        currentData.sensor = oneSensor._id;
+                        currentData.size = 0;
+                        oneSensor.all_data.push(currentData._id);
+                        oneSensor.last_data = currentData._id;
+                        let res = await oneSensor.save();
+                    }
+
+
+                    currentData.data.push({
+                        frequencyRange: data.data.frequencyRange,
+                        fftValues: data.data.fftValues,
+                        decibels: data.data.decibels,
+                        measured_at: data.data.measured_at,
+                    });
+
+                    currentData.size = currentData.data.length;
+
+                    if (currentData.last < data.data.measured_at) {
+                        currentData.last = data.data.measured_at;
+                    }
+                    if (currentData.first > data.data.measured_at) {
+                        currentData.first = data.data.measured_at;
+                    }
+
+                    currentData = await currentData.save((err, data) => {
+                        if (err) {
+                            statusreport.failure += 1;
+                            statusreport.messages.push({"messge": `could not save data`});
+                        }
+                        statusreport.success += 1;
                         console.log("yay");
-                });
+                    });
 
+                } else {
+                    statusreport.failure += 1;
+                    statusreport.messages.push({"messge": `sensor ${oneSensor.name} is not deployed`});
+                }
             } else {
-                statusreport.failure +=1;
-                statusreport.messages.push({"messge": `sensor ${oneSensor.name} is not deployed`});
+                statusreport.failure += 1;
+                statusreport.messages.push({"messge": `could not find sensor ${data.mac}`});
             }
-        } else {
-            statusreport.failure +=1;
-            statusreport.messages.push({"messge": `could not find sensor ${data.mac}`});
-        }
 
+        }
     }
 
     statusreport.success = dataObj.length - statusreport.failure;

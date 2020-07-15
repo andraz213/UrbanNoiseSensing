@@ -8,8 +8,8 @@ const measurementSchema = new mongoose.Schema({
 });
 
 const dataSchema = new mongoose.Schema({
-    sensor: {type: mongoose.Types.ObjectId, required: true},
-    deployment: {type: mongoose.Types.ObjectId, required: true},
+    sensor: {type: mongoose.Types.ObjectId, required: true, index: true},
+    deployment: {type: mongoose.Types.ObjectId, required: true, index: true},
     location: {type: [Number], required: true, index: '2dsphere'},
     size: Number,
     first: { type : Date, default: Date.now },
