@@ -189,9 +189,35 @@ const updateDeployment = (req, res) => {
 
     });
 }
+
+
+
+const isInArraySensor = (array, sensor) =>{
+for(let i = 0; i<array.length; i++){
+    console.log(array[i].sensor, sensor);
+    if(array[i].sensor == sensor){
+        return i;
+    }
+}
+
+return -1;
+
+}
+
+
 const getDeploymentById = async (req, res) => {
     let id = await req.params.deployment_id;
-    let numbers = await dataModel.aggregate([{$match: {deployment: mongoose.Types.ObjectId(id)}}, {$project: {data: {$size: '$data'}, sensor: "$sensor"}}]);
+    let numbers = JSON.parse(JSON.stringify(await dataModel.aggregate([{$match: {deployment: mongoose.Types.ObjectId(id)}}, {$project: {data: {$size: '$data'}, sensor: "$sensor"}}])));
+    let number_agregate = [];
+    for(let nnum of numbers){
+        let index = isInArraySensor(number_agregate, nnum.sensor);
+        console.log(index);
+        if(index == -1){
+            number_agregate.push({sensor: nnum.sensor, num: nnum.data});
+        }else{
+            number_agregate[index].num += nnum.data;
+        }
+    }
     deploymentModel.findById(id, async (error, deployment) => {
         if (error) {
             return res.status(500).json(error);
@@ -203,6 +229,7 @@ const getDeploymentById = async (req, res) => {
             let deploymentObj = JSON.parse(JSON.stringify(deployment));
 
             deploymentObj.numbers = numbers;
+            deploymentObj.number_agregate = number_agregate;
 
             return res.status(200).json(deploymentObj);
         }

@@ -147,14 +147,14 @@ const postDataSensorSensor = async (req, res) => {
                     if (oneSensor.last_data != null) {
                         currentData = await dataModel.findById(oneSensor.last_data).select({_id: 1, size: 1, last: 1, first: 1}).exec();
                     }
-                    if (currentData == null || currentData.length == 0 || currentData.size >= 1000) {
+                    if (currentData == null || currentData.length == 0 || currentData.size >= 10) {
                         currentData = new dataModel();
                         currentData.deployment = oneSensor.current_deployment;
                         currentData.location = oneSensor.current_location;
                         currentData.sensor = oneSensor._id;
                         currentData.size = 1;
                         let oo = await currentData.save();
-                        oneSensor.all_data.push(currentData._id);
+                        // oneSensor.all_data.push(currentData._id);
                         oneSensor.last_data = currentData._id;
                         let res = await oneSensor.save();
                     } else {
