@@ -34,71 +34,135 @@ const postDeployment = (req, res) => {
 }
 
 
-/*
-This is the moneymaker
+const finishDeployment  = async (req, res) => {
 
- */
-const deployDeployment = (req, res) =>{
     let id = req.params.deployment_id;
+    let deployment = await deploymentModel.findById(id).exec();
+    let res_messages = [];
+    console.log(deployment);
+    if(deployment.status != 'deployed'){
+        return res.status(400).json({'message': 'This deployment is not deployed!'});
+    }
 
-    let deployment;
+    // posodobi senzorje
+    for(let sn of deployment.sensors){
+        try {
+            await sensorModel.updateOne({_id: sn.sensor_id}, {
+                current_deployment: null,
+                current_location: [],
+                last_data: null
+            });
+        } catch (e){
+            res_messages.push(e);
+        }
+    }
 
-    deploymentModel.findById(id, (err, dep) => {
-       if(err){
-           return res.status(404).json({'message': 'Couldnt find the deployment'});
-       } else {
-           console.log(dep);
-           if(dep.status != 'pending'){
-               return res.status(400).json({'message': 'Deployment already deployed!'});
-           }
-           this.deployment = dep;
-            if(updateSensors(dep, res) == 0){
-                console.log("DEPLOYED SENSORS");
-                if (updateGateways(dep, res) == 0){
+    // posodobi gatewaye
+    for(let gw of deployment.gateways){
+        try {
+            await gatewayModel.updateOne({_id: gw.sensor_id}, {current_deployment: null, current_location: []});
+        } catch (e) {
+            res_messages.push(e);
+        }
+    }
 
-                    console.log("DEPLOYED GATEWAYS")
-                    dep.status = 'deployed';
+    // posodobi deployment
+    deployment.status = 'finished';
+    deployment.finish = Date.now();
+    let numbers = JSON.parse(JSON.stringify(await dataModel.aggregate([{$match: {deployment: mongoose.Types.ObjectId(id)}}, {$project: {data: {$size: '$data'}, sensor: "$sensor"}}])));
+    let all_measurements = 0;
+    for(let nm of numbers){
+        all_measurements += nm.data;
+    }
+    deployment.all_measurements = all_measurements;
+    console.log(deployment);
 
-                    dep.save((err, data) => {
-                        if(err){
-                            console.log(err);
-                            return res.status(400).json({'message': 'could not deploy it'});
-                        }
-                        console.log(data);
-                            return res.status(200).json(data);
-                    });
-                }
-                else {
-                    return res.status(400).json({'message': 'could not deploy it and gateways'});
-                }
-            } else {
-                return res.status(400).json({'message': 'could not deploy it and sensors and gateways'});
-            }
+    deployment.save((err, data)=>{
+        if(err){
+            return res.status(400).json({'message': 'Failed to finished deployment', 'err': err, 'res_messages': res_messages});
+        }
+        if(res_messages.length == 0){
+            return res.status(200).json({'message': 'Finished deployment!','data': data, 'res_messages': res_messages});
+        }
+        return res.status(200).json({'message': 'Finished deployment, but there might be problems with sensors!','data': data, 'res_messages': res_messages});
 
-       }
     });
-
-    // udpate all the sensors
-
-
-
-    // update all the gateways
-
-    // create all the data buckets
-
-    // update the deployment to deployed
-
-
-
 
 
 }
 
 
-const updateGateways = (dep, res) => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+This is the moneymaker
+
+ */
+const deployDeployment = async (req, res) =>{
+    let id = req.params.deployment_id;
+
+    let deployment;
+
+    await deploymentModel.findById(id, async (err, dep) => {
+       if(err){
+           return res.status(404).json({'message': 'Couldnt find the deployment'});
+       } else {
+           console.log(dep);
+           if (dep.status != 'pending') {
+               return res.status(400).json({'message': 'Deployment already deployed!'});
+           } else {
+               this.deployment = dep;
+               if (await updateSensors(dep, res) == 0) {
+                   console.log("DEPLOYED SENSORS");
+                   if (await updateGateways(dep, res) == 0) {
+
+                       console.log("DEPLOYED GATEWAYS")
+                       dep.status = 'deployed';
+
+                       dep.save((err, data) => {
+                           if (err) {
+                               console.log(err);
+                               return res.status(400).json({'message': 'could not deploy it'});
+                           }
+                           console.log(data);
+                           return res.status(200).json({'message': 'Deployed the deployment.', 'data': data});
+                       });
+                   } else {
+                       return res.status(400).json({'message': 'could not deploy it and gateways'});
+                   }
+               } else {
+                   return res.status(400).json({'message': 'could not deploy it and sensors and gateways'});
+               }
+
+           }
+       }
+    });
+
+}
+
+
+const updateGateways = async (dep, res) => {
     for(let gw of dep.gateways){
         console.log(gw);
-        gatewayModel.findById(gw.sensor_id, (err, gwy)=> {
+        await gatewayModel.findById(gw.sensor_id, async (err, gwy)=> {
             if(err){
                 console.log(err);
                 return -1;// res.status(404).json({'message': 'Could not find the gateway'});
@@ -110,7 +174,7 @@ const updateGateways = (dep, res) => {
                 gwy.current_location = [0,0];
                 console.log(gwy);
                 // @@@ še data bucket je treba ustvarit
-                gwy.save((err, data) => {
+                await gwy.save((err, data) => {
                     if(err){
                         console.log(err);
                         return -1;
@@ -125,9 +189,9 @@ const updateGateways = (dep, res) => {
 }
 
 
-const updateSensors = (dep, res) => {
+const updateSensors = async (dep, res) => {
     for(let sen of dep.sensors){
-        sensorModel.findById(sen.sensor_id, (err, sens)=> {
+        await sensorModel.findById(sen.sensor_id, async(err, sens)=> {
             if(err){
                 console.log(err);
                 return -1;//res.status(404).json({'message': 'Could not find the senosr'});
@@ -138,9 +202,8 @@ const updateSensors = (dep, res) => {
                 if(sens.deployments.indexOf(dep._id) === -1) {
                     sens.deployments.push(dep._id);
                 }
-                // @@@ še data bucket je treba ustvarit
 
-                sens.save((err, data) => {
+               await sens.save((err, data) => {
                     if(err){
                         console.log(err);
                         return -1; //res.status(500).json({'message': 'could not update sensor'});
@@ -244,5 +307,6 @@ module.exports = {
     postDeployment,
     updateDeployment,
     getDeploymentById,
-    deployDeployment
+    deployDeployment,
+    finishDeployment
 };

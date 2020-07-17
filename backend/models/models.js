@@ -64,9 +64,17 @@ const deploymentSchema = new mongoose.Schema({
     tags: [String]
 });
 
+
+const logSchema = new mongoose.Schema({
+    type: String,
+    message: String,
+    time: Date
+});
+
 mongoose.model('measurement', measurementSchema, 'measurement');
 mongoose.model('data', dataSchema, 'data');
 mongoose.model('sensor', sensorSchema, 'sensor');
 mongoose.model('gateway', gatewaySchema, 'gateway');
 mongoose.model('deploymentData', dataDeploymentSchema, 'deploymentData');
 mongoose.model('deployment', deploymentSchema, 'deployment');
+mongoose.model('log', logSchema, 'log');

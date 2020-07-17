@@ -33,6 +33,15 @@ export class DeploymentService {
       .catch(this.obdelajNapako);
   }
 
+  public deployDeployment(id: string): Promise<any>{
+    const url = `${this.apiUrl}/deployment/deploy/` + id;
+    return this.http
+      .get(url)
+      .toPromise()
+      .then(answer => answer as any)
+      .catch(this.obdelajNapako);
+  }
+
   public updateDeployment(id: string, body: any): Promise<Deployment[]>{
     const url = `${this.apiUrl}/deployment/` + id;
     return this.http

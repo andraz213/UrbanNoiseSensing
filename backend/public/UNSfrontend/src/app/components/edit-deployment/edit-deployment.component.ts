@@ -115,6 +115,7 @@ export class EditDeploymentComponent implements OnInit {
 
 
   public deployDeployment(done: TemplateRef<any>, error: TemplateRef<any>){
+    this.errorMessages = [];
     for(let sn of this.sensors){
       if(sn.chosen == true){
         let data_dep = new DataDeployment();
@@ -136,7 +137,19 @@ export class EditDeploymentComponent implements OnInit {
     this.deploymentService.updateDeployment(this.deployment._id, this.deployment).then(res => {
       console.log(res);
       this.getDeployment();
+
+      this.deploymentService.deployDeployment(this.deployment._id).then((data) =>{
+
+        console.log(data);
+
+        //this.errorMessages.push(res.message);
+      });
     });
+
+
+
+
+
 
   }
 

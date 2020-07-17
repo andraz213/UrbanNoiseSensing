@@ -19,6 +19,8 @@ router.get('/deployment', deploymentController.getAllDeployment);
 
 router.get('/deployment/deploy/:deployment_id', deploymentController.deployDeployment);
 
+router.get('/deployment/finish/:deployment_id', deploymentController.finishDeployment);
+
 router.post('/deployment', deploymentController.postDeployment);
 
 router.put('/deployment/:deployment_id', deploymentController.updateDeployment);
