@@ -1,8 +1,10 @@
-<div *ngIf="deployment">
-  <h2>{{deployment.name}}</h2>
-  <p>{{deployment.description}}</p>
-</div>
 
+
+<div *ngIf="deployment">
+  <h2 class="mt-5 ml-5 mb-3">{{deployment.name}}</h2>
+  <p class="ml-5 mb-5">{{deployment.description}}</p>
+
+  </div>
 <div class="deployment-div m-3">
   <div class="m-2">
 
@@ -13,7 +15,7 @@
 
       <div class="row mb-4">
 
-        <div *ngFor="let sensori of sensors" class="col-xl-2 col-lg-6 col-sm-12 m-0">
+        <div *ngFor="let sensori of sensors" class="col-xl-3 col-lg-6 col-sm-12 m-0">
 
           <div class="sensor-div mb-4">
             <div class="row m-3">
@@ -23,7 +25,7 @@
               <div class="col-12">
 
                 <div *ngIf="sensori.sensor.latest_measurement.decibels">
-                  <small>Latest data: </small>
+                  <small>Latest decibels: </small>
                   <p class="sensor-spec">{{sensori.sensor.latest_measurement.decibels}}</p>
                 </div>
 
@@ -92,21 +94,45 @@
     <h4>Gateways</h4>
     <div *ngIf="gateways.length > 0" >
 
-      <p>Selected gateways</p>
+      <p>Deployed gateways</p>
       <div class="row">
-        <div *ngFor="let gw of gateways" class="m-2">
-          <button type="button"
-                  class="btn btn-outline-success">{{gw.name}}</button>
+
+
+        <div *ngFor="let gw of gateways" class="col-xl-3 col-lg-6 col-sm-12 m-0">
+
+          <div class="sensor-div mb-4">
+            <div class="row m-3">
+              <div class="col-12">
+                <h3>{{gw.name}}</h3>
+              </div>
+              <div class="col-12">
+
+                <small>MAC:  </small>
+                <p class="sensor-spec"><span *ngFor="let num of gw.mac; index as i">{{num.toString(16)}}<span *ngIf="i<5">:</span></span> </p>
+
+
+                <div *ngIf="gw.last_telemetry">
+                  <small>Last telemetry: </small>
+                  <p class="sensor-spec">{{gw.last_telemetry}}</p>
+                </div>
+
+
+              </div>
+
+            </div>
+          </div>
         </div>
+
+
       </div>
     </div>
   </div>
 </div>
 
 <div class="deployment-div m-3">
-  <div class="m-2">
-    <h4>NOTE: Once the deployment is deployed, it cannot be changed!!!</h4>
-    <!---<button type="button" (click)="openModal(not_ok, ok)" class="btn btn-outline-danger">DEPLOY</button>--->
+  <div class="m-4">
+    <h4>NOTE: Once the deployment is ended, it cannot be redeployed back!!!</h4>
+    <button type="button" (click)="openModal(not_ok, ok)" class="btn btn-outline-danger m-2">FINISH SENSING</button>
   </div>
 </div>
 
