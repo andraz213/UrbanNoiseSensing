@@ -130,6 +130,7 @@ export class EditDeploymentComponent implements OnInit {
         let data_dep = new DataDeployment();
         data_dep.sensor_id = gw.gateway._id;
         data_dep.location = [0, 0];
+        data_dep.mac = gw.gateway.mac;
         this.deployment.gateways.push(data_dep);
       }
     }

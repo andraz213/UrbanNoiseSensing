@@ -46,7 +46,7 @@
 
                 <div *ngIf="sensori.sensor.firmware_version">
                   <small>Firmware version: </small>
-                  <p class="sensor-spec">{{sensori.sensor.firmware_version}} V</p>
+                  <p class="sensor-spec">{{sensori.sensor.firmware_version}}</p>
                 </div>
 
               </div>
@@ -129,13 +129,23 @@
   </div>
 </div>
 
+<!---
 <div class="deployment-div m-3">
   <div class="m-4">
     <h4>NOTE: Once the deployment is ended, it cannot be redeployed back!!!</h4>
-    <button type="button" (click)="openModal(not_ok, ok)" class="btn btn-outline-danger m-2">FINISH SENSING</button>
+    <button type="button" (click)="openModal(confirm)" class="btn btn-outline-danger m-2">FINISH SENSING</button>
   </div>
 </div>
 
+<ng-template #confirm>
+  <div class="modal-body text-center bg-custom">
+    <p>You are about to deploy this deployment.</p>
+    <button type="button" class="btn btn-outline-primary m-1 " (click)="deployDeployment()">Deploy</button>
+    <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Not yet</button>
+  </div>
+</ng-template>
+
+--->
 <!---
 <ng-template #not_ok>
   <div class="modal-body text-center bg-custom">
@@ -146,11 +156,5 @@
   </div>
 </ng-template>
 
-<ng-template #ok>
-  <div class="modal-body text-center bg-custom">
-    <p>You are about to deploy this deployment.</p>
-    <button type="button" class="btn btn-outline-primary m-1 " (click)="deployDeployment()">Deploy</button>
-    <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Not yet</button>
-  </div>
-</ng-template>
+
 --->

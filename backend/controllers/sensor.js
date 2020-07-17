@@ -5,38 +5,26 @@ const gatewayModel = mongoose.model('gateway');
 const deploymentModel = mongoose.model('deployment');
 const nameGenerator = require('../misc/names');
 
-const getAllSensor = (req, res) => {
-    sensorModel.find({}, (error, sensors) => {
-        if (error) {
-            return res.status(500).json(error);
-        } else if (!sensors || sensors.length === 0)
-            return res.status(404).json({'message': 'No sensors existing'});
-        else {
-            let sensorsObj = JSON.parse(JSON.stringify(sensors));
-            for (let i = 0; i < sensorsObj.length; ++i) {
-                delete sensorsObj[i]['mac'];
-                delete sensorsObj[i]['deployments'];
-                delete sensorsObj[i]['last_data'];
-                delete sensorsObj[i]['all_data'];
-                delete sensorsObj[i]['firmware_version'];
-            }
-            return res.status(200).json(sensorsObj);
-        }
-    });
+const getAllSensor = async (req, res) => {
+
+    try{
+      let sensors = await sensorModel.find().select({_id:1, name:1, current_location:1, last_telemetry:1, firmware_version: 1, battery_voltage: 1, current_deployment:1});
+        return res.status(200).json(sensors);
+    } catch (err) {
+        return res.status(500).json(err);
+    }
 }
-const getAllByIdSensor = (req, res) => {
+const getAllByIdSensor = async (req, res) => {
 
     let id = req.params.sensor_id;
-    sensorModel.findById(id, (error, sensor) => {
-        if (error) {
-            return res.status(500).json(error);
-        } else if (!sensor || sensor.length === 0 || sensor.length > 1)
-            return res.status(404).json({'message': 'No sensor existing'});
-        else {
-            let sensorObj = JSON.parse(JSON.stringify(sensor));
-            return res.status(200).json(sensorObj);
-        }
-    });
+
+
+    try{
+        let sensors = await sensorModel.find({_id: id});
+        return res.status(200).json(sensors);
+    } catch (err) {
+        return res.status(500).json(err);
+    }
 
 }
 
@@ -47,10 +35,11 @@ This function checks whether the sensor with the mac address exists or not. If t
 Still have to figure out how exactly to get the gateway mac addresses.
  */
 
-const postSensor = (req, res) => {
+const postSensor = async (req, res) => {
 
     let {mac} = req.body;
-    sensorModel.find({mac: mac}, (error, sensor) => {
+
+    sensorModel.find({mac: mac}, async (error, sensor) => {
         if (error) {
             console.log(error);
             return res.status(500).json(error);
@@ -70,12 +59,9 @@ const postSensor = (req, res) => {
 
                 var gw_macs = [];
                 if (sensor.current_deployment != null) {
-                    gw_macs = getGWMacs(se);
-
+                    gw_macs = await getGWMacs(se);
                 }
 
-                console.log("hejj");
-                console.log(sensor);
                 let sensorObj = JSON.parse(JSON.stringify(sensor));
                 sensorObj[0]["gateways"] = gw_macs;
                 console.log(sensorObj);
@@ -239,10 +225,10 @@ const putSensor = (req, res) => {
 }
 
 
-const getGWMacs = (deploymentid) => {
+const getGWMacs = async (deploymentid) => {
     let gw_macs = [];
 
-    deploymentModel.findById(deploymentid, (err, dep) => {
+    await deploymentModel.findById(deploymentid, (err, dep) => {
         if (err) {
             return [];
         } else {
