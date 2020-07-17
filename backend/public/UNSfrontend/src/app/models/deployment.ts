@@ -7,6 +7,7 @@ export class Deployment{
     description: string;
     sensors: [DataDeployment];
     gateways: [DataDeployment];
+    number_agregate: [any];
     status: string;
     start: Date;
     finish: Date;

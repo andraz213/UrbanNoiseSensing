@@ -211,7 +211,6 @@ const getDeploymentById = async (req, res) => {
     let number_agregate = [];
     for(let nnum of numbers){
         let index = isInArraySensor(number_agregate, nnum.sensor);
-        console.log(index);
         if(index == -1){
             number_agregate.push({sensor: nnum.sensor, num: nnum.data});
         }else{

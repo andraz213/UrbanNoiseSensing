@@ -22,7 +22,7 @@ export class ReviewDeploymentComponent implements OnInit {
 
 
   public deployment: Deployment;
-  public sensors: {sensor: Sensor, alpha:number}[];
+  public sensors: {sensor: Sensor, alpha:number, measurements:number}[];
   public gateways: Gateway[];
   private id:string;
   public mapType = "hybrid";
@@ -44,17 +44,31 @@ export class ReviewDeploymentComponent implements OnInit {
     });
   }
 
+
+  private findnumber(id: String){
+    for(let sn of this.deployment.number_agregate){
+      if(sn.sensor == id){
+        return(sn.num);
+      }
+
+    }
+    return 0;
+
+  }
+
+
   private getSensors(){
     this.sensors = [];
-    for(let sen of this.deployment.sensors){
-      this.sensorService.getOneSensor(sen.sensor_id).then((res) => {
-        this.sensors.push({sensor: res, alpha:0.4});
-        this.longitude += res.current_location[0]/this.deployment.sensors.length;
-        // @ts-ignore
-        this.latitude += res.current_location[1]/this.deployment.sensors.length;
-        console.log(res);
-      });
-    }
+    for(let sen of this.deployment.sensors) {
+
+        this.sensorService.getOneSensor(sen.sensor_id).then((res) => {
+            this.sensors.push({sensor: res, alpha: 0.4, measurements: this.findnumber(sen.sensor_id)});
+          this.longitude += res.current_location[0] / this.deployment.sensors.length;
+          // @ts-ignore
+          this.latitude += res.current_location[1] / this.deployment.sensors.length;
+          console.log(res);
+        });
+      }
 
   }
 

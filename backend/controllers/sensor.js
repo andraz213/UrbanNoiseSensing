@@ -180,7 +180,7 @@ const postDataSensorSensor = async (req, res) => {
                     if (currentData.first > measurement.measured_at) {
                         currentData.first = measurement.measured_at;
                     }
-                    sensorModel.updateOne({_id: oneSensor._id}, {latest_measurement: measurement});
+                    await sensorModel.updateOne({_id: oneSensor._id}, {latest_measurement: measurement});
                     await dataModel.updateOne({_id: currentData._id}, {size: newSize, last: currentData.last, first: currentData.first, $addToSet: {data: measurement}}, (err, data) => {
                         if (err) {
                             statusreport.failure += 1;
