@@ -113,6 +113,11 @@ const postTelemetrySensor = (req, res) => {
 
 
 const postDataSensorSensor = async (req, res) => {
+
+    res.status(200);
+    res.send();
+    res.end();
+
     let dataObj = JSON.parse(JSON.stringify(req.body));
     let statusreport = {"success": 0, "failure": 0, "messages": []};
 
@@ -191,7 +196,7 @@ const postDataSensorSensor = async (req, res) => {
 
     statusreport.success = dataObj.length - statusreport.failure;
 
-    res.status(200).json(statusreport);
+    // res.status(200).json(statusreport);
 
 }
 
