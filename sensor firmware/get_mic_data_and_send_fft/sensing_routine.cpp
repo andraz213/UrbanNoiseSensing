@@ -46,7 +46,7 @@ while(true){
 
 
 // set cpu frequency to 20mhz to lower the consumption
-setCpuFrequencyMhz(240);
+setCpuFrequencyMhz(40);
 // get the sensor data
     get_samples((int*)&samples_pub);
 
