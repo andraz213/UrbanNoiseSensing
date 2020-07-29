@@ -9,7 +9,7 @@
 #include "spectrum_analysis.h"
 #include "decibel_calculator.h"
 
-int samples_pub[SAMPLES_SIZE];
+
 
 
 const char* ssid = "A1";
@@ -32,39 +32,13 @@ long previous = 0;
 void setup() {
 
   Serial.begin(115200);
-  Serial.println("Configuring I2S...");
-  init_i2s();
-    Serial.println("hejj whatt");
-  get_samples((int*)&samples_pub);
-    Serial.println("hejj whatt");
-  get_samples((int*)&samples_pub);
-  Serial.println("hejj whatt");
-
-  //connectWifi();
-  // Configuring the I2S driver and pins.
-  // This function must be called before any I2S driver read/write operations.
-
-  // Now the task scheduler, which takes over control of scheduling individual tasks, is automatically started.
+  do_sensing();
 }
 
 
-
-long prev = 0;
-
 void loop() {
-  prev = micros();
-    setCpuFrequencyMhz(20);
-    get_samples((int*)&samples_pub);
-    setCpuFrequencyMhz(240);
-    calculate_fft((int*)&samples_pub);
-    calculate_decibels((int*)&samples_pub, SAMPLES_SIZE);
-    setCpuFrequencyMhz(20);
 
 
-    long left = 1000000 - (micros() - prev);
-    Serial.println(left);
-    esp_sleep_enable_timer_wakeup(left);
-    esp_light_sleep_start();
 
 
     //delay(5000);
