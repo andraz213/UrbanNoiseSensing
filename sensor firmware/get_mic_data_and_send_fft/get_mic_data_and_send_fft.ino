@@ -6,6 +6,7 @@
 #include "esp_wifi.h"
 #include "driver/i2s.h"
 #include <esp_pm.h>
+#include "decibel_calculator.h"
 
 const char* ssid = "A1";
 const char* password = "siol2004";
@@ -23,7 +24,7 @@ long start = 0;
 const int SAMPLING_FREQUENCY = 44100;
 const int BLOCK_SIZE = 128;//768;
 const int SAMPLES_SIZE = 256;
-int32_t samples[SAMPLES_SIZE];
+int samples[SAMPLES_SIZE];
 double vReal[SAMPLES_SIZE];
 double vImag[SAMPLES_SIZE];
 long previous = 0;
@@ -78,6 +79,16 @@ void init_i2s() {
 
 void getSamples() {
   //Serial.println(micros() - start);
+
+  /* pinMode(26, INPUT);
+    pinMode(27, INPUT);
+    delay(2);
+  */
+  pinMode(26, OUTPUT);
+  pinMode(27, OUTPUT);
+  digitalWrite(27, HIGH);
+  digitalWrite(26, LOW);
+
   i2s_start(I2S_PORT);
   Serial.println(micros() - start);
   //init_i2s();
@@ -86,7 +97,7 @@ void getSamples() {
 
   i2s_set_clk(I2S_PORT, 44100, I2S_BITS_PER_SAMPLE_32BIT, I2S_CHANNEL_MONO);
 
-  for (int i = 0; i < 50; i++) {
+  for (int i = 0; i < 160; i++) {
     int test[128];
 
     int num_bytes_read = i2s_read_bytes(I2S_PORT,
@@ -94,6 +105,40 @@ void getSamples() {
                                         512,     // the doc says bytes, but its elements.
                                         portMAX_DELAY); // no timeout
 
+    if ( i > 60) {
+      int sum = 0;
+
+      if (i % 10 == 0) {
+        Serial.println(50000000);
+        Serial.println((micros() - start) / 1000);
+        Serial.println(-50000000);
+      }
+
+      for (int j = 0; j < 8; j++) {
+        sum = 0;
+        sum += test[j * 16] >> 4;
+        sum += test[j * 16 + 1] >> 4;
+        sum += test[j * 16 + 2] >> 4;
+        sum += test[j * 16 + 3] >> 4;
+        sum += test[j * 16 + 4] >> 4;
+        sum += test[j * 16 + 5] >> 4;
+        sum += test[j * 16 + 6] >> 4;
+        sum += test[j * 16 + 7] >> 4;
+        sum += test[j * 16 + 8] >> 4;
+        sum += test[j * 16 + 9] >> 4;
+        sum += test[j * 16 + 10] >> 4;
+        sum += test[j * 16 + 11] >> 4;
+        sum += test[j * 16 + 12] >> 4;
+        sum += test[j * 16 + 13] >> 4;
+        sum += test[j * 16 + 14] >> 4;
+        sum += test[j * 16 + 15] >> 4;
+        Serial.println(sum);
+      }
+
+
+      //Serial.println(sum >> 7);
+      Serial.println(sum);
+    }
   }
 
   for (int i = 0; i < SAMPLES_SIZE; i++) {
@@ -103,10 +148,10 @@ void getSamples() {
   int to_read = 3840 * 4; //512 * 40; //BLOCK_SIZE * 8;
   int elements_read = to_read / 4;
   const int downsample_ratio = 15;
-  
+
   int to_downsample [downsample_ratio];
   int num_in_downsample = 0;
-   //Serial.println(micros() - start);
+  //Serial.println(micros() - start);
 
   int read_packets = 0;
   while (read_non_zero < SAMPLES_SIZE) {
@@ -138,7 +183,7 @@ void getSamples() {
             sum += to_downsample[k];
             to_downsample[k] = 0;
           }
-          samples[read_non_zero % SAMPLES_SIZE] = (int)(((float)sum) /downsample_ratio);
+          samples[read_non_zero % SAMPLES_SIZE] = (int)(((float)sum) / downsample_ratio);
 
           num_in_downsample = 0;
           read_non_zero += 1;
@@ -154,6 +199,8 @@ void getSamples() {
 
 
   i2s_stop(I2S_PORT);
+  /* pinMode(26, INPUT);
+    pinMode(27, INPUT);*/
   Serial.println("AAAAAAAAAAA----------------AAAAAAaa");
   int ddd = 0;
   for (int i = 0; i < SAMPLES_SIZE; ++i) {
@@ -164,6 +211,7 @@ void getSamples() {
     }
   }
 
+  Serial.println(calculate_decibels((int*)&samples, 256));
   Serial.println((ddd >> 8));
 
 
