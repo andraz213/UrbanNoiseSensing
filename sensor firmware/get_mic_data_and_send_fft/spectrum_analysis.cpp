@@ -23,6 +23,13 @@ void calculate_fft(int * samples){
   FFT.ComplexToMagnitude(vReal, vImag, SAMPLES_SIZE);
 
 
+  for(int i = 0; i< SAMPLES_SIZE; i++){
+
+    Serial.println(vReal[i]);
+  }
+
   double x = FFT.MajorPeak(vReal, SAMPLES_SIZE, 2940);
   Serial.println(x, 6);
+
+
 }

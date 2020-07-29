@@ -173,48 +173,21 @@ void get_samples(int * samples) {
   int sdm1 = 0;
   int sdm2 = 0;
   int odir = 0;
-  Serial.println(i2s_apll_calculate_fi2s(102597200, 32, &sdm0, &sdm1, &sdm2, &odir));
-
-
-   rtc_clk_apll_enable(1, sdm0, sdm1, sdm2, odir);
-
-   Serial.println(sdm0);
-   Serial.println(sdm1);
-   Serial.println(sdm2);
-   Serial.println(odir);
-
-
-  // wait for microphone to fully initialize
-
-
-  for (int i = 0; i < 50; i++) {
-
-
-    int num_bytes_read = i2s_read_bytes(I2S_PORT,
-                                        (char *)test,
-                                        512,     // the doc says bytes, but its elements.
-                                        portMAX_DELAY); // no timeout
-
-/*
-
-  double sum = 0.0;
-
-for(int j = 0; j<128; j++){
-    sum += ((double)test[j]) / (384.0);
-  }
-
-
-  if(i % 10 == 0){
-    Serial.println(500000);
-  }
-*/
-  }
-
 
   Serial.println(i2s_apll_calculate_fi2s(22597200, 32, &sdm0, &sdm1, &sdm2, &odir));
 
-
    rtc_clk_apll_enable(1, sdm0, sdm1, sdm2, odir);
+
+   for (int i = 0; i < 70; i++) {
+
+
+     int num_bytes_read = i2s_read_bytes(I2S_PORT,
+                                         (char *)test,
+                                         512,     // the doc says bytes, but its elements.
+                                         portMAX_DELAY); // no timeout
+                                         double sum = 0.0;
+
+}
 
   int read_non_zero = 0;
   int num_in_downsample = 0;
@@ -262,6 +235,6 @@ for(int j = 0; j<128; j++){
 
   i2s_stop(I2S_PORT);
 
-  Serial.println(micros() - prev);
+  Serial.println((micros() - prev) / 1000 );
 
 }
