@@ -3,6 +3,7 @@
 
 #include "decibel_calculator.h"
 
+constexpr double MIC_REF_AMPL = pow(10, double(MIC_SENSITIVITY) / 20) * ((1 << (MIC_BITS - 1)) - 1);
 
 SOS_IIR_Filter C_weighting = {
 gain: -0.491647169337140,

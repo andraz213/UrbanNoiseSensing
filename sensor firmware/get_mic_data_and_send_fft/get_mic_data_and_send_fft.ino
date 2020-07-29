@@ -1,10 +1,16 @@
-#include "arduinoFFT.h"
+
 #include <ArduinoJson.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include "esp_wifi.h"
 #include <esp_pm.h>
 #include "sensing_routine.h"
+#include "microphone.h"
+#include "spectrum_analysis.h"
+#include "decibel_calculator.h"
+
+int samples_pub[SAMPLES_SIZE];
+
 
 const char* ssid = "A1";
 const char* password = "siol2004";
@@ -15,7 +21,7 @@ const char* serverName = "http://urbannoisesensing.herokuapp.com/api/sensor/data
 
 HTTPClient http;
 
-arduinoFFT FFT = arduinoFFT(); /* Create FFT object */
+
 
 
 
@@ -24,9 +30,16 @@ long previous = 0;
 
 
 void setup() {
+
   Serial.begin(115200);
   Serial.println("Configuring I2S...");
   init_i2s();
+    Serial.println("hejj whatt");
+  get_samples((int*)&samples_pub);
+    Serial.println("hejj whatt");
+  get_samples((int*)&samples_pub);
+  Serial.println("hejj whatt");
+
   //connectWifi();
   // Configuring the I2S driver and pins.
   // This function must be called before any I2S driver read/write operations.
@@ -36,9 +49,29 @@ void setup() {
 
 
 
-
+long prev = 0;
 
 void loop() {
+  prev = micros();
+    setCpuFrequencyMhz(20);
+    get_samples((int*)&samples_pub);
+    setCpuFrequencyMhz(240);
+    calculate_fft((int*)&samples_pub);
+    calculate_decibels((int*)&samples_pub, SAMPLES_SIZE);
+    setCpuFrequencyMhz(20);
+
+    delay(5000);
+    /*
+
+    long left = 1000000 - (micros() - prev);
+    Serial.println(left);
+    esp_sleep_enable_timer_wakeup(left);
+    esp_light_sleep_start();
+
+    */
+
+    //delay(5000);
+  /*
   setCpuFrequencyMhz(240);
   long start = 0;
 
@@ -73,7 +106,8 @@ void loop() {
         Serial.println();
     */
     //esp_wifi_stop();
-    Serial.println("Creating JSON lasted: ");
+
+/*    Serial.println("Creating JSON lasted: ");
     esp_sleep_enable_timer_wakeup(2000000);
     Serial.println("Creating JSON lasted: ");
     esp_light_sleep_start();
@@ -81,7 +115,7 @@ void loop() {
     esp_wifi_start();
     Serial.println("Creating JSON lasted: ");
   }
-
+*/
   delay(1);
 }
 
@@ -200,14 +234,4 @@ void sendDataToServer(String jsnData) {
 
   // Free resources
   http.end();
-
-
-}
-
-
-void RealLoop(void *pvParameters) {
-  for (;;) {
-
-
-  }
 }
