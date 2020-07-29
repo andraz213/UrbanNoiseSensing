@@ -39,16 +39,19 @@ void do_sensing(){
 
 // while true loop
 
-
+// set cpu frequency to 20mhz to lower the consumption
 // get the sensor data
 
-
+// set cpu frequency to 240mhz for processing
 // process the data
 
+
+// sleep for a random amount of time to prevent signal congestion
+// set cpu frequency to 80mhz for sending
 // do the sending
 
 
-// sleep
+// enter light sleep
 
 
 // every few minutes send telemetry and synchronise time

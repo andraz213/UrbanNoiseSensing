@@ -60,15 +60,12 @@ void loop() {
     calculate_decibels((int*)&samples_pub, SAMPLES_SIZE);
     setCpuFrequencyMhz(20);
 
-    delay(5000);
-    /*
 
     long left = 1000000 - (micros() - prev);
     Serial.println(left);
     esp_sleep_enable_timer_wakeup(left);
     esp_light_sleep_start();
 
-    */
 
     //delay(5000);
   /*
