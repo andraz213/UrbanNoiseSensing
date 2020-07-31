@@ -11,11 +11,56 @@
 //uint8_t broadcastAddress[] = {0x30, 0xAE, 0xA4, 0x9D, 0x62, 0xF4};
 
 uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+esp_now_peer_info_t peerInfo;
+
 void setup_wifi_and_LR(){
 
   // Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
   int a = esp_wifi_set_protocol( ESP_IF_WIFI_STA, WIFI_PROTOCOL_LR);
+  hanlde_wifi_init_fail(a);
+
+  // Init ESP-NOW
+  if (esp_now_init() != ESP_OK) {
+    Serial.println("Error initializing ESP-NOW");
+    return;
+  }
+
+  memcpy(peerInfo.peer_addr, broadcastAddress, 6);
+  peerInfo.channel = 0;
+  peerInfo.encrypt = false;
+
+}
+
+
+
+
+void send_data(){
+  esp_wifi_start();
+  esp_now_register_send_cb(OnDataSent);
+  // Add peer
+  if (esp_now_add_peer(&peerInfo) != ESP_OK) {
+    Serial.println("Failed to add peer");
+    return;
+  }
+
+
+
+  esp_now_unregister_send_cb();
+  esp_wifi_stop();
+}
+
+
+
+
+
+
+
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+}
+
+void hanlde_wifi_init_fail(int a){
   if (a == 0)
   {
     Serial.println(" ");
@@ -31,66 +76,4 @@ void setup_wifi_and_LR(){
     Serial.println(" , Error in Mode LR!");
   }
 
-  // Init ESP-NOW
-  if (esp_now_init() != ESP_OK) {
-    Serial.println("Error initializing ESP-NOW");
-    return;
-  }
-
-  // Once ESPNow is successfully Init, we will register for Send CB to
-  // get the status of Trasnmitted packet
-  esp_now_register_send_cb(OnDataSent);
-
-  // Register peer
-  esp_now_peer_info_t peerInfo;
-  memcpy(peerInfo.peer_addr, broadcastAddress, 6);
-  peerInfo.channel = 0;
-  peerInfo.encrypt = false;
-
-  // Add peer
-  if (esp_now_add_peer(&peerInfo) != ESP_OK) {
-    Serial.println("Failed to add peer");
-    return;
-  }
-
-
-
-}
-
-
-
-
-void send_data(){
-
-
-
-
-}
-
-
-
-
-
-
-
-void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-  //Serial.println(micros() - sending_start);
-  //Serial.print("\r\nLast Packet Send Status:\t");
-  //Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
-
-
-
-  /*esp_wifi_stop();
-    setCpuFrequencyMhz(80);
-    int sleeptime = 1000;// - (micros() - prev_wake);
-    Serial.println(sleeptime);
-    esp_sleep_enable_timer_wakeup(sleeptime);
-    esp_light_sleep_start();
-    //esp_wifi_start();
-    setCpuFrequencyMhz(80);
-    Serial.println("wifi is off");
-    delay(30);
-    Serial.println("wifi is on");
-    Serial.println(esp_wifi_start());
-    Serial.println("out of light sleep");*/
 }
