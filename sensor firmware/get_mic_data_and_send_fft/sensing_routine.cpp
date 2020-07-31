@@ -48,15 +48,7 @@ int nummber_of_iteeer = 0;
 while(true){
   long prev = micros();
 
-  if(nummber_of_iteeer > random(100)){
-    nummber_of_iteeer = 0;
-      while(get_first() != 0){
-        
-        remove_first();
-      }
-  }
-
-  nummber_of_iteeer++;
+  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
 
 
 
