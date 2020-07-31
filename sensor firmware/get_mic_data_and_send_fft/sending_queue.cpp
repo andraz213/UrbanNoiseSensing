@@ -3,13 +3,6 @@
 #include <arduino.h>
 
 
-typedef struct  {
-  void * next;
-  double fft_values [DOWNSAMPLED__FFT];
-  int fft_range;
-  double decibels;
-  long timestamp;
-} sending_list;
 
 
 sending_list* first_item;

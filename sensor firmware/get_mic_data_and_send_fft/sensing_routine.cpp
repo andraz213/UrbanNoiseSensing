@@ -6,6 +6,7 @@
 #include "spectrum_analysis.h"
 #include "decibel_calculator.h"
 #include "sending_queue.h"
+#include "sending.h"
 
 
 int samples_pub[SAMPLES_SIZE];
@@ -13,19 +14,9 @@ int samples_pub[SAMPLES_SIZE];
 double fft_downsampled[DOWNSAMPLED__FFT];
 double decibels = 0.0;
 
-void setup_wifi_and_LR(){}
-
-
-
 
 
 void sync_time_send_telemetry(){}
-
-
-
-void send_data(){}
-
-
 
 
 
@@ -86,7 +77,7 @@ while(true){
 setCpuFrequencyMhz(80);
 // do the sending
 
-
+send_data();
 
 
 // enter light sleep
