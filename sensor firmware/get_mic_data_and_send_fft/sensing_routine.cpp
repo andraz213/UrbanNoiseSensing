@@ -5,6 +5,8 @@
 #include "microphone.h"
 #include "spectrum_analysis.h"
 #include "decibel_calculator.h"
+#include "sending_queue.h"
+
 
 int samples_pub[SAMPLES_SIZE];
 
@@ -29,6 +31,7 @@ void send_data(){}
 
 void do_sensing(){
 
+
 // setup wifi LR and espnow
 
 
@@ -41,9 +44,20 @@ void do_sensing(){
 
 
 // while true loop
-
+int nummber_of_iteeer = 0;
 while(true){
   long prev = micros();
+
+  if(nummber_of_iteeer > random(100)){
+    nummber_of_iteeer = 0;
+      while(get_first() != 0){
+        
+        remove_first();
+      }
+  }
+
+  nummber_of_iteeer++;
+
 
 
   // set cpu frequency to 20mhz to lower the consumption
@@ -60,7 +74,7 @@ while(true){
 
 
   // put data into a sending queue
-
+  add_to_sending_queue((double*) &fft_downsampled, decibels, micros());
 
 
 
