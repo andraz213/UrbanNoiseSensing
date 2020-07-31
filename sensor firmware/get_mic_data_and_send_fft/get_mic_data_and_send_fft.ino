@@ -1,4 +1,4 @@
-
+#include "global_defines.h"
 #include <ArduinoJson.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
@@ -32,13 +32,13 @@ long previous = 0;
 void setup() {
 
   Serial.begin(115200);
-  do_sensing();
+
 }
 
 
 void loop() {
 
-
+  do_sensing();
 
 
     //delay(5000);

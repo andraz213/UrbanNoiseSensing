@@ -1,3 +1,4 @@
+#include "global_defines.h"
 #include "microphone.h"
 #include <arduino.h>
 #include "driver/i2s.h"
@@ -102,7 +103,7 @@ void init_i2s() {
   // The I2S config as per the example
   const i2s_config_t i2s_config = {
     .mode = i2s_mode_t(I2S_MODE_MASTER | I2S_MODE_RX), // Receive, not transfer
-    .sample_rate = SAMPLING_FREQUENCY,
+    .sample_rate = (int)SAMPLING_FREQUENCY,
     .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT, // could only get it to work with 32bits
     .channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT, // although the SEL config should be left, it seems to transmit on right
     .communication_format = i2s_comm_format_t(I2S_COMM_FORMAT_I2S | I2S_COMM_FORMAT_I2S_MSB),
@@ -140,7 +141,7 @@ void init_i2s() {
   int sdm1 = 0;
   int sdm2 = 0;
   int odir = 0;
-  Serial.println(i2s_apll_calculate_fi2s(24575996, 32, &sdm0, &sdm1, &sdm2, &odir));
+  Serial.println(i2s_apll_calculate_fi2s(I2S_CLOCK, 32, &sdm0, &sdm1, &sdm2, &odir));
 
 
    rtc_clk_apll_enable(1, sdm0, sdm1, sdm2, odir);
@@ -155,11 +156,11 @@ void init_i2s() {
 
 
 int test[128];
-const int to_read = 3840 * 4;
-const int elements_read = 3840;
-const int downsample_ratio = 15;
+const int elements_read = (int)ceil(SAMPLES_SIZE * DOWNSAMPLE_FACTOR);
+const int to_read = elements_read * 4;
+const int downsample_ratio = (int)DOWNSAMPLE_FACTOR;
 int read_in [elements_read];
-int to_downsample [downsample_ratio];
+int to_downsample [(int)DOWNSAMPLE_FACTOR];
 
 
 void get_samples(int * samples) {
@@ -174,11 +175,11 @@ void get_samples(int * samples) {
   int sdm2 = 0;
   int odir = 0;
 
-  Serial.println(i2s_apll_calculate_fi2s(22597200, 32, &sdm0, &sdm1, &sdm2, &odir));
+  i2s_apll_calculate_fi2s(I2S_CLOCK, 32, &sdm0, &sdm1, &sdm2, &odir);
 
    rtc_clk_apll_enable(1, sdm0, sdm1, sdm2, odir);
 
-   for (int i = 0; i < 70; i++) {
+   for (int i = 0; i < 50; i++) {
 
 
      int num_bytes_read = i2s_read_bytes(I2S_PORT,
@@ -235,6 +236,6 @@ void get_samples(int * samples) {
 
   i2s_stop(I2S_PORT);
 
-  Serial.println((micros() - prev) / 1000 );
+  //Serial.println((micros() - prev) / 1000 );
 
 }

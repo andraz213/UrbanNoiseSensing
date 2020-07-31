@@ -2,7 +2,6 @@
 #define MICROPHONE_H
 
 
-#define SAMPLING_FREQUENCY 44100
 #define BLOCK_SIZE         128
 #define SAMPLES_SIZE       256
 #define READ_IN_SIZE       5120
