@@ -7,11 +7,16 @@
 #include <WiFi.h>
 #include "sending_queue.h"
 #include "sending.h"
+#include "sending_queue.h"
 
-//uint8_t broadcastAddress[] = {0x30, 0xAE, 0xA4, 0x9D, 0x62, 0xF4};
+
+uint8_t specAddress[] = {0x30, 0xAE, 0xA4, 0xC7, 0x89, 0x74};
 
 uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 esp_now_peer_info_t peerInfo;
+esp_now_peer_info_t peerInfo1;
+bool sended = false;
+bool sending_succeeded = false;
 
 void setup_wifi_and_LR(){
 
@@ -26,9 +31,25 @@ void setup_wifi_and_LR(){
     return;
   }
 
+  esp_now_register_send_cb(OnDataSent);
+
   memcpy(peerInfo.peer_addr, broadcastAddress, 6);
   peerInfo.channel = 0;
   peerInfo.encrypt = false;
+
+  memcpy(peerInfo1.peer_addr, specAddress, 6);
+  peerInfo1.channel = 0;
+  peerInfo1.encrypt = false;
+
+  if (esp_now_add_peer(&peerInfo) != ESP_OK) {
+    Serial.println("Failed to add peer");
+    return;
+  }
+
+  if (esp_now_add_peer(&peerInfo1) != ESP_OK) {
+    Serial.println("Failed to add peer");
+    return;
+  }
 
 }
 
@@ -36,18 +57,45 @@ void setup_wifi_and_LR(){
 
 
 void send_data(){
+  long start = millis();
   esp_wifi_start();
-  esp_now_register_send_cb(OnDataSent);
+
+  Serial.println(millis() - start);
+
   // Add peer
-  if (esp_now_add_peer(&peerInfo) != ESP_OK) {
-    Serial.println("Failed to add peer");
-    return;
+  sending_list * to_send = get_first();
+
+  while(to_send != 0 && millis()-start < 110){
+
+
+    data_message sending_message;
+    memcpy(&sending_message.data, to_send, sizeof(sending_list));
+    sending_message.message_type = 0;
+    sended = false;
+
+
+    Serial.println(millis() - start);
+    long start_sending = micros();
+    esp_err_t result = esp_now_send(specAddress, (uint8_t *) &sending_message, sizeof(data_message));
+
+
+    while(!sended){
+      delayMicroseconds(10);
+    }
+    Serial.println("sendnd");
+    Serial.println(micros() - start_sending);
+    to_send = 0;
+
+    if(sending_succeeded){
+      remove_first();
+      to_send = get_first();
+    }
+
   }
 
-
-
-  esp_now_unregister_send_cb();
-  esp_wifi_stop();
+  Serial.println("stop");
+  Serial.println(esp_wifi_stop());
+  Serial.println(millis() - start);
 }
 
 
@@ -58,6 +106,12 @@ void send_data(){
 
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
   Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+  sending_succeeded = false;
+  if(status == ESP_NOW_SEND_SUCCESS){
+    sending_succeeded = true;
+  }
+  sended = true;
+
 }
 
 void hanlde_wifi_init_fail(int a){

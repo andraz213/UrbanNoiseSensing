@@ -11,7 +11,7 @@ typedef struct  {
 
 
 void add_to_sending_queue(double* fft, double decibels, long timestamp);
-void * get_first();
+sending_list * get_first();
 void remove_first();
 
 

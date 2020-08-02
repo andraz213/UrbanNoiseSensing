@@ -24,7 +24,7 @@ void do_sensing(){
 
 
 // setup wifi LR and espnow
-
+setup_wifi_and_LR();
 
 // init i2s
 
@@ -55,7 +55,6 @@ while(true){
   decibels = 0.0;
   decibels = calculate_decibels((int*)&samples_pub, SAMPLES_SIZE);
 
-
   // put data into a sending queue
   add_to_sending_queue((double*) &fft_downsampled, decibels, micros());
 
@@ -82,7 +81,6 @@ send_data();
 
 // enter light sleep
 setCpuFrequencyMhz(10);
-
 //Serial.println(left);
 long bf_slp = micros();
 left = 1000000 - (bf_slp % 1000000);
@@ -90,7 +88,6 @@ if(left > 0){
   esp_sleep_enable_timer_wakeup(left);
   esp_light_sleep_start();
 }
-
 
 
 // every few minutes send telemetry and synchronise time

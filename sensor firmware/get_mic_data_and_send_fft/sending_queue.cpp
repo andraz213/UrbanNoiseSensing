@@ -8,6 +8,10 @@
 sending_list* first_item;
 sending_list* last_item;
 sending_list* free_pool;
+int in_list = 0;
+int free_size = 0;
+
+
 
 
 void init_sending_queue(){
@@ -70,18 +74,21 @@ void add_to_sending_queue(double* fft, double decibels, long timestamp){
 
   put_item_into_queue(new_item);
 
+  in_list++;
+  Serial.println(in_list);
 }
 
 
 
-void * get_first(){
-  return first_item;
+sending_list * get_first(){
+  return (sending_list *)first_item;
 }
 
 
 
 void remove_first(){
   if(first_item){
+    in_list --;
     sending_list* second = (sending_list*)first_item->next;
     first_item->next = free_pool;
     free_pool = first_item;
