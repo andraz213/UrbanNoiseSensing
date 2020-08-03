@@ -75,7 +75,6 @@ void add_to_sending_queue(double* fft, double decibels, long timestamp){
   put_item_into_queue(new_item);
 
   in_list++;
-  Serial.println(in_list);
 }
 
 

@@ -60,8 +60,6 @@ void send_data(){
   long start = millis();
   esp_wifi_start();
 
-  Serial.println(millis() - start);
-
   // Add peer
   sending_list * to_send = get_first();
 
@@ -73,17 +71,15 @@ void send_data(){
     sending_message.message_type = 0;
     sended = false;
 
+    //esp_err_t result = esp_now_send(specAddress, (uint8_t *) &sending_message, sizeof(data_message));
+    esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &sending_message, sizeof(data_message));
 
-    Serial.println(millis() - start);
-    long start_sending = micros();
-    esp_err_t result = esp_now_send(specAddress, (uint8_t *) &sending_message, sizeof(data_message));
+    if(result == ESP_OK){
 
-
-    while(!sended){
-      delayMicroseconds(10);
+      while(!sended){
+        delayMicroseconds(10);
+      }
     }
-    Serial.println("sendnd");
-    Serial.println(micros() - start_sending);
     to_send = 0;
 
     if(sending_succeeded){
@@ -91,11 +87,11 @@ void send_data(){
       to_send = get_first();
     }
 
+    sending_succeeded = false;
+    sended = false;
   }
 
-  Serial.println("stop");
-  Serial.println(esp_wifi_stop());
-  Serial.println(millis() - start);
+  esp_wifi_stop();
 }
 
 
@@ -105,7 +101,6 @@ void send_data(){
 
 
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
-  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
   sending_succeeded = false;
   if(status == ESP_NOW_SEND_SUCCESS){
     sending_succeeded = true;

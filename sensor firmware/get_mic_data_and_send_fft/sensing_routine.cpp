@@ -14,11 +14,7 @@ int samples_pub[SAMPLES_SIZE];
 double fft_downsampled[DOWNSAMPLED__FFT];
 double decibels = 0.0;
 
-
-
 void sync_time_send_telemetry(){}
-
-
 
 void do_sensing(){
 
@@ -27,7 +23,6 @@ void do_sensing(){
 setup_wifi_and_LR();
 
 // init i2s
-
   init_i2s();
 
 // sync time
@@ -40,8 +35,6 @@ while(true){
   long prev = micros();
 
   Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
-
-
 
   // set cpu frequency to 20mhz to lower the consumption
   setCpuFrequencyMhz(20);
@@ -83,7 +76,9 @@ send_data();
 setCpuFrequencyMhz(10);
 //Serial.println(left);
 long bf_slp = micros();
+left = 0;
 left = 1000000 - (bf_slp % 1000000);
+left %= 1000000;
 if(left > 0){
   esp_sleep_enable_timer_wakeup(left);
   esp_light_sleep_start();
