@@ -5,7 +5,7 @@
 #include <PJON.h>
 #include "message_queue.h"
 
-PJON<ThroughSerial> bus(1);
+PJON<ThroughSerial> bus(2);
 
 
 
@@ -31,14 +31,10 @@ void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is
      overwritten when a new message is dispatched */
-  if((char)payload[0] == 'B') {
-    if(!bus.update()) // If all packets are delivered, send another
-      bus.reply("B", 1);
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(5);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(5);
-  }
+
+     for(int i = 0; i<length; i++){
+      Serial.print(payload[i], HEX);
+      }
 };
 
 
@@ -60,8 +56,8 @@ Serial.println("here");
   Serial.println("here");
 
   for(;;){
-    Serial.println("here");
 
+/*
     if(get_first()){
       message_queue * sending = get_first();
 
@@ -73,7 +69,7 @@ Serial.println("here");
       free(mess);
         remove_first();
 
-    }
+    }*/
 
     //bus.receive(50000);
     bus.receive();
