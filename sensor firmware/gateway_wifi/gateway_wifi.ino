@@ -13,27 +13,27 @@ void setup() {
   // init two tasks
 
 
-/*
-  // task one
-  xTaskCreatePinnedToCore(
-  TaskEspNow
-  ,  "TaskEspNow"
-  ,  32000  // Stack size
-  ,  NULL
-  ,  1  // Priority
-  ,  NULL
-  ,  0);*/
+  /*
+    // task one
+    xTaskCreatePinnedToCore(
+    TaskEspNow
+    ,  "TaskEspNow"
+    ,  32000  // Stack size
+    ,  NULL
+    ,  1  // Priority
+    ,  NULL
+    ,  0);*/
 
 
   // task two
   xTaskCreatePinnedToCore(
-  TaskSerial
-  ,  "TaskSerial"
-  ,  32000  // Stack size
-  ,  NULL
-  ,  1  // Priority
-  ,  NULL
-  ,  1);
+    TaskSerial
+    ,  "TaskSerial"
+    ,  32000  // Stack size
+    ,  NULL
+    ,  1  // Priority
+    ,  NULL
+    ,  1);
 
 
 
