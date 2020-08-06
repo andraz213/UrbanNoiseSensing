@@ -9,7 +9,7 @@
 #include "spectrum_analysis.h"
 #include "decibel_calculator.h"
 
-
+#include "global_defines.h"
 
 
 const char* ssid = "A1";

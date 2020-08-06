@@ -1,12 +1,6 @@
 #ifndef MESSAGE_QUEUE_H
 #define MESSAGE_QUEUE_H
-
-typedef struct  {
-  void * next;
-  char mac[6];
-  int len;
-  char* message;
-} message_queue;
+#include "global_defines.h"
 
 
 void add_to_message_queue(char* message, int len, char *mac);

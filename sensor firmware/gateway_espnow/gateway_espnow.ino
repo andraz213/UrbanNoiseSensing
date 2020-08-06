@@ -7,7 +7,8 @@ void setup() {
   // put your setup code here, to run once:
 
   Serial.begin(115200);
-  Serial2.begin(115200);
+  Serial2.begin(921600);
+  Serial2.setRxBufferSize(1024);
   init_wifi();
 
   // init two tasks
@@ -16,24 +17,24 @@ void setup() {
 
   // task one
   xTaskCreatePinnedToCore(
-  TaskEspNow
-  ,  "TaskEspNow"
-  ,  32000  // Stack size
-  ,  NULL
-  ,  1  // Priority
-  ,  NULL
-  ,  0);
+    TaskEspNow
+    ,  "TaskEspNow"
+    ,  32000  // Stack size
+    ,  NULL
+    ,  1  // Priority
+    ,  NULL
+    ,  0);
 
 
   // task two
   xTaskCreatePinnedToCore(
-  TaskSerial
-  ,  "TaskSerial"
-  ,  32000  // Stack size
-  ,  NULL
-  ,  1  // Priority
-  ,  NULL
-  ,  1);
+    TaskSerial
+    ,  "TaskSerial"
+    ,  32000  // Stack size
+    ,  NULL
+    ,  1  // Priority
+    ,  NULL
+    ,  1);
 
 
 

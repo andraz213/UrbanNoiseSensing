@@ -1,15 +1,7 @@
 #ifndef SENDING_QUEUE_H
 #define SENDING_QUEUE_H
 
-typedef struct  {
-  void * next;
-  double fft_values [DOWNSAMPLED__FFT];
-  int fft_range;
-  double decibels;
-  long timestamp;
-} sending_list;
-
-
+#include "global_defines.h"
 void add_to_sending_queue(double* fft, double decibels, long timestamp);
 sending_list * get_first();
 void remove_first();

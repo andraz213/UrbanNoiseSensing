@@ -1,6 +1,6 @@
 #ifndef MICROPHONE_H
 #define MICROPHONE_H
-
+#include "global_defines.h"
 
 #define BLOCK_SIZE         128
 #define SAMPLES_SIZE       256
