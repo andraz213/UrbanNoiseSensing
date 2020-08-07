@@ -151,7 +151,7 @@ void TaskSerial( void *pvParameters ) {
 
     if (get_first() && !bus.update()) {
       message_queue * sending = get_first();
-      int type = (int)SENSOR_READING;
+      int type = (int)sending->type;
       char* mess = (char*)heap_caps_malloc(sizeof(char) * (sending->len + 6) + sizeof(int), MALLOC_CAP_8BIT);
 
       memcpy(mess, &type, sizeof(int));

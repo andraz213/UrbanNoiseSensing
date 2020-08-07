@@ -41,12 +41,12 @@ void loop() {
   do_sensing();
 
 
-    //delay(5000);
+  //delay(5000);
   /*
-  setCpuFrequencyMhz(240);
-  long start = 0;
+    setCpuFrequencyMhz(240);
+    long start = 0;
 
-  if (millis() - previous > 1000) {
+    if (millis() - previous > 1000) {
     previous = millis();
     start = micros();
     getSamples();
@@ -75,18 +75,18 @@ void loop() {
         Serial.println(micros() - start);
         Serial.println();
         Serial.println();
-    */
-    //esp_wifi_stop();
+  */
+  //esp_wifi_stop();
 
-/*    Serial.println("Creating JSON lasted: ");
-    esp_sleep_enable_timer_wakeup(2000000);
-    Serial.println("Creating JSON lasted: ");
-    esp_light_sleep_start();
-    Serial.println("Creating JSON lasted: ");
-    esp_wifi_start();
-    Serial.println("Creating JSON lasted: ");
-  }
-*/
+  /*    Serial.println("Creating JSON lasted: ");
+      esp_sleep_enable_timer_wakeup(2000000);
+      Serial.println("Creating JSON lasted: ");
+      esp_light_sleep_start();
+      Serial.println("Creating JSON lasted: ");
+      esp_wifi_start();
+      Serial.println("Creating JSON lasted: ");
+    }
+  */
   delay(1);
 }
 
@@ -108,7 +108,7 @@ void connectWifi() {
 
 
 /*
-void analyzeData() {
+  void analyzeData() {
   for (int i = 0; i < SAMPLES_SIZE; i++) {
     vReal[i] = (double)samples[i];
     vImag[i] = 0;
@@ -122,12 +122,12 @@ void analyzeData() {
 
   double x = FFT.MajorPeak(vReal, SAMPLES_SIZE, SAMPLING_FREQUENCY);
   //Serial.println(x, 6);
-}
+  }
 
 */
 
 /*
-String createJSON() {
+  String createJSON() {
   StaticJsonDocument<2000> doc;
   doc["sensor"] = "prvi testni senzor";
   JsonArray mac = doc.createNestedArray("mac");
@@ -181,7 +181,7 @@ String createJSON() {
 
 
 
-}
+  }
 
 
 */

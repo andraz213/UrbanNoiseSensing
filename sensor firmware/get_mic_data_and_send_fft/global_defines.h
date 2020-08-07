@@ -1,5 +1,6 @@
 #ifndef GLOBAL_DEFINES_H
 #define GLOBAL_DEFINES_H
+#include <arduino.h>
 
 #define I2S_CLOCK               20000000
 #define SAMPLING_FREQUENCY      (I2S_CLOCK/512)
@@ -25,7 +26,7 @@ typedef struct  {
   double fft_values [16];
   int fft_range;
   double decibels;
-  long timestamp;
+  unsigned int timestamp;
 } sending_list;
 
 typedef struct  {

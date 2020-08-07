@@ -13,85 +13,85 @@ long start = 0;
 
 static float i2s_apll_get_fi2s(int bits_per_sample, int sdm0, int sdm1, int sdm2, int odir)
 {
-    int f_xtal = (int)rtc_clk_xtal_freq_get() * 1000000;
+  int f_xtal = (int)rtc_clk_xtal_freq_get() * 1000000;
 
-    float fout = f_xtal * (sdm2 + sdm1 / 256.0f + sdm0 / 65536.0f + 4);
-    if (fout < APLL_MIN_FREQ || fout > APLL_MAX_FREQ) {
-        return APLL_MAX_FREQ;
-    }
-    float fpll = fout / (2 * (odir+2)); //== fi2s (N=1, b=0, a=1)
-    return fpll/2;
+  float fout = f_xtal * (sdm2 + sdm1 / 256.0f + sdm0 / 65536.0f + 4);
+  if (fout < APLL_MIN_FREQ || fout > APLL_MAX_FREQ) {
+    return APLL_MAX_FREQ;
+  }
+  float fpll = fout / (2 * (odir + 2)); //== fi2s (N=1, b=0, a=1)
+  return fpll / 2;
 }
 
 
 static esp_err_t i2s_apll_calculate_fi2s(int rate, int bits_per_sample, int *sdm0, int *sdm1, int *sdm2, int *odir)
 {
   int _odir, _sdm0, _sdm1, _sdm2;
- float avg;
- float min_rate, max_rate, min_diff;
- if (rate/bits_per_sample/2/8 < 10675) {
-     return ESP_ERR_INVALID_ARG;
- }
+  float avg;
+  float min_rate, max_rate, min_diff;
+  if (rate / bits_per_sample / 2 / 8 < 10675) {
+    return ESP_ERR_INVALID_ARG;
+  }
 
- *sdm0 = 0;
- *sdm1 = 0;
- *sdm2 = 0;
- *odir = 0;
- min_diff = APLL_MAX_FREQ;
+  *sdm0 = 0;
+  *sdm1 = 0;
+  *sdm2 = 0;
+  *odir = 0;
+  min_diff = APLL_MAX_FREQ;
 
- // Roughly calculate coarse values
+  // Roughly calculate coarse values
 
- for (_sdm2 = 4; _sdm2 < 9; _sdm2 ++) {
-     max_rate = i2s_apll_get_fi2s(bits_per_sample, 255, 255, _sdm2, 0);
-     min_rate = i2s_apll_get_fi2s(bits_per_sample, 0, 0, _sdm2, 31);
-     avg = (max_rate + min_rate)/2;
-     if(abs(avg - rate) < min_diff) {
-         min_diff = abs(avg - rate);
-         *sdm2 = _sdm2;
-     }
- }
+  for (_sdm2 = 4; _sdm2 < 9; _sdm2 ++) {
+    max_rate = i2s_apll_get_fi2s(bits_per_sample, 255, 255, _sdm2, 0);
+    min_rate = i2s_apll_get_fi2s(bits_per_sample, 0, 0, _sdm2, 31);
+    avg = (max_rate + min_rate) / 2;
+    if (abs(avg - rate) < min_diff) {
+      min_diff = abs(avg - rate);
+      *sdm2 = _sdm2;
+    }
+  }
 
- min_diff = APLL_MAX_FREQ;
- for (_odir = 0; _odir < 32; _odir ++) {
-     max_rate = i2s_apll_get_fi2s(bits_per_sample, 255, 255, *sdm2, _odir);
-     min_rate = i2s_apll_get_fi2s(bits_per_sample, 0, 0, *sdm2, _odir);
-     avg = (max_rate + min_rate)/2;
-     if(abs(avg - rate) < min_diff) {
-         min_diff = abs(avg - rate);
-         *odir = _odir;
-     }
- }
+  min_diff = APLL_MAX_FREQ;
+  for (_odir = 0; _odir < 32; _odir ++) {
+    max_rate = i2s_apll_get_fi2s(bits_per_sample, 255, 255, *sdm2, _odir);
+    min_rate = i2s_apll_get_fi2s(bits_per_sample, 0, 0, *sdm2, _odir);
+    avg = (max_rate + min_rate) / 2;
+    if (abs(avg - rate) < min_diff) {
+      min_diff = abs(avg - rate);
+      *odir = _odir;
+    }
+  }
 
- // Now calculate best values
+  // Now calculate best values
 
- for (_sdm2 = 4; _sdm2 < 9; _sdm2 ++) {
-     min_rate = i2s_apll_get_fi2s(bits_per_sample, 0, 0, _sdm2, *odir);
-     if(min_rate <= rate) {   //Less or equal ONLY don't overshoot
-         *sdm2 = _sdm2;
-     }
- }
+  for (_sdm2 = 4; _sdm2 < 9; _sdm2 ++) {
+    min_rate = i2s_apll_get_fi2s(bits_per_sample, 0, 0, _sdm2, *odir);
+    if (min_rate <= rate) {  //Less or equal ONLY don't overshoot
+      *sdm2 = _sdm2;
+    }
+  }
 
- min_diff = APLL_MAX_FREQ;
- for (_sdm1 = 0; _sdm1 < 256; _sdm1 ++) {
-     //max_rate = i2s_apll_get_fi2s(bits_per_sample, 255, _sdm1, *sdm2, *odir);
-     min_rate = i2s_apll_get_fi2s(bits_per_sample, 0, _sdm1, *sdm2, *odir);
-     //avg = (max_rate + min_rate)/2;
-     if (min_rate <= rate) {  //Less or equal ONLY don't overshoot
-         *sdm1 = _sdm1;
-     }
- }
+  min_diff = APLL_MAX_FREQ;
+  for (_sdm1 = 0; _sdm1 < 256; _sdm1 ++) {
+    //max_rate = i2s_apll_get_fi2s(bits_per_sample, 255, _sdm1, *sdm2, *odir);
+    min_rate = i2s_apll_get_fi2s(bits_per_sample, 0, _sdm1, *sdm2, *odir);
+    //avg = (max_rate + min_rate)/2;
+    if (min_rate <= rate) {  //Less or equal ONLY don't overshoot
+      *sdm1 = _sdm1;
+    }
+  }
 
 
- min_diff = APLL_MAX_FREQ;
- for (_sdm0 = 0; _sdm0 < 256; _sdm0 ++) {
-     avg = i2s_apll_get_fi2s(bits_per_sample, _sdm0, *sdm1, *sdm2, *odir);
-     if (abs(avg - rate) < min_diff) {  // NOW as close as possible
-         min_diff = abs(avg - rate);
-         *sdm0 = _sdm0;
-     }
- }
+  min_diff = APLL_MAX_FREQ;
+  for (_sdm0 = 0; _sdm0 < 256; _sdm0 ++) {
+    avg = i2s_apll_get_fi2s(bits_per_sample, _sdm0, *sdm1, *sdm2, *odir);
+    if (abs(avg - rate) < min_diff) {  // NOW as close as possible
+      min_diff = abs(avg - rate);
+      *sdm0 = _sdm0;
+    }
+  }
 
- return ESP_OK;
+  return ESP_OK;
 }
 
 
@@ -144,12 +144,12 @@ void init_i2s() {
   Serial.println(i2s_apll_calculate_fi2s(I2S_CLOCK, 32, &sdm0, &sdm1, &sdm2, &odir));
 
 
-   rtc_clk_apll_enable(1, sdm0, sdm1, sdm2, odir);
+  rtc_clk_apll_enable(1, sdm0, sdm1, sdm2, odir);
 
-   Serial.println(sdm0);
-   Serial.println(sdm1);
-   Serial.println(sdm2);
-   Serial.println(odir);
+  Serial.println(sdm0);
+  Serial.println(sdm1);
+  Serial.println(sdm2);
+  Serial.println(odir);
 
 }
 
@@ -166,7 +166,7 @@ int to_downsample [(int)DOWNSAMPLE_FACTOR];
 void get_samples(int * samples) {
 
 
-    long prev = micros();
+  long prev = micros();
 
   i2s_start(I2S_PORT);
 
@@ -177,18 +177,18 @@ void get_samples(int * samples) {
 
   i2s_apll_calculate_fi2s(I2S_CLOCK, 32, &sdm0, &sdm1, &sdm2, &odir);
 
-   rtc_clk_apll_enable(1, sdm0, sdm1, sdm2, odir);
+  rtc_clk_apll_enable(1, sdm0, sdm1, sdm2, odir);
 
-   for (int i = 0; i < 50; i++) {
+  for (int i = 0; i < 50; i++) {
 
 
-     int num_bytes_read = i2s_read_bytes(I2S_PORT,
-                                         (char *)test,
-                                         512,     // the doc says bytes, but its elements.
-                                         portMAX_DELAY); // no timeout
-                                         double sum = 0.0;
+    int num_bytes_read = i2s_read_bytes(I2S_PORT,
+                                        (char *)test,
+                                        512,     // the doc says bytes, but its elements.
+                                        portMAX_DELAY); // no timeout
+    double sum = 0.0;
 
-}
+  }
 
   int read_non_zero = 0;
   int num_in_downsample = 0;

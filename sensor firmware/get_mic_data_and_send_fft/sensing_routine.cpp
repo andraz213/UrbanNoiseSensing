@@ -1,4 +1,5 @@
 #include "global_defines.h"
+#include "handle_time.h"
 #include <arduino.h>
 #include <esp_pm.h>
 #include "sensing_routine.h"
@@ -10,81 +11,95 @@
 
 
 int samples_pub[SAMPLES_SIZE];
+unsigned int sensing_start = 0;
 
 double fft_downsampled[DOWNSAMPLED__FFT];
 double decibels = 0.0;
 
-void sync_time_send_telemetry(){}
+void sync_time_send_telemetry() {}
 
-void do_sensing(){
+void do_sensing() {
 
 
-// setup wifi LR and espnow
-setup_wifi_and_LR();
+  // setup wifi LR and espnow
+  setup_wifi_and_LR();
 
-// init i2s
+  // init i2s
   init_i2s();
 
-// sync time
+  // sync time
+
+  esp_wifi_start();
+  sync_time_and_telemetry();
+  esp_wifi_stop();
 
 
 
-// while true loop
-int nummber_of_iteeer = 0;
-while(true){
-  long prev = micros();
 
-  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
+  // while true loop
+  int nummber_of_iteeer = 0;
+  while (true) {
+    print_usec();
+    Serial.println(millis());
+    Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
 
-  // set cpu frequency to 20mhz to lower the consumption
-  setCpuFrequencyMhz(20);
-  // get the sensor data
-  get_samples((int*)&samples_pub);
+    // set cpu frequency to 20mhz to lower the consumption
+    setCpuFrequencyMhz(20);
+    // get the sensor data
+    sensing_start = get_secs();
 
-  // set cpu frequency to 240mhz for processing
-  setCpuFrequencyMhz(240);
-  // process the data
-  calculate_fft((int*)&samples_pub, (double*)&fft_downsampled, DOWNSAMPLED__FFT);
-  decibels = 0.0;
-  decibels = calculate_decibels((int*)&samples_pub, SAMPLES_SIZE);
+    get_samples((int*)&samples_pub);
 
-  // put data into a sending queue
-  add_to_sending_queue((double*) &fft_downsampled, decibels, micros());
+    Serial.println((unsigned long) sensing_start);
+    // set cpu frequency to 240mhz for processing
+    setCpuFrequencyMhz(240);
+    // process the data
+    calculate_fft((int*)&samples_pub, (double*)&fft_downsampled, DOWNSAMPLED__FFT);
+    decibels = 0.0;
+    decibels = calculate_decibels((int*)&samples_pub, SAMPLES_SIZE);
 
-
-
-// sleep for a random amount of time to prevent signal congestion
-  setCpuFrequencyMhz(20);
-  long left = SENSING_RATE - (micros() - prev);
-  int random_sleep = random(left - 150000);
+    // put data into a sending queue
+    add_to_sending_queue((double*) &fft_downsampled, decibels, sensing_start);
 
 
-  if(random_sleep > 0){
-    esp_sleep_enable_timer_wakeup(random_sleep);
-    esp_light_sleep_start();
+
+
+    // sleep for a random amount of time to prevent signal congestion
+    setCpuFrequencyMhz(20);
+    int random_sleep = (int)get_random_sleep_time();
+
+
+    if (random_sleep > 0) {
+      esp_sleep_enable_timer_wakeup(random_sleep);
+      esp_light_sleep_start();
+    }
+
+
+
+    // set cpu frequency to 80mhz for sending
+    setCpuFrequencyMhz(80);
+
+    // do the sending
+    esp_wifi_start();
+    sync_time_and_telemetry();
+    send_data();
+
+    esp_wifi_stop();
+
+
+    // enter light sleep
+    setCpuFrequencyMhz(10);
+
+    long left = 0;
+
+    left = get_remaining_sleep_time();
+
+    if (left > 0) {
+      esp_sleep_enable_timer_wakeup(left);
+      esp_light_sleep_start();
+    }
+
+
+    // every few minutes send telemetry and synchronise time
   }
-
-
-// set cpu frequency to 80mhz for sending
-setCpuFrequencyMhz(80);
-// do the sending
-
-send_data();
-
-
-// enter light sleep
-setCpuFrequencyMhz(10);
-//Serial.println(left);
-long bf_slp = micros();
-left = 0;
-left = 1000000 - (bf_slp % 1000000);
-left %= 1000000;
-if(left > 0){
-  esp_sleep_enable_timer_wakeup(left);
-  esp_light_sleep_start();
-}
-
-
-// every few minutes send telemetry and synchronise time
-}
 }

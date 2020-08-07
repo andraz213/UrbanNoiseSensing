@@ -1,17 +1,17 @@
 
 
-void do_maintanence(){
+void do_maintanence() {
 
-// connect to WiFi
+  // connect to WiFi
 
-// connect to server
+  // connect to server
 
-// get info
+  // get info
 
-// if firmware version is not the latest, go into ota handler
+  // if firmware version is not the latest, go into ota handler
 
-// ota handler
+  // ota handler
 
-// send telemetry data every five minutes
+  // send telemetry data every five minutes
 
 }

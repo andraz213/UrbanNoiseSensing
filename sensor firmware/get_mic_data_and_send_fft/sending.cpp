@@ -8,6 +8,7 @@
 #include "sending_queue.h"
 #include "sending.h"
 #include "sending_queue.h"
+#include "handle_time.h"
 
 
 uint8_t specAddress[] = {0x30, 0xAE, 0xA4, 0xC7, 0x89, 0x74};
@@ -18,7 +19,7 @@ esp_now_peer_info_t peerInfo1;
 bool sended = false;
 bool sending_succeeded = false;
 
-void setup_wifi_and_LR(){
+void setup_wifi_and_LR() {
 
   // Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
@@ -32,6 +33,7 @@ void setup_wifi_and_LR(){
   }
 
   esp_now_register_send_cb(OnDataSent);
+  esp_now_register_recv_cb(OnDataRecv);
 
   memcpy(peerInfo.peer_addr, broadcastAddress, 6);
   peerInfo.channel = 0;
@@ -56,33 +58,33 @@ void setup_wifi_and_LR(){
 
 
 
-void send_data(){
+void send_data() {
   long start = millis();
-  esp_wifi_start();
+
 
   // Add peer
   sending_list * to_send = get_first();
 
-  while(to_send != 0 && millis()-start < 110){
 
+  while (to_send != 0 && millis() - start < 110) {
 
     data_message sending_message;
     memcpy(&sending_message.data, to_send, sizeof(sending_list));
-    sending_message.message_type = 0;
+    sending_message.message_type = (int)SENSOR_READING;
     sended = false;
 
     //esp_err_t result = esp_now_send(specAddress, (uint8_t *) &sending_message, sizeof(data_message));
     esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &sending_message, sizeof(data_message));
 
-    if(result == ESP_OK){
+    if (result == ESP_OK) {
 
-      while(!sended){
+      while (!sended) {
         delayMicroseconds(10);
       }
     }
     to_send = 0;
 
-    if(sending_succeeded){
+    if (sending_succeeded) {
       remove_first();
       to_send = get_first();
     }
@@ -91,25 +93,38 @@ void send_data(){
     sended = false;
   }
 
-  esp_wifi_stop();
+
 }
 
 
 
+void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 
+  int type = 0;
+  memcpy(&type, (char*)incomingData, (sizeof(int)));
+
+  char * data = (char*) (incomingData + sizeof(int));
+  int datalen = len - sizeof(int);
+
+  if (type == (int)SENSOR_TIME) {
+    Serial.println("time_request");
+    handle_gateway_time((char*)incomingData, len);
+  }
+
+}
 
 
 
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
   sending_succeeded = false;
-  if(status == ESP_NOW_SEND_SUCCESS){
+  if (status == ESP_NOW_SEND_SUCCESS) {
     sending_succeeded = true;
   }
   sended = true;
 
 }
 
-void hanlde_wifi_init_fail(int a){
+void hanlde_wifi_init_fail(int a) {
   if (a == 0)
   {
     Serial.println(" ");

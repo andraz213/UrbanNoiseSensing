@@ -10,7 +10,7 @@ double vImag[SAMPLES_SIZE];
 arduinoFFT FFT = arduinoFFT(); /* Create FFT object */
 
 
-void calculate_fft(int * samples, double * result, int num_downsample){
+void calculate_fft(int * samples, double * result, int num_downsample) {
 
   for (int i = 0; i < SAMPLES_SIZE; i++) {
     vReal[i] = (double)samples[i];
@@ -26,13 +26,13 @@ void calculate_fft(int * samples, double * result, int num_downsample){
 
 
   double avg = 0.0;
-  for(int i = 0; i< SAMPLES_SIZE; i++){
-  avg += vReal[i];
-}
+  for (int i = 0; i < SAMPLES_SIZE; i++) {
+    avg += vReal[i];
+  }
 
-avg /= 128.0;
+  avg /= 128.0;
 
-  for(int i = 0; i< SAMPLES_SIZE; i++){
+  for (int i = 0; i < SAMPLES_SIZE; i++) {
 
     double ll = log(abs(vReal[i] - avg));
 
@@ -41,13 +41,13 @@ avg /= 128.0;
 
   double x = FFT.MajorPeak(vReal, SAMPLES_SIZE, (int)floor(DOWNSAMPLED_FREQUENCY));
 
-  int usable_fft = SAMPLES_SIZE/2;
+  int usable_fft = SAMPLES_SIZE / 2;
 
   int num_downsample_ratio = (int)floor(usable_fft / num_downsample);
   int vreal_index = 0;
-  for(int i = 0; i< num_downsample; i++){
+  for (int i = 0; i < num_downsample; i++) {
     result[i] = 0.0;
-    for (int j = 0; j< num_downsample_ratio; j++){
+    for (int j = 0; j < num_downsample_ratio; j++) {
       result[i] += (vReal[vreal_index] / num_downsample_ratio);
       vreal_index++;
     }

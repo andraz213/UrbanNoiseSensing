@@ -11,6 +11,7 @@
 #include <sys/time.h>
 
 bool time_recieved = false;
+  esp_now_peer_info_t peerInfo;
 
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status){
 
@@ -26,20 +27,19 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   int type = 0;
   memcpy(&type, (char*)incomingData, (sizeof(int)));
 
-  char * data = (char*)heap_caps_malloc(sizeof(char) * len - sizeof(int), MALLOC_CAP_8BIT);
+  char * data = (char*) (incomingData + sizeof(int));
   int datalen = len - sizeof(int);
-  memcpy(data, incomingData + sizeof(int), datalen);
 
-  if(type == (int)TIME_REQUEST){
+  if(type == (int)SENOSR_TELEMETRY){
     Serial.println("time_request");
-    handleTimeRequest(mac);
+    handleTimeRequest((char*)mac);
   }
 
-  if(type == (int)SENSOR_READING){
+  if(type == (int)SENSOR_READING || type == (int) SENOSR_TELEMETRY){
     Serial.println("sensor_reading");
-    handleSensorReading(mac, data, datalen);
+    handleSensorMessage((uint8_t *)mac, (uint8_t *)data, datalen, type);
   }
-  free(data);
+
 }
 
 void init_wifi() {
@@ -69,12 +69,12 @@ void TaskEspNow( void *pvParameters ) {
 }
 
 
-void handleSensorReading(const uint8_t * mac, const uint8_t *incomingData, int len){
+void handleSensorMessage(uint8_t * mac, uint8_t *incomingData, int len, int type){
   char * tmp = (char*)heap_caps_malloc(sizeof(char) * len, MALLOC_CAP_8BIT);
   memcpy(tmp, incomingData, len);
   char * tmpmac = (char*)heap_caps_malloc(sizeof(char) * 6, MALLOC_CAP_8BIT);
   memcpy(tmpmac, mac, 6);
-  add_to_message_queue((char*)tmp, len, (char*)tmpmac);
+  add_to_message_queue((char*)tmp, len, (char*)tmpmac, type);
 
   free(tmpmac);
   free(tmp);
@@ -103,28 +103,28 @@ int64_t get_us_time() {
 
 
 void handleTimeRequest(char* mac){
-  esp_now_peer_info_t peerInfo;
+
   memcpy(peerInfo.peer_addr, mac, 6);
   peerInfo.channel = 0;
   peerInfo.encrypt = false;
-  time_recieved = false
+  time_recieved = false;
 
 
-  if(ESP_OK == esp_now_add_peer(peerInfo)){
+  if(ESP_OK == esp_now_add_peer(&peerInfo)){
     int64_t time_us = get_us_time();
     int size = sizeof(int) + sizeof(int64_t);
     int message_typ = (int)SENSOR_TIME;
     char* message = (char*)heap_caps_malloc(size, MALLOC_CAP_8BIT);
     memcpy(message, (char*)&message_typ, sizeof(int));
     memcpy(message + sizeof(int), (char*)&time_us, sizeof(int64_t));
-    esp_err_t result = esp_now_send(mac, (uint8_t *)message, (size_t)size);
+    esp_err_t result = esp_now_send((uint8_t *)mac, (uint8_t *)message, (size_t)size);
 
     if(ESP_OK == result){
       long start = millis();
       while(!time_recieved && millis() - start < 70){
         delay(2);
       }
-      esp_now_del_peer(mac);
+      esp_now_del_peer((uint8_t *)mac);
     }
 
     free(message);

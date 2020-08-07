@@ -58,7 +58,7 @@ void put_item_into_queue(message_queue * new_item) {
 
 
 
-void add_to_message_queue(char* message, int len, char *mac) {
+void add_to_message_queue(char* message, int len, char *mac, int type) {
   if (!free_pool) {
     need_free_items();
   }
@@ -70,6 +70,7 @@ void add_to_message_queue(char* message, int len, char *mac) {
   memcpy(new_item->mac, mac, 6);
   new_item->message = mess;
   new_item->len = len;
+  new_item->type = type;
 
 
 

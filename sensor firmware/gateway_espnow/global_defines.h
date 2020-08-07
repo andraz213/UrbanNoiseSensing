@@ -49,6 +49,7 @@ typedef struct  {
   void * next;
   char mac[6];
   int len;
+  int type;
   char* message;
 } message_queue;
 

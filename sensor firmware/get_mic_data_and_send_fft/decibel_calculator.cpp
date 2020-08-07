@@ -33,42 +33,42 @@ sos: { // Second-Order Sections {b1, b2, -a1, -a2}
 
 
 
-double calculate_decibels(int* input_samples, int num_samples){
+double calculate_decibels(int* input_samples, int num_samples) {
   // i2s_read(I2S_PORT, &samples, SAMPLES_SHORT * sizeof(SAMPLE_T), &bytes_read, portMAX_DELAY);
-float samples[num_samples] __attribute__((aligned(4)));
-// Convert (including shifting) integer microphone values to floats,
-// using the same buffer (assumed sample size is same as size of float),
-// to save a bit of memory
-for (int i = 0; i < num_samples; i++) {
-  samples[i] = input_samples[i];//MIC_CONVERT(input_samples[i]);
-}
+  float samples[num_samples] __attribute__((aligned(4)));
+  // Convert (including shifting) integer microphone values to floats,
+  // using the same buffer (assumed sample size is same as size of float),
+  // to save a bit of memory
+  for (int i = 0; i < num_samples; i++) {
+    samples[i] = input_samples[i];//MIC_CONVERT(input_samples[i]);
+  }
 
-// Apply equalization and calculate Z-weighted sum of squares,
-// writes filtered samples back to the same buffer.
-float sum_sqr_SPL = MIC_EQUALIZER.filter(samples, samples, (size_t)num_samples);
+  // Apply equalization and calculate Z-weighted sum of squares,
+  // writes filtered samples back to the same buffer.
+  float sum_sqr_SPL = MIC_EQUALIZER.filter(samples, samples, (size_t)num_samples);
 
-// Apply weighting and calucate weigthed sum of squares
-float sum_sqr_weighted = WEIGHTING.filter(samples, samples, (size_t)num_samples);
-
-
-
-// Calculate dB values relative to MIC_REF_AMPL and adjust for microphone reference
-double short_RMS = sqrt(double(sum_sqr_SPL) / num_samples);
-double short_SPL_dB = MIC_OFFSET_DB + MIC_REF_DB + 20 * log10(short_RMS / MIC_REF_AMPL);
-
-double Leq_dB = 0.0;
-// Accumulate Leq sum
-double Leq_sum_sqr = sum_sqr_weighted;
-int Leq_samples = num_samples;
-
-double Leq_RMS = sqrt(Leq_sum_sqr / Leq_samples);
-Leq_dB = MIC_OFFSET_DB + MIC_REF_DB + 20 * log10(Leq_RMS / MIC_REF_AMPL);
+  // Apply weighting and calucate weigthed sum of squares
+  float sum_sqr_weighted = WEIGHTING.filter(samples, samples, (size_t)num_samples);
 
 
-Serial.printf("%.1f\n", Leq_dB);
+
+  // Calculate dB values relative to MIC_REF_AMPL and adjust for microphone reference
+  double short_RMS = sqrt(double(sum_sqr_SPL) / num_samples);
+  double short_SPL_dB = MIC_OFFSET_DB + MIC_REF_DB + 20 * log10(short_RMS / MIC_REF_AMPL);
+
+  double Leq_dB = 0.0;
+  // Accumulate Leq sum
+  double Leq_sum_sqr = sum_sqr_weighted;
+  int Leq_samples = num_samples;
+
+  double Leq_RMS = sqrt(Leq_sum_sqr / Leq_samples);
+  Leq_dB = MIC_OFFSET_DB + MIC_REF_DB + 20 * log10(Leq_RMS / MIC_REF_AMPL);
 
 
-return Leq_dB;
+  Serial.printf("%.1f\n", Leq_dB);
+
+
+  return Leq_dB;
 
 
 }

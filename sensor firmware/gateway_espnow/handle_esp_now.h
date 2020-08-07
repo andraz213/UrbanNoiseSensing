@@ -8,6 +8,6 @@ void TaskEspNow( void *pvParameters );
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len);
 void init_wifi();
 void handleTimeRequest(char* mac);
-handleSensorReading(const uint8_t * mac, const uint8_t *incomingData, int len);
+void handleSensorMessage(uint8_t * mac, uint8_t *incomingData, int len, int type);
 
 #endif
