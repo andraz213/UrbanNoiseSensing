@@ -35,7 +35,7 @@ void TaskEspNow( void *pvParameters ) {
 
 
   for (;;) {
-    init_wifi();
+      
     vTaskDelay(1000);
 
   }

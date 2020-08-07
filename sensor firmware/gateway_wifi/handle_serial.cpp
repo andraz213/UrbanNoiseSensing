@@ -42,38 +42,18 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   int type = 0;
   memcpy(&type, (char*)payload, sizeof(int));
 
+  char * data = (char*)heap_caps_malloc(sizeof(char) * length - sizeof(int), MALLOC_CAP_8BIT);
+  int datalen = length - sizeof(int);
+  memcpy(data, payload + sizeof(int), datalen);
+
   if (type == (int) TIME_REQUEST) {
-    if (millis() - previous_time_update > 1000) {
-      previous_time_update = millis();
-
-      int64_t time_us = get_us_time();
-      if (time_us != -1) {
-
-        Serial.println((long)time_us);
-        int size = sizeof(int) + sizeof(int64_t);
-        int message_typ = (int)GATEWAY_TIME;
-        char* message = (char*)heap_caps_malloc(size, MALLOC_CAP_8BIT);
-        memcpy(message, (char*)&message_typ, sizeof(int));
-        memcpy(message + sizeof(int), (char*)&time_us, sizeof(int64_t));
-        uint16_t result = bus.reply(message, size);
-        free(message);
-      }
-    }
-    long start_time = micros();
-    int num = 0;
-    bus.receive(20);
-    while (bus.update() > 0) {
-      bus.receive(500);
-      num++;
-    }
-    long end = micros();
-    bus.receive(500);
-    Serial.println(end - start_time);
-    Serial.println(num);
-
-
+    handle_time_request();
   }
 
+    if (type == (int) SENSOR_READING) {
+      handle_sensor_reading(data, datalen);
+
+    }
 
 
 
@@ -81,6 +61,10 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
     Serial.print(payload[i], HEX);
   }
   Serial.println();
+
+  free(data);
+
+
 };
 
 
@@ -144,4 +128,48 @@ void TaskSerial( void *pvParameters ) {
 
     vTaskDelay(1);
   }
+}
+
+
+
+void handle_sensor_reading(char* data, int datalen){
+  
+
+
+
+
+
+
+}
+
+
+void handle_time_request(){
+  if (millis() - previous_time_update > 1000) {
+    previous_time_update = millis();
+
+    int64_t time_us = get_us_time();
+    if (time_us != -1) {
+
+      Serial.println((long)time_us);
+      int size = sizeof(int) + sizeof(int64_t);
+      int message_typ = (int)GATEWAY_TIME;
+      char* message = (char*)heap_caps_malloc(size, MALLOC_CAP_8BIT);
+      memcpy(message, (char*)&message_typ, sizeof(int));
+      memcpy(message + sizeof(int), (char*)&time_us, sizeof(int64_t));
+      uint16_t result = bus.reply(message, size);
+      free(message);
+    }
+  }
+  long start_time = micros();
+  int num = 0;
+  bus.receive(20);
+  while (bus.update() > 0) {
+    bus.receive(500);
+    num++;
+  }
+  long end = micros();
+  bus.receive(500);
+  Serial.println(end - start_time);
+  Serial.println(num);
+
 }

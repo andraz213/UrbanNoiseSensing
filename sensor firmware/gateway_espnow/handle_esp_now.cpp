@@ -10,6 +10,64 @@
 #include "apps/sntp/sntp.h"
 #include <sys/time.h>
 
+bool time_recieved = false;
+
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status){
+
+  if(ESP_NOW_SEND_SUCCESS == status){
+    time_recieved = true;
+  }
+
+}
+
+
+void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
+
+  int type = 0;
+  memcpy(&type, (char*)incomingData, (sizeof(int)));
+
+  char * data = (char*)heap_caps_malloc(sizeof(char) * len - sizeof(int), MALLOC_CAP_8BIT);
+  int datalen = len - sizeof(int);
+  memcpy(data, incomingData + sizeof(int), datalen);
+
+  if(type == (int)TIME_REQUEST){
+    Serial.println("time_request");
+    handleTimeRequest(mac);
+  }
+
+  if(type == (int)SENSOR_READING){
+    Serial.println("sensor_reading");
+    handleSensorReading(mac, data, datalen);
+  }
+  free(data);
+}
+
+void init_wifi() {
+
+  Serial.println("wifi");
+  // init esp_now
+  WiFi.mode(WIFI_STA);
+  int a = esp_wifi_set_protocol( WIFI_IF_STA, WIFI_PROTOCOL_LR );
+  Serial.println("esp_now_init");
+  // Init ESP-NOW
+  if (esp_now_init() != ESP_OK) {
+    Serial.println("Error initializing ESP-NOW");
+    return;
+  }
+
+  esp_now_register_recv_cb(OnDataRecv);
+  esp_now_register_send_cb(OnDataSent);
+}
+
+
+void TaskEspNow( void *pvParameters ) {
+
+  for (;;) {
+
+    vTaskDelay(100);
+  }
+}
+
 
 void handleSensorReading(const uint8_t * mac, const uint8_t *incomingData, int len){
   char * tmp = (char*)heap_caps_malloc(sizeof(char) * len, MALLOC_CAP_8BIT);
@@ -42,7 +100,7 @@ int64_t get_us_time() {
   return time_us;
 }
 
-bool time_recieved = false;
+
 
 void handleTimeRequest(char* mac){
   esp_now_peer_info_t peerInfo;
@@ -72,67 +130,4 @@ void handleTimeRequest(char* mac){
     free(message);
   }
 
-}
-
-void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status){
-
-  if(ESP_NOW_SEND_SUCCESS == status){
-    time_recieved = true;
-  }
-
-}
-
-
-
-void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
-
-int type = 0;
-memcpy(&type, (char*)incomingData, (sizeof(int)));
-
-char * data = (char*)heap_caps_malloc(sizeof(char) * len - sizeof(int), MALLOC_CAP_8BIT);
-int datalen = len - sizeof(int);
-memcpy(data, incomingData + sizeof(int), datalen);
-
-if(type == (int)TIME_REQUEST){
-
-  Serial.println("time_request");
-  handleTimeRequest(mac);
-}
-
-if(type == (int)SENSOR_READING){
-
-  Serial.println("sensor_reading");
-  handleSensorReading(mac, data, datalen);
-
-}
-
-
-free(data);
-
-}
-
-void init_wifi() {
-
-  Serial.println("wifi");
-  // init esp_now
-  WiFi.mode(WIFI_STA);
-  int a = esp_wifi_set_protocol( WIFI_IF_STA, WIFI_PROTOCOL_LR );
-  Serial.println("esp_now_init");
-  // Init ESP-NOW
-  if (esp_now_init() != ESP_OK) {
-    Serial.println("Error initializing ESP-NOW");
-    return;
-  }
-
-  esp_now_register_recv_cb(OnDataRecv);
-  esp_now_register_send_cb(OnDataSent);
-}
-
-
-void TaskEspNow( void *pvParameters ) {
-
-  for (;;) {
-
-    vTaskDelay(100);
-  }
 }
