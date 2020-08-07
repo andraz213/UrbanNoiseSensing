@@ -78,7 +78,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 
 
   for (int i = 0; i < min((int)length, 20); i++) {
-    Serial.print(payload[i + 20], HEX);
+    Serial.print(payload[i], HEX);
   }
   Serial.println();
 };

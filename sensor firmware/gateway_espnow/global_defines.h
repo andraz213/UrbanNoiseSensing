@@ -38,6 +38,11 @@ typedef struct  {
   double battery_voltage;
 } telemetry_message;
 
+typedef struct  {
+  char mac[6];
+
+} espnow_telemetry_message;
+
 
 
 typedef struct  {
@@ -53,7 +58,8 @@ enum message_types {
   SENSOR_TIME,
   SENSOR_READING,
   SENOSR_TELEMETRY,
-  TIME_REQUEST
+  TIME_REQUEST,
+  ESPNOW_GATEWAY_TELEMETRY
 };
 
 

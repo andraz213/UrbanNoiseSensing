@@ -1,6 +1,7 @@
 #include "handle_serial.h"
 #include "global_defines.h"
 #include <Arduino.h>
+#include <WiFi.h>
 #define PJON_PACKET_MAX_LENGTH 500
 #define PJON_MAX_PACKETS 10
 #define PJON_INCLUDE_ASYNC_ACK true
@@ -35,35 +36,80 @@ void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
 
 bool got_time = false;
 
+void handle_gateway_time(uint8_t *payload, uint16_t length){
+got_time = true;
+int64_t time_us;
+memcpy(&time_us, (char*)(payload + sizeof(int)), sizeof(int64_t));
+
+// ugly, but it works
+time_t      tv_sec = (time_t)0;
+suseconds_t tv_usec = (suseconds_t)0;
+
+int fact = 1;
+for(int i = 0; i<6; i++){
+  tv_usec += (time_us%10)*fact;
+  time_us -= time_us%10;
+  time_us /= 10;
+  fact*= 10;
+}
+
+fact = 1;
+while(time_us){
+  tv_sec += (time_us%10)*fact;
+  time_us -= time_us%10;
+  time_us /= 10;
+  fact*= 10;
+}
+
+struct timeval tv = { .tv_sec = tv_sec, .tv_usec = tv_usec };
+settimeofday(&tv, NULL);
+}
+
+
+
+
 void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info &packet_info) {
   /* Make use of the payload before sending something, the buffer where payload points to is
      overwritten when a new message is dispatched */
   int type = 0;
-  Serial.println(length);
-  Serial.println("neki sm dubu");
   memcpy(&type, (char*)payload, sizeof(int));
 
 
+
   if (type == (int) GATEWAY_TIME) {
-    got_time = true;
-    int64_t time_us;
-    memcpy(&time_us, (char*)(payload + sizeof(int) - 1), sizeof(int64_t));
-
-    Serial.println((long) time_us);
-
-    time_t      tv_sec = (time_t)(time_us - time_us % 1000000) / 1000000;
-    suseconds_t tv_usec = (suseconds_t)time_us % 1000000;
-
-    struct timeval tv = { .tv_sec = tv_sec, .tv_usec = tv_usec };
-    settimeofday(&tv, NULL); \
-
-
-  };
-
-
-
+    handle_gateway_time(payload,length);
+  }
 };
 
+
+long last_telemetry = 0;
+
+void send_espnow_telemetry(){
+  if(millis() - last_telemetry > 60000 || last_telemetry == 0){
+    last_telemetry = millis();
+    espnow_telemetry_message* message = (espnow_telemetry_message*)heap_caps_malloc(sizeof(espnow_telemetry_message), MALLOC_CAP_8BIT);
+    int type = (int)ESPNOW_GATEWAY_TELEMETRY;
+
+    WiFi.macAddress((uint8_t*)message->mac);
+
+    char* to_send = (char*)heap_caps_malloc(sizeof(espnow_telemetry_message) + sizeof(int), MALLOC_CAP_8BIT);
+
+    memcpy(to_send, &type, sizeof(int));
+    memcpy(to_send + sizeof(int), message, sizeof(espnow_telemetry_message));
+    uint16_t result = 0;
+    int num = 0;
+    while(result != PJON_ACK && num < 10){
+      num++;
+      result = bus.send_packet(GATEWAY_WIFI, to_send, (sizeof(espnow_telemetry_message) + sizeof(int)));
+      delay(10);
+    }
+    delay(60);
+
+    free(message);
+    free(to_send);
+    Serial.println("sended telemetry");
+  }
+}
 
 void update_time() {
   bus.receive(1000);
@@ -99,19 +145,22 @@ void TaskSerial( void *pvParameters ) {
   bus.begin();
 
   Serial.println(TSA_RESPONSE_TIME_OUT);
-
+  send_espnow_telemetry();
 
   for (;;) {
 
     if (get_first() && !bus.update()) {
       message_queue * sending = get_first();
+      int type = (int)SENSOR_READING;
+      char* mess = (char*)heap_caps_malloc(sizeof(char) * (sending->len + 6) + sizeof(int), MALLOC_CAP_8BIT);
 
-      char* mess = (char*)heap_caps_malloc(sizeof(char) * (sending->len + 6), MALLOC_CAP_8BIT);
-      memcpy(mess, sending->mac, 6);
-      memcpy(mess + 6, sending->message, sending->len);
+      memcpy(mess, &type, sizeof(int));
+      memcpy(mess + sizeof(int), sending->mac, 6);
+      memcpy(mess + 6 + sizeof(int), sending->message, sending->len);
+
       uint16_t result = PJON_ACK;
 
-      result = bus.send_packet(GATEWAY_WIFI, mess, (sending->len + 6));
+      result = bus.send_packet(GATEWAY_WIFI, mess, (sending->len + 6 + sizeof(int)));
       // delay(10);
       free(mess);
       if (result == PJON_ACK) {
@@ -138,6 +187,7 @@ void TaskSerial( void *pvParameters ) {
 
     }
 
+    send_espnow_telemetry();
 
     vTaskDelay(1);
   }

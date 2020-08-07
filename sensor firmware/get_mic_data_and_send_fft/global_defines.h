@@ -16,7 +16,7 @@
 #define DOWNSAMPLED__FFT        16
 
 #define GATEWAY_ESPNOW          1
-#define AGTEWAY_WIFI            2
+#define GATEWAY_WIFI            2
 
 
 
@@ -38,6 +38,11 @@ typedef struct  {
   double battery_voltage;
 } telemetry_message;
 
+typedef struct  {
+  char mac[6];
+
+} espnow_telemetry_message;
+
 
 
 typedef struct  {
@@ -48,11 +53,13 @@ typedef struct  {
 } message_queue;
 
 
-enum message_types{
+enum message_types {
   GATEWAY_TIME,
   SENSOR_TIME,
   SENSOR_READING,
-  SENOSR_TELEMETRY
+  SENOSR_TELEMETRY,
+  TIME_REQUEST,
+  ESPNOW_GATEWAY_TELEMETRY
 };
 
 

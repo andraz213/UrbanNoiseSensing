@@ -45,8 +45,9 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if(millis() - last_wifi >  1000){
+  if(millis() - last_wifi >  5000){
     init_wifi();
+    last_wifi = millis();
   }
 
 }

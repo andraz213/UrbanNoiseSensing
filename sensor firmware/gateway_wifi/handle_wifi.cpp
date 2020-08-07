@@ -18,7 +18,8 @@ void init_wifi() {
     WiFi.mode(WIFI_STA);
     int a = esp_wifi_set_protocol( WIFI_IF_STA, WIFI_PROTOCOL_11B | WIFI_PROTOCOL_11G | WIFI_PROTOCOL_11N );
     WiFi.begin("ummm", "juha2001");
-    while (WiFi.status() != WL_CONNECTED) {
+    long start_wifi_connect = millis();
+    while (WiFi.status() != WL_CONNECTED && millis() - start_wifi_connect < 10000) {
       Serial.print("|");
       delay(250);
     }
