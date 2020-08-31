@@ -134,8 +134,10 @@ void TaskSerial( void *pvParameters ) {
 
 void handle_sensor_reading(char* data, int datalen){
   
+    sending_list * hnd = malloc(sizeof(sending_list), MALLOC_CAP_8BIT);
 
-
+    Serial.println((float)hnd->decibels);
+    
 
 
 
