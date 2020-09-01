@@ -45,7 +45,7 @@ const postSensor = async (req, res) => {
             return res.status(500).json(error);
         } else {
             if (sensor.length == 0) {
-                var novSensor = new sensorModel({
+                let novSensor = new sensorModel({
                     name: nameGenerator.newRandomName(),
                     mac: mac
                 });
@@ -57,9 +57,10 @@ const postSensor = async (req, res) => {
 
             if (sensor.length == 1) {
 
-                var gw_macs = [];
-                if (sensor.current_deployment != null) {
-                    gw_macs = await getGWMacs(se);
+                let gw_macs = [];
+                console.log(sensor[0].current_deployment);
+                if (sensor[0].current_deployment != null) {
+                    gw_macs = await getGWMacs(sensor[0].current_deployment);
                 }
 
                 let sensorObj = JSON.parse(JSON.stringify(sensor));

@@ -1,10 +1,10 @@
 #include "maintanence_routine.h"
+#include "handle_wifi.h"
 
 
-
-const char* ssid = "A1";
+const char* ssid = "PSP256";
 const char* password = "siol2004";
-const char* serverName = "http://urbannoisesensing.herokuapp.com/api/sensor/data";
+const char* serverName = "http://urbannoisesensing.herokuapp.com";
 
 HTTPClient http;
 
@@ -12,7 +12,11 @@ void do_maintanence() {
 
   // connect to WiFi
 
+  connect_wifi(ssid, password);
+
   // connect to server
+
+say_hi_get_config(serverName);
 
   // get info
 
@@ -24,22 +28,6 @@ void do_maintanence() {
 
 }
 
-
-
-void connectWifi() {
-
-  if (WiFi.status() != WL_CONNECTED) {
-    WiFi.begin(ssid, password);
-    Serial.println("Connecting");
-    while (WiFi.status() != WL_CONNECTED) {
-      delay(500);
-      Serial.print(".");
-    }
-    //esp_wifi_set_ps(WIFI_PS_MAX_MODEM);
-  }
-
-
-}
 
 
 
