@@ -10,7 +10,7 @@ double vImag[SAMPLES_SIZE];
 arduinoFFT FFT = arduinoFFT(); /* Create FFT object */
 
 
-void calculate_fft(int * samples, double * result, int num_downsample) {
+double calculate_fft(int * samples, double * result, int num_downsample) {
 
   for (int i = 0; i < SAMPLES_SIZE; i++) {
     vReal[i] = (double)samples[i];
@@ -54,4 +54,5 @@ void calculate_fft(int * samples, double * result, int num_downsample) {
   }
 
   Serial.println(x);
+  return x;
 }

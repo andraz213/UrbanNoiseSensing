@@ -2,7 +2,7 @@
 #define HANDLE_WIFI_H
 
 #include "handle_json.h"
-
+#include "handle_spiffs.h"
 
 bool post_telemetry();
 

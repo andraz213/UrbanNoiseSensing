@@ -21,10 +21,11 @@ String get_config(){
     if(file){
 
       while(file.available()){
-        res += file.read();
+        res += String((char)file.read());
       }
     }
   }
+  Serial.println(res);
   return res;
 }
 
@@ -34,25 +35,21 @@ bool write_config(String config){
   bool res = false;
   if(init_spiffs()){
 
-    File file = SPIFFS.open("/config.json", "r");
+    File file = SPIFFS.open("/config.json", "w");
 
     if(file){
-
-      if(SPIFFS.remove("/config.json")){
-        file.close();
-        file = SPIFFS.open("/config.json", "w");
-
+        Serial.println("henlo");
         uint8_t * buf = (uint8_t *)heap_caps_malloc(sizeof(uint8_t) * config.length(), MALLOC_CAP_8BIT);
 
         for(int i = 0; i< config.length(); i++){
           buf[i] = (uint8_t)config.charAt(i);
+          Serial.print(String((char)buf[i]));
+          Serial.print(" ");
         }
-
+        Serial.println("henlos");
         res = file.write(buf, config.length());
 
         file.close();
-
-      }
     }
   }
   return res;

@@ -29,12 +29,17 @@ bool say_hi_get_config(const char* serverName){
   Serial.println(httpResponseCode);
 
 
-  Serial.println(http.getString());
+  String result = http.getString();
 
+  Serial.println(write_config(result));
+  Serial.println(result.length());
+  get_config();
 
   //http.end();
-
-return true;
+if(httpResponseCode == 200){
+  return true;
+}
+return false;
 
 }
 
@@ -48,9 +53,14 @@ void connect_wifi(const char* ssid, const char* password){
     int a = esp_wifi_set_protocol( WIFI_IF_STA, WIFI_PROTOCOL_11B | WIFI_PROTOCOL_11G | WIFI_PROTOCOL_11N );
     WiFi.begin(ssid, password);
     Serial.println("Connecting");
+    int i = 0;
     while (WiFi.status() != WL_CONNECTED) {
       delay(500);
       Serial.print(".");
+      i++;
+      if(i>60){
+        ESP.restart();
+      }
     }
   }
 

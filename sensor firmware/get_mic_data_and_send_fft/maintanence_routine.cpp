@@ -1,6 +1,16 @@
 #include "maintanence_routine.h"
 #include "handle_wifi.h"
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <ArduinoJson.h>
+#include "global_defines.h"
+#include "sensing_routine.h"
+#include "microphone.h"
+#include "spectrum_analysis.h"
+#include "decibel_calculator.h"
 
+Adafruit_SSD1306 display(128, 32, &Wire, -1);
 
 const char* ssid = "PSP256";
 const char* password = "siol2004";
@@ -9,14 +19,51 @@ const char* serverName = "http://urbannoisesensing.herokuapp.com";
 HTTPClient http;
 
 void do_maintanence() {
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  display.display();
+  display.clearDisplay();
+
+  display.setTextSize(1);      // Normal 1:1 pixel scale
+  display.setTextColor(SSD1306_WHITE); // Draw white text
+  display.setCursor(0, 0);
+
+  display.println("Connecting to:");
+
+  display.println(ssid);
+
+  display.display();
+
 
   // connect to WiFi
 
   connect_wifi(ssid, password);
+  display.clearDisplay();
+  display.clearDisplay();
+  display.setTextSize(1);      // Normal 1:1 pixel scale
+  display.setTextColor(SSD1306_WHITE); // Draw white text
+  display.setCursor(0, 0);
+  display.println("Connected!");
+  display.println("Getting sensor config");
 
+
+  display.display();
   // connect to server
 
-say_hi_get_config(serverName);
+  while(!say_hi_get_config(serverName)){
+    delay(1000);
+    connect_wifi(ssid, password);
+  }
+
+  double average = 0.0;
+  long prev = millis();
+  while(true){
+  String name = get_config_name();
+  display.clearDisplay();
+  display.setTextSize(1);      // Normal 1:1 pixel scale
+  display.setTextColor(SSD1306_WHITE); // Draw white text
+  display.setCursor(0, 0);
+  display.println(name);
+
 
   // get info
 
@@ -25,6 +72,49 @@ say_hi_get_config(serverName);
   // ota handler
 
   // send telemetry data every five minutes
+  int samples_pubb[SAMPLES_SIZE];
+  double fft_downsampledd[DOWNSAMPLED__FFT];
+  double decibels = 0.0;
+  init_i2s();
+  get_samples((int*)&samples_pubb);
+  double max_freq = calculate_fft((int*)&samples_pubb, (double*)&fft_downsampledd, DOWNSAMPLED__FFT);
+  decibels = 0.0;
+  decibels = calculate_decibels((int*)&samples_pubb, SAMPLES_SIZE);
+  display.println(decibels);
+  display.println(max_freq);
+
+
+  double max_fft = 0.0;
+  for(int i = 0; i<DOWNSAMPLED__FFT; i++){
+    if(fft_downsampledd[i] > max_fft){
+      max_fft = fft_downsampledd[i];
+    }
+  }
+
+  if(max_fft > average){
+    average = max_fft;
+  } else {
+    average *= 0.9;
+    max_fft += 0.1;
+  }
+
+
+
+
+for(int i = 0; i<DOWNSAMPLED__FFT; i++){
+  int height = map(fft_downsampledd[i], 0, (int)average, 0, 28);
+  display.drawLine(i*2 + 74, 31, i*2 + 74, 31 - height, SSD1306_WHITE);
+
+}
+
+  display.println(average);
+  display.display();
+  while(millis() - prev < 99){
+    delay(1);
+  }
+  prev = millis();
+
+}
 
 }
 
