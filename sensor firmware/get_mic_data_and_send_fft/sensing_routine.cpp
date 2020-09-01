@@ -63,7 +63,6 @@ void do_sensing() {
 
 
 
-
     // sleep for a random amount of time to prevent signal congestion
     setCpuFrequencyMhz(20);
     int random_sleep = (int)get_random_sleep_time();

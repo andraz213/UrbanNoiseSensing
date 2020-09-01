@@ -27,8 +27,8 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   int type = 0;
   memcpy(&type, (char*)incomingData, (sizeof(int)));
 
-  char * data = (char*) (incomingData + sizeof(int));
-  int datalen = len - sizeof(int);
+  char * data = (char*) (incomingData + 2*sizeof(int));
+  int datalen = len - 2*sizeof(int);
 
   if(type == (int)SENOSR_TELEMETRY){
     Serial.println("time_request");
@@ -68,6 +68,7 @@ void TaskEspNow( void *pvParameters ) {
   }
 }
 
+float decibelis [100][4];
 
 void handleSensorMessage(uint8_t * mac, uint8_t *incomingData, int len, int type){
   char * tmp = (char*)heap_caps_malloc(sizeof(char) * len, MALLOC_CAP_8BIT);
@@ -80,13 +81,83 @@ void handleSensorMessage(uint8_t * mac, uint8_t *incomingData, int len, int type
   free(tmp);
   Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
 
+/*
+  for(int i = 0; i<len; i++){
+    Serial.print(incomingData[i], HEX);
+  }*/
 
-  if (len == sizeof(data_message)) {
-    data_message *msg = (data_message *)incomingData;
 
-    Serial.println(msg->data.decibels);
+  if (len == sizeof(sending_list)) {
+    sending_list *msg;
+    Serial.println((long)msg);
+    msg = (sending_list *)incomingData;
+    Serial.println(((sending_list *)incomingData)->decibels);
+    Serial.println((((sending_list *)incomingData)->timestamp)%100);
+    Serial.println((mac[4] + mac[2] + mac[3]) % 5);
+
+    decibelis[(((sending_list *)incomingData)->timestamp)%100][(mac[4] + mac[2] + mac[3]) % 5] = (float) ((sending_list *)incomingData)->decibels;
 
   }
+
+  if((((sending_list *)incomingData)->timestamp)%100 == 99 && (mac[4] + mac[2] + mac[3]) % 5 == 0){
+
+
+    float prvi = 0.0;
+    float drugi = 0.0;
+    float tretji = 0.0;
+    float cetrti = 0.0;
+
+    float avgmae = 0.0;
+    float avgrmse = 0.0;
+    for(int j = 0; j<90; j++){
+      float avg = decibelis[j][0] + decibelis[j][1] + decibelis[j][3];
+
+      avg /= 3.0;
+
+      float rmse = (decibelis[j][0] - avg)/avg * (decibelis[j][0] - avg)/avg + (decibelis[j][1] - avg)/avg * (decibelis[j][1] - avg)/avg + (decibelis[j][3] - avg)/avg * (decibelis[j][3] - avg)/avg;
+
+      float mae = abs(decibelis[j][0] - avg) + abs(decibelis[j][1] - avg) + abs(decibelis[j][3] - avg);
+
+      mae *= 100.0/(3.0 * avg);
+
+
+      prvi += (decibelis[j][0] - avg)*100.0/avg;
+      drugi += (decibelis[j][1] - avg)*100.0/avg;
+      tretji += (decibelis[j][3] - avg)*100.0/avg;
+
+      cetrti += (0.0 - avg)/avg;
+
+      rmse /= 3.0;
+
+      rmse = sqrt(rmse);
+
+      avgmae += mae;
+      avgrmse += rmse;
+      Serial.println(rmse);
+      Serial.println(mae);
+      Serial.println();
+
+    }
+    Serial.println("-------------------------");
+    prvi /= 90.0;
+    drugi /= 90.0;
+    tretji /= 90.0;
+    cetrti /= 90.0;
+    avgmae /= 90.0;
+    avgrmse /= 90.0;
+    Serial.println(prvi);
+    Serial.println(drugi);
+    Serial.println(tretji);
+    Serial.println(cetrti);
+    Serial.println(avgrmse);
+    Serial.println(avgmae);
+  }
+
+
+
+
+
+
 }
 
 int64_t get_us_time() {

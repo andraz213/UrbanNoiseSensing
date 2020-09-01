@@ -22,7 +22,7 @@
 
 typedef struct  {
   void * next;
-  double fft_values [16];
+  float fft_values [16];
   int fft_range;
   double decibels;
   long timestamp;

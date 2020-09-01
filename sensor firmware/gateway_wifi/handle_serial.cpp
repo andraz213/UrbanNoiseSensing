@@ -133,10 +133,13 @@ void TaskSerial( void *pvParameters ) {
 
 
 void handle_sensor_reading(char* data, int datalen){
-  
-    sending_list * hnd = malloc(sizeof(sending_list), MALLOC_CAP_8BIT);
+    sending_list * hnd = (sending_list *)heap_caps_malloc(sizeof(sending_list), MALLOC_CAP_8BIT);
 
-    Serial.println((float)hnd->decibels);
+    memcpy(hnd, (char*)&data[6], sizeof(sending_list));
+    Serial.println(hnd->decibels);
+    
+    Serial.println((char)hnd->decibels, HEX);
+
     
 
 

@@ -65,7 +65,7 @@ void add_to_sending_queue(double* fft, double decibels, unsigned int timestamp) 
   sending_list *new_item = get_one_free_item_and_add_to_queue();
 
   for (int i = 0; i < DOWNSAMPLED__FFT; i++) {
-    new_item->fft_values[i] = fft[i];
+    new_item->fft_values[i] = (float)fft[i];
   }
   new_item->next = (sending_list*)0;
   new_item->fft_range = DOWNSAMPLED_FREQUENCY;

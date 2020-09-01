@@ -73,6 +73,7 @@ void send_data() {
     sending_message.message_type = (int)SENSOR_READING;
     sended = false;
 
+
     //esp_err_t result = esp_now_send(specAddress, (uint8_t *) &sending_message, sizeof(data_message));
     esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &sending_message, sizeof(data_message));
 

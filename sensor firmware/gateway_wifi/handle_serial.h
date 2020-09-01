@@ -3,6 +3,7 @@
 
 void TaskSerial( void *pvParameters );
 void handle_time_request();
+void handle_sensor_reading(char* data, int datalen);
 
 
 #endif
