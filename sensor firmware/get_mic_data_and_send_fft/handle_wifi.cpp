@@ -10,9 +10,26 @@
 
 #include <HTTPClient.h>
 
-bool post_telemetry();
+bool post_telemetry(const char* serverName, String version, double bat_voltage) {
+  String id = get_sensor_id();
+  String url = String(serverName) + String("/api/sensor/telemetry/") + id;
+  String body = "{\"version\": \"" + String(version) + "\", \"voltage\":" + String(bat_voltage) + "}";
+  Serial.println(url);
+  HTTPClient http;
+  http.begin(url);
+  http.addHeader("Content-Type", "application/json");
+  int httpResponseCode = http.POST(body);
+  Serial.println(httpResponseCode);
 
-bool say_hi_get_config(const char* serverName){
+  if (httpResponseCode == 200) {
+    return true;
+  }
+  return false;
+
+
+};
+
+bool say_hi_get_config(const char* serverName) {
 
   uint8_t mac[6];
   esp_wifi_get_mac(WIFI_IF_STA, mac);
@@ -36,16 +53,16 @@ bool say_hi_get_config(const char* serverName){
   get_config();
 
   //http.end();
-if(httpResponseCode == 200){
-  return true;
-}
-return false;
+  if (httpResponseCode == 200) {
+    return true;
+  }
+  return false;
 
 }
 
 bool handle_OTA();
 
-void connect_wifi(const char* ssid, const char* password){
+void connect_wifi(const char* ssid, const char* password) {
 
 
   if (WiFi.status() != WL_CONNECTED) {
@@ -58,7 +75,7 @@ void connect_wifi(const char* ssid, const char* password){
       delay(500);
       Serial.print(".");
       i++;
-      if(i>60){
+      if (i > 60) {
         ESP.restart();
       }
     }

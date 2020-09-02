@@ -2,8 +2,8 @@
 
 bool spiffs_inited = false;
 
-bool init_spiffs(){
-  if(!spiffs_inited){
+bool init_spiffs() {
+  if (!spiffs_inited) {
     spiffs_inited = SPIFFS.begin(true);
   }
   return spiffs_inited;
@@ -12,15 +12,15 @@ bool init_spiffs(){
 
 
 
-String get_config(){
+String get_config() {
   String res = "";
-  if(init_spiffs()){
+  if (init_spiffs()) {
 
     File file = SPIFFS.open("/config.json", "r");
 
-    if(file){
+    if (file) {
 
-      while(file.available()){
+      while (file.available()) {
         res += String((char)file.read());
       }
     }
@@ -31,25 +31,25 @@ String get_config(){
 
 
 
-bool write_config(String config){
+bool write_config(String config) {
   bool res = false;
-  if(init_spiffs()){
+  if (init_spiffs()) {
 
     File file = SPIFFS.open("/config.json", "w");
 
-    if(file){
-        Serial.println("henlo");
-        uint8_t * buf = (uint8_t *)heap_caps_malloc(sizeof(uint8_t) * config.length(), MALLOC_CAP_8BIT);
+    if (file) {
+      Serial.println("henlo");
+      uint8_t * buf = (uint8_t *)heap_caps_malloc(sizeof(uint8_t) * config.length(), MALLOC_CAP_8BIT);
 
-        for(int i = 0; i< config.length(); i++){
-          buf[i] = (uint8_t)config.charAt(i);
-          Serial.print(String((char)buf[i]));
-          Serial.print(" ");
-        }
-        Serial.println("henlos");
-        res = file.write(buf, config.length());
+      for (int i = 0; i < config.length(); i++) {
+        buf[i] = (uint8_t)config.charAt(i);
+        Serial.print(String((char)buf[i]));
+        Serial.print(" ");
+      }
+      Serial.println("henlos");
+      res = file.write(buf, config.length());
 
-        file.close();
+      file.close();
     }
   }
   return res;

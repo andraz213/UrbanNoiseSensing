@@ -8,6 +8,7 @@
 #include "decibel_calculator.h"
 #include "sending_queue.h"
 #include "sending.h"
+#include "common.h"
 
 
 int samples_pub[SAMPLES_SIZE];

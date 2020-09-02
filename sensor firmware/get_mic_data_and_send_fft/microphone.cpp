@@ -179,7 +179,7 @@ void get_samples(int * samples) {
 
   rtc_clk_apll_enable(1, sdm0, sdm1, sdm2, odir);
 
-  for (int i = 0; i < 50; i++) {
+  for (int i = 0; i < 55; i++) {
 
 
     int num_bytes_read = i2s_read_bytes(I2S_PORT,

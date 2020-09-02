@@ -7,7 +7,7 @@
 #include <WiFi.h>
 #include "apps/sntp/sntp.h"
 #include <sys/time.h>
-
+#include "common.h"
 
 long previous_time_sync = 0;
 bool got_time = false;
@@ -22,7 +22,7 @@ void sync_time_and_telemetry() {
 
     telemetry_message to_send;
     to_send.message_type = SENOSR_TELEMETRY;
-    to_send.battery_voltage = 3.33;
+    to_send.battery_voltage = get_battery_voltage();
 
     uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
     esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &to_send, sizeof(telemetry_message));

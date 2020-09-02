@@ -7,4 +7,6 @@ void get_gateway_mac(uint8_t * mac);
 
 String get_config_name();
 
+String get_sensor_id();
+
 #endif

@@ -13,6 +13,9 @@
 
 
 void do_maintanence();
+void connect_and_get_data();
+void do_sensing_for_test();
+void connect_and_send_telemetry();
 
 
 #endif
