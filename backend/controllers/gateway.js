@@ -74,22 +74,14 @@ const postGateway = (req, res) => {
                 });
             }
 
-            /*if (sensor.length == 1) {
+            if (gateway.length >= 1) {
+                console.log(gateway);
+                let gatewayObj = JSON.parse(JSON.stringify(gateway));
 
-                var gw_macs = [];
-                if (sensor.current_deployment != null) {
-                    gw_macs = getGWMacs(se);
+                console.log(gatewayObj);
+                return res.status(200).json(gatewayObj);
 
-                }
-
-                console.log("hejj");
-                console.log(sensor);
-                let sensorObj = JSON.parse(JSON.stringify(sensor));
-                sensorObj[0]["gateways"] = gw_macs;
-                console.log(sensorObj);
-                return res.status(200).json(sensorObj);
-
-            }*/
+            }
 
 
         }
