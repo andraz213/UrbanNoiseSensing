@@ -8,6 +8,7 @@
 #include "apps/sntp/sntp.h"
 #include <sys/time.h>
 #include "common.h"
+#include "handle_json.h"
 
 long previous_time_sync = 0;
 bool got_time = false;
@@ -24,8 +25,9 @@ void sync_time_and_telemetry() {
     to_send.message_type = SENOSR_TELEMETRY;
     to_send.battery_voltage = get_battery_voltage();
 
-    uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-    esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &to_send, sizeof(telemetry_message));
+    uint8_t mac_address [6];
+    get_gateway_mac(mac_address);
+    esp_err_t result = esp_now_send(mac_address, (uint8_t *) &to_send, sizeof(telemetry_message));
 
 
     long start = millis();

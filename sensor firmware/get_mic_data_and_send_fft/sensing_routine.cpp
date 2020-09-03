@@ -9,6 +9,8 @@
 #include "sending_queue.h"
 #include "sending.h"
 #include "common.h"
+#include "handle_oled.h"
+#include "handle_json.h"
 
 
 int samples_pub[SAMPLES_SIZE];
@@ -17,10 +19,14 @@ unsigned int sensing_start = 0;
 double fft_downsampled[DOWNSAMPLED__FFT];
 double decibels = 0.0;
 
+uint8_t mac [6];
+String name;
+
 void sync_time_send_telemetry() {}
 
 void do_sensing() {
 
+  init_mac_and_name();
 
   // setup wifi LR and espnow
   setup_wifi_and_LR();
@@ -29,6 +35,7 @@ void do_sensing() {
   init_i2s();
 
   // sync time
+  printout_config();
 
   esp_wifi_start();
   sync_time_and_telemetry();
@@ -41,16 +48,17 @@ void do_sensing() {
   int nummber_of_iteeer = 0;
   while (true) {
     print_usec();
-    Serial.println(millis());
-    Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
-
+    if(!digitalRead(27)){
+      oled_on();
+      draw_rect();
+    }
     // set cpu frequency to 20mhz to lower the consumption
     setCpuFrequencyMhz(20);
     // get the sensor data
     sensing_start = get_secs();
 
     get_samples((int*)&samples_pub);
-
+    oled_off();
     Serial.println((unsigned long) sensing_start);
     // set cpu frequency to 240mhz for processing
     setCpuFrequencyMhz(240);
@@ -102,4 +110,23 @@ void do_sensing() {
 
     // every few minutes send telemetry and synchronise time
   }
+}
+
+void init_mac_and_name(){
+  get_gateway_mac(mac);
+  name = get_config_name();
+}
+
+
+void printout_config(){
+  oled_on();
+  String battery = String(get_battery_voltage()) + "V";
+  String mac_string = String(mac[0], HEX) + ":" + String(mac[1], HEX) + ":" + String(mac[2], HEX) + ":" + String(mac[3], HEX) + ":" + String(mac[4], HEX) + ":" +String(mac[5], HEX);
+  print_text(String("UrbanNoiseSensing"), name, mac_string, battery);
+  delay(5000);
+  oled_off();
+
+
+
+
 }

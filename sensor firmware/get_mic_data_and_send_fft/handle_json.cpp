@@ -6,13 +6,20 @@ String get_config_name() {
   DynamicJsonDocument doc(5000);
 
   String json = get_config();
-  deserializeJson(doc, json);
+  if(json.length() > 0){
+    deserializeJson(doc, json);
+    if(doc.size() > 0){
+      JsonObject root = doc[0];
+      if(!root["name"].isNull()){
+        const char* root_0_name = root["name"];
 
-  JsonObject root = doc[0];
+        Serial.println(String(root_0_name));
+        return String(root_0_name); // "Madelyn84"
+      }
+    }
+  }
 
-  const char* root_0_name = root["name"];
-  Serial.println(String(root_0_name));
-  return String(root_0_name); // "Madelyn84"
+  return String("not inited");
 }
 
 
@@ -21,16 +28,34 @@ void get_gateway_mac(uint8_t * mac) {
   DynamicJsonDocument doc(5000);
 
   String json = get_config();
-  deserializeJson(doc, json);
 
-  JsonObject root = doc[0];
+  if(json.length() != 0){
+    deserializeJson(doc, json);
+    if(doc.size() > 0){
 
-  JsonArray root_mac_gateways = root["gateways"];
-  JsonArray gateways_0 = root_mac_gateways[0];
+      JsonObject root = doc[0];
+      if(!root["gateways"].isNull()){
+        JsonArray root_mac_gateways = root["gateways"];
+        if(root_mac_gateways.size() > 0){
+          JsonArray gateways_0 = root_mac_gateways[0];
+
+          if(!root_mac_gateways.isNull() && root_mac_gateways.size() == 1 && root_mac_gateways[0].size() == 6){
+            for (int i = 0; i < 6; i++) {
+              mac[i] = (uint8_t)gateways_0[i];
+            }
+            return;
+          }
+        }
+      }
+    }
+  }
 
   for (int i = 0; i < 6; i++) {
-    mac[i] = (uint8_t)gateways_0[i];
+    mac[i] = (uint8_t)255;
   }
+  return;
+
+
 }
 
 

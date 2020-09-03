@@ -63,11 +63,32 @@ void show_spectrogram(int size, double * values, double decibels, double max_fre
 
     for (int i = 0; i < size; i++) {
       int height = map(values[i], 0, (int)average, 0, 28);
-      display.drawLine(i * 2 + 74, 31, i * 2 + 74, 31 - height, SSD1306_WHITE);
+      display.drawLine( 127 - (size - i), 31, 127 - (size - i), 31 - height, SSD1306_WHITE);
     }
 
     display.println(average);
     display.display();
 
+  }
+}
+
+void draw_rect() {
+  if (init_oled()) {
+    display.clearDisplay();
+    display.drawRect(0, 0, 32, 32, SSD1306_WHITE);
+    display.display();
+  }
+}
+
+
+void oled_on() {
+  if (init_oled()) {
+    display.ssd1306_command(SSD1306_DISPLAYON);
+  }
+}
+
+void oled_off() {
+  if (init_oled()) {
+    display.ssd1306_command(SSD1306_DISPLAYOFF);
   }
 }

@@ -28,6 +28,8 @@ void do_maintanence() {
 
 
 
+
+
     // get info
 
     // if firmware version is not the latest, go into ota handler
@@ -49,6 +51,13 @@ void connect_and_get_data() {
     print_text(String("Connected!"), String("Getting sensor config"), String(""), String(""));
     if (say_hi_get_config(serverName)) {
       previous_got_data = millis();
+      uint8_t * mmm = (uint8_t *)heap_caps_malloc(sizeof(uint8_t) * 6, MALLOC_CAP_8BIT);
+      get_gateway_mac(mmm);
+      String name = get_config_name();
+      String mac = String(mmm[0], HEX) + ":" + String(mmm[1], HEX) + ":" + String(mmm[2], HEX) + ":" + String(mmm[3], HEX) + ":" + String(mmm[4], HEX) + ":" +String(mmm[5], HEX);
+      print_text(name, String("Gateway MAC"), mac, String(millis()));
+      delay(5000);
+
     }
     else {
       previous_got_data += 10000;

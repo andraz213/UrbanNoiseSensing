@@ -9,11 +9,10 @@
 #include "sending.h"
 #include "sending_queue.h"
 #include "handle_time.h"
+#include "handle_json.h"
 
 
-uint8_t specAddress[] = {0x30, 0xAE, 0xA4, 0xC7, 0x89, 0x74};
-
-uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+uint8_t mac_address [6];
 esp_now_peer_info_t peerInfo;
 esp_now_peer_info_t peerInfo1;
 bool sended = false;
@@ -35,13 +34,12 @@ void setup_wifi_and_LR() {
   esp_now_register_send_cb(OnDataSent);
   esp_now_register_recv_cb(OnDataRecv);
 
-  memcpy(peerInfo.peer_addr, broadcastAddress, 6);
+  get_gateway_mac(mac_address);
+
+  memcpy(peerInfo.peer_addr, mac_address, 6);
   peerInfo.channel = 0;
   peerInfo.encrypt = false;
 
-  memcpy(peerInfo1.peer_addr, specAddress, 6);
-  peerInfo1.channel = 0;
-  peerInfo1.encrypt = false;
 
   if (esp_now_add_peer(&peerInfo) != ESP_OK) {
     Serial.println("Failed to add peer");
@@ -75,7 +73,7 @@ void send_data() {
 
 
     //esp_err_t result = esp_now_send(specAddress, (uint8_t *) &sending_message, sizeof(data_message));
-    esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &sending_message, sizeof(data_message));
+    esp_err_t result = esp_now_send(mac_address, (uint8_t *) &sending_message, sizeof(data_message));
 
     if (result == ESP_OK) {
 
