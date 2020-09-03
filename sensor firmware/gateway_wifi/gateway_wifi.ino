@@ -31,8 +31,8 @@ void setup() {
 
   // task one
   xTaskCreatePinnedToCore(
-    TaskEspNow
-    ,  "TaskEspNow"
+    TaskWifi
+    ,  "TaskWifi"
     ,  32000  // Stack size
     ,  NULL
     ,  1  // Priority

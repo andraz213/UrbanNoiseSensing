@@ -1,6 +1,6 @@
 #ifndef GLOBAL_DEFINES_H
 #define GLOBAL_DEFINES_H
-#include <arduino.h>
+#include <Arduino.h>
 
 #define I2S_CLOCK               20000000
 #define SAMPLING_FREQUENCY      (I2S_CLOCK/512)
@@ -41,15 +41,18 @@ typedef struct  {
 
 typedef struct  {
   char mac[6];
-
 } espnow_telemetry_message;
 
-
+typedef struct  {
+  int message_type;
+  uint8_t mac[6];
+} gateway_time_request;
 
 typedef struct  {
   void * next;
   char mac[6];
   int len;
+  int type;
   char* message;
 } message_queue;
 

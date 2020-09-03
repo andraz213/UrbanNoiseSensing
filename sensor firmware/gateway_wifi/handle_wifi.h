@@ -4,8 +4,9 @@
 
 #include <Arduino.h>
 
-void TaskEspNow( void *pvParameters );
+void TaskWifi( void *pvParameters );
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len);
 void init_wifi();
+void get_config();
 
 #endif

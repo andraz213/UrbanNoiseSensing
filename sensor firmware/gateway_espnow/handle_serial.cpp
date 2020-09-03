@@ -1,7 +1,12 @@
 #include "handle_serial.h"
 #include "global_defines.h"
 #include <Arduino.h>
+#include <esp_wifi.h>
+#include <esp_wifi_internal.h>
+#include <esp_wifi_types.h>
+#include <esp_now.h>
 #include <WiFi.h>
+#include <WiFiMulti.h>
 #define PJON_PACKET_MAX_LENGTH 500
 #define PJON_MAX_PACKETS 10
 #define PJON_INCLUDE_ASYNC_ACK true
@@ -117,8 +122,12 @@ void update_time() {
   bus.receive(1000);
   bus.update();
   got_time = false;
-  int type = (int)TIME_REQUEST;
-  bus.send_packet(GATEWAY_WIFI, &type, sizeof(int));
+
+  gateway_time_request * msg = (gateway_time_request *)heap_caps_malloc(sizeof(gateway_time_request), MALLOC_CAP_8BIT);
+
+  msg->message_type = (int)TIME_REQUEST;
+  esp_wifi_get_mac(WIFI_IF_STA, msg->mac);
+  bus.send_packet(GATEWAY_WIFI, msg, sizeof(gateway_time_request));
   int num = 0;
   long start = millis();
   while (!got_time && millis() - start < 100) {

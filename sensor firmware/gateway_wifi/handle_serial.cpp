@@ -11,6 +11,7 @@
 #include <PJON.h>
 #include "message_queue.h"
 #include "handle_time.h"
+#include "internal_config.h"
 
 PJON<ThroughSerialAsync> bus(GATEWAY_WIFI);
 
@@ -46,8 +47,12 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   int datalen = length - sizeof(int);
   memcpy(data, payload + sizeof(int), datalen);
 
+  Serial.println(":::::::::::::::::::::::::::::::::");
+  Serial.println(type);
+  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
+
   if (type == (int) TIME_REQUEST) {
-    handle_time_request();
+    handle_time_request(payload);
   }
 
     if (type == (int) SENSOR_READING) {
@@ -55,12 +60,6 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 
     }
 
-
-
-  for (int i = 0; i < min((int)length, 20); i++) {
-    Serial.print(payload[i], HEX);
-  }
-  Serial.println();
 
   free(data);
 
@@ -137,18 +136,17 @@ void handle_sensor_reading(char* data, int datalen){
 
     memcpy(hnd, (char*)&data[6], sizeof(sending_list));
     Serial.println(hnd->decibels);
-    
-    Serial.println((char)hnd->decibels, HEX);
-
-    
-
-
-
-
+    free(hnd);
 }
 
 
-void handle_time_request(){
+void handle_time_request(uint8_t *payload){
+
+  gateway_time_request * time_req = (gateway_time_request *)heap_caps_malloc(sizeof(gateway_time_request), MALLOC_CAP_8BIT);
+  memcpy(time_req, payload, sizeof(gateway_time_request));
+  set_espnow_mac(time_req->mac);
+  free(time_req);
+
   if (millis() - previous_time_update > 1000) {
     previous_time_update = millis();
 

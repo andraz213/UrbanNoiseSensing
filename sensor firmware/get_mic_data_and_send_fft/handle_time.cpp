@@ -19,7 +19,7 @@ void sync_time_and_telemetry() {
 
   got_time = false;
 
-  if (previous_time_sync == 0 || millis() - previous_time_sync > 30000) {
+  if (previous_time_sync == 0 || millis() - previous_time_sync > 3000) {
 
     telemetry_message to_send;
     to_send.message_type = SENOSR_TELEMETRY;
@@ -37,7 +37,7 @@ void sync_time_and_telemetry() {
     }
     Serial.println("ummm??");
 
-    previous_time_sync = millis() - 10000;
+    previous_time_sync = millis() - 1000;
     if (got_time) {
       previous_time_sync = millis();
     }
