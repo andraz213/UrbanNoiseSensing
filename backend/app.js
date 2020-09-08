@@ -35,7 +35,8 @@ wss.on('connection', socket => {
     socket.on('message', message =>{
         let dataObj = JSON.parse(message);
         console.log(dataObj.type);
-        postDataSensorWebsocket(message).then(r => socket.send(r));
+        socket.send("ok");
+        postDataSensorWebsocket(message).then(r => console.log(r));
 
     });
 });

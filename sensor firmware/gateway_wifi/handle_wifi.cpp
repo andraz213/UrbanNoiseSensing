@@ -20,8 +20,8 @@ const char* password = "siol2004";
 const char* serverName = "http://urbannoisesensing.herokuapp.com";
 
 
-const char* websockets_server_host = "192.168.1.7"; //Enter server adress
-const uint16_t websockets_server_port = 3000; // Enter server port
+const char* websockets_server_host = "urbannoisesensing.herokuapp.com"; // "192.168.1.7"; //Enter server adress
+const uint16_t websockets_server_port = 80; // 3000; // Enter server port
 bool got_reply = false;
 using namespace websockets;
 
