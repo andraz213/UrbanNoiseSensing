@@ -22,7 +22,7 @@ const char* serverName = "http://urbannoisesensing.herokuapp.com";
 
 const char* websockets_server_host = "192.168.1.7"; //Enter server adress
 const uint16_t websockets_server_port = 3000; // Enter server port
-
+bool got_reply = false;
 using namespace websockets;
 
 WebsocketsClient client;
@@ -59,7 +59,7 @@ void TaskWifi( void *pvParameters ) {
   bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
   if(connected) {
     Serial.println("Connected!");
-    client.send("Hello Server");
+    //client.send("Hello Server");
   } else {
     Serial.println("Not Connected!");
   }
@@ -68,6 +68,7 @@ void TaskWifi( void *pvParameters ) {
 client.onMessage([&](WebsocketsMessage message){
     Serial.print("Got Message: ");
     Serial.println(message.data());
+    got_reply = true;
 });
 
 
@@ -146,8 +147,20 @@ void send_data(){
 
         String jsn;
         serializeJson(doc, jsn);
+        got_reply = false;
         client.send(jsn);
-        remove_first();
+        long sent = millis();
+        while(got_reply != true && millis() - sent < 3000){
+          if(client.available()) {
+            client.poll();
+          }
+        }
+
+        if(got_reply == true){
+          Serial.print("               RTT time for websockets: ");
+          Serial.println(millis() - sent);
+          remove_first();
+        }
 
     }
 

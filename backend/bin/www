@@ -29,7 +29,11 @@ let server = http.createServer(app);
 let wss = new WSS.Server({ server: server});
 
 wss.on('connection', socket => {
-  socket.on('message', message => console.log(message));
+  socket.on('message', message =>{
+    let dataObj = JSON.parse(message);
+    console.log(dataObj.type);
+
+  });
 });
 
 
