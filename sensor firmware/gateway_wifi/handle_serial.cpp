@@ -42,29 +42,51 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
      overwritten when a new message is dispatched */
   int type = 0;
   memcpy(&type, (char*)payload, sizeof(int));
-
-  char * data = (char*)heap_caps_malloc(sizeof(char) * length - sizeof(int), MALLOC_CAP_8BIT);
-  int datalen = length - sizeof(int);
-  memcpy(data, payload + sizeof(int), datalen);
-
   Serial.println(":::::::::::::::::::::::::::::::::");
   Serial.println(type);
   Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
 
   if (type == (int) TIME_REQUEST) {
     handle_time_request(payload);
+    return;
   }
 
-    if (type == (int) SENSOR_READING) {
-      handle_sensor_reading(data, datalen);
+  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
+  int datalen = length - sizeof(int) - 6;
+  char * mac =  (char*)heap_caps_malloc(sizeof(char) * 6, MALLOC_CAP_8BIT);
+  char * data = (char*)heap_caps_malloc(sizeof(char) * datalen, MALLOC_CAP_8BIT);
 
-    }
+  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
+  while(data == 0){
+  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
+    data = (char*)heap_caps_malloc(sizeof(char) * datalen, MALLOC_CAP_8BIT);
+  }
+  memcpy(mac, (char*)payload + sizeof(int), sizeof(char) * 6);
+  memcpy(data, (char*)payload + sizeof(int) + 6, sizeof(char) * datalen);
+  Serial.println(datalen);
+  Serial.println((long)data);
+  if (type == (int) SENSOR_READING) {
+    handle_sensor_reading(mac, data, datalen, type);
+
+  }
+  if(type == (int) SENOSR_TELEMETRY){
+    handle_sensor_telemetry(mac, data, datalen, type);
+  }
 
 
   free(data);
+  free(mac);
 
 
 };
+
+
+/*
+to dobim preko seriala
+int type
+char mac [6]
+char data (data je potem lahko al tlemetry message al pa sending list)
+*/
 
 
 
@@ -113,11 +135,15 @@ void TaskSerial( void *pvParameters ) {
 
   for (;;) {
 
+
+
     //bus.receive(50000);
-    bus.receive(20000);
-    if (bus.update() > 0) {
-      Serial.println("to be sent");
-      Serial.println(bus.update());
+    if(heap_caps_get_free_size(MALLOC_CAP_8BIT) > 51000){
+      bus.receive(20000);
+      if (bus.update() > 0) {
+        Serial.println("to be sent");
+        Serial.println(bus.update());
+      }
     }
 
 
@@ -131,12 +157,56 @@ void TaskSerial( void *pvParameters ) {
 
 
 
-void handle_sensor_reading(char* data, int datalen){
-    sending_list * hnd = (sending_list *)heap_caps_malloc(sizeof(sending_list), MALLOC_CAP_8BIT);
+void handle_sensor_reading(char * mac, char * data, int datalen, int type){
 
-    memcpy(hnd, (char*)&data[6], sizeof(sending_list));
-    Serial.println(hnd->decibels);
-    free(hnd);
+    if(datalen == sizeof(sending_list)){
+      sending_list * hnd = (sending_list *)heap_caps_malloc(sizeof(sending_list), MALLOC_CAP_8BIT);
+
+      memcpy(hnd, (char*) data, sizeof(sending_list));
+
+
+      Serial.println(hnd->decibels);
+      free(hnd);
+
+      char * tmp = (char*)heap_caps_malloc(sizeof(sending_list), MALLOC_CAP_8BIT);
+      memcpy(tmp, data, sizeof(sending_list));
+      char * tmpmac = (char*)heap_caps_malloc(sizeof(char) * 6, MALLOC_CAP_8BIT);
+      memcpy(tmpmac, mac, 6);
+      add_to_message_queue((char*)tmp, sizeof(sending_list), (char*)tmpmac);
+
+      free(tmpmac);
+      free(tmp);
+  } else {
+    Serial.println(" SENSOR JEBA JEBA JEBA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+  }
+
+
+}
+
+void handle_sensor_telemetry(char * mac, char * data, int datalen, int type){
+
+
+
+    if(datalen == sizeof(telemetry_message)){
+      telemetry_message * hnd = (telemetry_message *)heap_caps_malloc(sizeof(telemetry_message), MALLOC_CAP_8BIT);
+
+      memcpy(hnd, (char*)data + datalen - sizeof(telemetry_message), sizeof(telemetry_message));
+      Serial.println(datalen);
+      Serial.print("                VOLTAGE BABY  ");
+      Serial.println(hnd->battery_voltage);
+      free(hnd);
+      char * tmp = (char*)heap_caps_malloc(sizeof(telemetry_message), MALLOC_CAP_8BIT);
+      memcpy(tmp, data, sizeof(telemetry_message));
+      char * tmpmac = (char*)heap_caps_malloc(sizeof(char) * 6, MALLOC_CAP_8BIT);
+      memcpy(tmpmac, mac, 6);
+      add_to_message_queue((char*)tmp, sizeof(telemetry_message), (char*)tmpmac);
+
+      free(tmpmac);
+      free(tmp);
+  } else {
+    Serial.println("JEBA JEBA JEBA !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+  }
+
 }
 
 

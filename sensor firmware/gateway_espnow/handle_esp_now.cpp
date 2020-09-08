@@ -36,9 +36,10 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   if(type == (int)SENOSR_TELEMETRY){
     Serial.println("time_request");
     handleTimeRequest((char*)mac);
+    handleSensorMessage((uint8_t *)mac, (uint8_t *)incomingData, len, type);
   }
 
-  if(type == (int)SENSOR_READING || type == (int) SENOSR_TELEMETRY){
+  if(type == (int)SENSOR_READING){
     Serial.println("sensor_reading");
     handleSensorMessage((uint8_t *)mac, (uint8_t *)data, datalen, type);
   }
@@ -81,8 +82,9 @@ void TaskEspNow( void *pvParameters ) {
     esp_wifi_get_mac(WIFI_IF_STA, mmm);
     String mac = String(mmm[0], HEX) + ":" + String(mmm[1], HEX) + ":" + String(mmm[2], HEX) + ":" + String(mmm[3], HEX) + ":" + String(mmm[4], HEX) + ":" +String(mmm[5], HEX);
     Serial.println(mac);
-    print_text(String("Messages last second"), String(last_second_messages), String("My MAC"), mac);
+    print_text(String("Messages last second"), String(last_second_messages), String(heap_caps_get_free_size(MALLOC_CAP_8BIT)), mac);
     prev_oled = millis();
+    free(mmm);
   }
     vTaskDelay(1);
   }
@@ -100,11 +102,26 @@ void handleSensorMessage(uint8_t * mac, uint8_t *incomingData, int len, int type
   free(tmpmac);
   free(tmp);
   Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
-
+  Serial.println(len);
+  Serial.println(sizeof(telemetry_message));
+  Serial.println(sizeof(sending_list));
 /*
   for(int i = 0; i<len; i++){
     Serial.print(incomingData[i], HEX);
   }*/
+
+
+  if (len == sizeof(telemetry_message)) {
+    for(int i = 0; i<len; i++){
+      Serial.println(incomingData[i], HEX);
+    }
+    telemetry_message *msg;
+    Serial.println((long)msg);
+    msg = (telemetry_message *)incomingData;
+    Serial.println(((telemetry_message *)incomingData)->battery_voltage);
+    Serial.println((mac[4] + mac[2] + mac[3]) % 5);
+  }
+
 
 
   if (len == sizeof(sending_list)) {

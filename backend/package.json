@@ -9,9 +9,11 @@
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "express-ws": "^4.0.0",
     "helmet": "^3.23.3",
     "mongoose": "^5.9.22",
     "morgan": "^1.9.1",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "ws": "^7.3.1"
   }
 }

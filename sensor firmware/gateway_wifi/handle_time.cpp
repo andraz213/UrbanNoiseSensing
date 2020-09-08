@@ -4,13 +4,17 @@
 //#include "esp_sntp.h"
 #include <Arduino.h>
 
+bool inited_time = false;
 
 void init_time() {
-  sntp_setoperatingmode(SNTP_OPMODE_POLL);
-  sntp_setservername(0, "europe.pool.ntp.org");
-  //sntp_set_sync_interval(60000);
-  //sntp_set_time_sync_notification_cb(time_sync_notification_cb);
-  sntp_init();
+  if(!inited_time){
+    sntp_setoperatingmode(SNTP_OPMODE_POLL);
+    sntp_setservername(0, "europe.pool.ntp.org");
+    //sntp_set_sync_interval(60000);
+    //sntp_set_time_sync_notification_cb(time_sync_notification_cb);
+    sntp_init();
+    inited_time = true;
+  }
 
   //Serial.println(sntp_get_sync_interval());
 

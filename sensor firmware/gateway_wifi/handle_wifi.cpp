@@ -5,6 +5,7 @@
 #include <esp_wifi.h>
 #include <esp_wifi_internal.h>
 #include <esp_wifi_types.h>
+#include "message_queue.h"
 #include <esp_now.h>
 #include <WiFi.h>
 #include <WiFiMulti.h>
@@ -51,7 +52,9 @@ void TaskWifi( void *pvParameters ) {
     Serial.println(millis() - start);
     Serial.println("-----------------------------------------");*/
 
-    vTaskDelay(10);
+    remove_first();
+
+    vTaskDelay(100 + random(500));
 
   }
 }

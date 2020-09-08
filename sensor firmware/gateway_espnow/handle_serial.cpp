@@ -135,6 +135,7 @@ void update_time() {
     bus.update();
     num++;
   }
+  free(msg);
   Serial.println(num);
 }
 
