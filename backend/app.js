@@ -5,23 +5,13 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var helmet = require('helmet');
 var http = require('http');
-var WSS = require('ws');
+
 require('./models/db');
 var indexRouter = require('./routes/index');
 var apiRouter = require('./routes/api');
 
 var app = express();
 
-let wssServer = http.createServer(app);
-let wss = new WSS.Server({ server: wssServer});
-
-wss.on('connection', socket => {
-    socket.on('message', message => console.log(message));
-    });
-
-wssServer.listen(process.env.PORT || 8999, () => {
-    console.log(`Server started on port ${wssServer.address().port} :)`);
-});
 
 app.use(morgan('common'));
 app.use(helmet());

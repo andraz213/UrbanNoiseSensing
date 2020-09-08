@@ -21,7 +21,7 @@ const char* serverName = "http://urbannoisesensing.herokuapp.com";
 
 
 const char* websockets_server_host = "192.168.1.7"; //Enter server adress
-const uint16_t websockets_server_port = 8999; // Enter server port
+const uint16_t websockets_server_port = 3000; // Enter server port
 
 using namespace websockets;
 
@@ -127,13 +127,8 @@ void send_data(){
 
   StaticJsonDocument<500> doc;
   message_queue * message = get_first();
-  Serial.println((long)get_first());
 
   if((long)message != 0){
-
-    Serial.println(message->type);
-    Serial.println((int)SENSOR_READING);
-
     if(message -> type == (int)SENSOR_READING){
         doc["type"] = "SENSOR_READING";
         JsonArray mac = doc.createNestedArray("mac");
