@@ -197,10 +197,13 @@ const postDataSensorWebsocket = async (JSNdata) => {
                         frequencyRange: data.fft_range,
                         fftValues: data.fft_values,
                         decibels: data.decibels,
-                        measured_at: data.timestamp,
+                        measured_at: new Date(data.timestamp*1000),
                         //measured_at: Date.now()
                     };
-
+                    //console.log(Date(data.timestamp));
+                    console.log(currentData.last);
+                    console.log(measurement.measured_at);
+                    console.log(currentData.last < measurement.measured_at);
 
                     if (currentData.last < measurement.measured_at) {
                         currentData.last = measurement.measured_at;
