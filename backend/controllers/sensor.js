@@ -60,7 +60,7 @@ const postSensor = async (req, res) => {
                 let gw_macs = [];
                 console.log(sensor[0].current_deployment);
                 if (sensor[0].current_deployment != null) {
-                    gw_macs = await getGWMacs(sensor[0].current_deployment);
+                    gw_macs = await getGWMacs(sensor[0].  current_deployment);
                 }
 
                 let sensorObj = JSON.parse(JSON.stringify(sensor));

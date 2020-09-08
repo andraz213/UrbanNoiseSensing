@@ -13,10 +13,19 @@
 #include "handle_time.h"
 #include "handle_oled.h"
 #include "internal_config.h"
-const char* ssid = "UNSwifi";
-const char* password = "uns12wifi34";
+#include <ArduinoJson.h>
+#include <ArduinoWebsockets.h>
+const char* ssid = "PSP256";
+const char* password = "siol2004";
 const char* serverName = "http://urbannoisesensing.herokuapp.com";
 
+
+const char* websockets_server_host = "192.168.1.7"; //Enter server adress
+const uint16_t websockets_server_port = 8999; // Enter server port
+
+using namespace websockets;
+
+WebsocketsClient client;
 
 void init_wifi() {
   if (WiFi.status() != WL_CONNECTED) {
@@ -42,19 +51,39 @@ void init_wifi() {
 
 void TaskWifi( void *pvParameters ) {
 
+  while(WiFi.status() != WL_CONNECTED) {
+    vTaskDelay(10);
+  }
+
+
+  bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
+  if(connected) {
+    Serial.println("Connected!");
+    client.send("Hello Server");
+  } else {
+    Serial.println("Not Connected!");
+  }
+
+// run callback when messages are received
+client.onMessage([&](WebsocketsMessage message){
+    Serial.print("Got Message: ");
+    Serial.println(message.data());
+});
+
 
 
 
   for (;;) {
-    /*long start = millis();
-    get_config();
 
-    Serial.println(millis() - start);
-    Serial.println("-----------------------------------------");*/
 
-    remove_first();
+  vTaskDelay(1);
 
-    vTaskDelay(100 + random(500));
+  if(client.available()) {
+    client.poll();
+  }
+
+  send_data();
+  //delay(5);
 
   }
 }
@@ -96,22 +125,55 @@ void get_config(){
 
 void send_data(){
 
+  StaticJsonDocument<500> doc;
+  message_queue * message = get_first();
+  Serial.println((long)get_first());
+
+  if((long)message != 0){
+
+    Serial.println(message->type);
+    Serial.println((int)SENSOR_READING);
+
+    if(message -> type == (int)SENSOR_READING){
+        doc["type"] = "SENSOR_READING";
+        JsonArray mac = doc.createNestedArray("mac");
+        for(int i = 0; i<6; i++){
+          mac.add(message->mac[i]);
+        }
+        sending_list * data = (sending_list *)message->message;
+        doc["fft_range"] = data->fft_range;
+        doc["decibels"] = data->decibels;
+        doc["timestamp"] = data->timestamp;
+        JsonArray fft_values = doc.createNestedArray("fft_values");
+        for(int i = 0; i<16; i++){
+          fft_values.add(data->fft_values[i]);
+        }
+
+        String jsn;
+        serializeJson(doc, jsn);
+        client.send(jsn);
+        remove_first();
+
+    }
+
+    if(message -> type == (int)SENOSR_TELEMETRY){
+        doc["type"] = "SENOSR_TELEMETRY";
 
 
+        JsonArray mac = doc.createNestedArray("mac");
+        for(int i = 0; i<6; i++){
+          mac.add(message->mac[i]);
+        }
+        telemetry_message * data = (telemetry_message *)message->message;
+        doc["battery_voltage"] = data->battery_voltage;
+        String jsn;
+        serializeJson(doc, jsn);
+        client.send(jsn);
+        remove_first();
+    }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+  }
 
 
 }

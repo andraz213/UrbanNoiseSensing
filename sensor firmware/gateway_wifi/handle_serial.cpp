@@ -172,7 +172,7 @@ void handle_sensor_reading(char * mac, char * data, int datalen, int type){
       memcpy(tmp, data, sizeof(sending_list));
       char * tmpmac = (char*)heap_caps_malloc(sizeof(char) * 6, MALLOC_CAP_8BIT);
       memcpy(tmpmac, mac, 6);
-      add_to_message_queue((char*)tmp, sizeof(sending_list), (char*)tmpmac);
+      add_to_message_queue((char*)tmp, sizeof(sending_list), (char*)tmpmac, type);
 
       free(tmpmac);
       free(tmp);
@@ -199,7 +199,7 @@ void handle_sensor_telemetry(char * mac, char * data, int datalen, int type){
       memcpy(tmp, data, sizeof(telemetry_message));
       char * tmpmac = (char*)heap_caps_malloc(sizeof(char) * 6, MALLOC_CAP_8BIT);
       memcpy(tmpmac, mac, 6);
-      add_to_message_queue((char*)tmp, sizeof(telemetry_message), (char*)tmpmac);
+      add_to_message_queue((char*)tmp, sizeof(telemetry_message), (char*)tmpmac, type);
 
       free(tmpmac);
       free(tmp);

@@ -3,7 +3,7 @@
 #include "global_defines.h"
 
 
-void add_to_message_queue(char* message, int len, char *mac);
+void add_to_message_queue(char* message, int len, char *mac, int type);
 message_queue * get_first();
 void remove_first();
 
