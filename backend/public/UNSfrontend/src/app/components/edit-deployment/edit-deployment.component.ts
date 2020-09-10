@@ -45,6 +45,9 @@ export class EditDeploymentComponent implements OnInit {
   private getSensors() {
     this.sensorService.getSensors().then(result => {
       console.log(result);
+      let sorted =  result.sort((a, b) => this.getTime(b.last_telemetry) - this.getTime(a.last_telemetry));
+      console.log(result);
+      console.log(sorted);
       this.sensors = [];
       for (let sn of result) {
         if (!sn.current_deployment || sn.current_deployment == '') {
@@ -53,6 +56,10 @@ export class EditDeploymentComponent implements OnInit {
       }
       console.log(this.sensors);
     });
+  }
+
+  private getTime(date?: Date) {
+    return date != null ? date.valueOf() : 0;
   }
 
   openModal(not_ok: TemplateRef<any>, ok: TemplateRef<any>) {
@@ -142,16 +149,16 @@ export class EditDeploymentComponent implements OnInit {
       this.deploymentService.deployDeployment(this.deployment._id).then((data) =>{
 
         console.log(data);
+        this.modalRef.hide();
+        this.navigateToReview(this.deployment._id);
 
         //this.errorMessages.push(res.message);
       });
     });
+  }
 
-
-
-
-
-
+  public navigateToReview(id:string){
+    this.router.navigateByUrl(`reviewdeployment/${id}`);
   }
 
 
