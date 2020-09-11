@@ -6,3 +6,18 @@ agm-map { height: 600px; /* height is required */ }
   border-width: 0.001em;
 
 }
+
+
+
+.wifi-div{
+  border: #bbbbff;
+  border-radius: 0.4em;
+  border-style: solid;
+  border-width: 0.001em;
+}
+
+.wifi-spec{
+  border-radius: 5px;
+  background: #ddeeff;
+  padding: 0.251em;
+}

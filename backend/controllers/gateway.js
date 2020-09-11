@@ -66,7 +66,8 @@ const postGateway = (req, res) => {
             if (gateway.length == 0) {
                 var newGateway = new gatewayModel({
                     name: nameGenerator.newRandomName(),
-                    mac: mac
+                    mac: mac,
+                    current_location: [0.01, 0.01]
                 });
                 newGateway.save(newGateway).then(data => {
                     console.log(data);

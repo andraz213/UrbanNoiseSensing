@@ -109,8 +109,6 @@
 
                 <small>MAC:  </small>
                 <p class="sensor-spec"><span *ngFor="let num of gw.mac; index as i">{{num.toString(16)}}<span *ngIf="i<5">:</span></span> </p>
-
-
                 <div *ngIf="gw.last_telemetry">
                   <small>Last telemetry: </small>
                   <p class="sensor-spec">{{gw.last_telemetry}}</p>

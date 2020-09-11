@@ -22,6 +22,7 @@ export class GatewaysComponent implements OnInit {
 
   private getGateways(){
     this.gatewayService.getGateways().then(result => {
+      console.log(result);
       this.gateways = result;
     });
 

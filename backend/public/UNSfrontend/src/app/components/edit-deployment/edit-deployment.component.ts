@@ -34,9 +34,12 @@ export class EditDeploymentComponent implements OnInit {
   private id: string;
   modalRef: BsModalRef;
 
+  public wifiCredentials: { ssid: string, password: string}[];
+
   ngOnInit() {
     this.id = this.activatedRoute.snapshot.paramMap.get("id");
     console.log(this.id);
+    this.wifiCredentials = [];
     this.getDeployment();
     this.getSensors();
     this.getGateways();
@@ -158,6 +161,7 @@ export class EditDeploymentComponent implements OnInit {
     });
   }
 
+
   public navigateToReview(id:string){
     this.router.navigateByUrl(`reviewdeployment/${id}`);
   }
@@ -170,6 +174,10 @@ export class EditDeploymentComponent implements OnInit {
         gw.chosen = !gw.chosen;
       }
     }
+  }
+
+  public addWifiCredentials(){
+    this.wifiCredentials.push({ssid: "", password: ""});
   }
 
 

@@ -71,7 +71,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div *ngIf=\"deployment\">\n  <h2 class=\"m-5\">{{deployment.name}}</h2>\n  <div class=\"deployment-div m-3\">\n    <div class=\"m-3\">\n      <form (submit)=\"saveChangesForm()\">\n        <div class=\"form-group\">\n          <label for=\"deploymentName\">Deployment name</label>\n          <input [(ngModel)]=\"depDTO.name\" name=\"name\" type=\"text\" class=\"form-control\" id=\"deploymentName\"\n                 placeholder=\"Enter deployment name\">\n        </div>\n        <div class=\"form-group\">\n          <label for=\"deploymentDescription\">Deployment description</label>\n          <input [(ngModel)]=\"depDTO.description\" name=\"deploymentDescription\" type=\"textarea\" class=\"form-control\"\n                 id=\"deploymentDescription\" placeholder=\"Enter deployment description\">\n        </div>\n        <button type=\"submit\" class=\"btn btn-primary mr-4\">Save Changes</button>\n        <button (click)=\"discardChanges()\" class=\"btn btn-danger\">Discard Changes</button>\n      </form>\n    </div>\n  </div>\n</div>\n\n<div class=\"deployment-div m-3\">\n  <div class=\"m-3\">\n    <h4>Sensors</h4>\n    <small>To place a sensor: <br>1. Click on the map to place a marker <br> 2. Click on the marker to remove it <br> 3.\n      Click on senor name to show its position</small>\n    <div class=\"m-3\">\n      <p>Free senosrs</p>\n      <div class=\"row\">\n        <div *ngFor=\"let sn of sensors\">\n          <div class=\"col-1\" *ngIf=\"sn.chosen == false\">\n            <button type=\"button\" (click)=\"addSensorToDeploy(sn.sensor._id)\" class=\"btn btn-outline-dark\"\n                    disabled>{{sn.sensor.name}}</button>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"m-3\">\n      <p>Placed senosrs</p>\n      <div class=\"row\">\n        <div *ngFor=\"let sn of sensors\">\n          <div class=\"col-1\" *ngIf=\"sn.chosen == true\">\n            <button type=\"button\" (click)=\"showLocation(sn.sensor._id)\"\n                    class=\"btn btn-outline-success\">{{sn.sensor.name}}</button>\n          </div>\n        </div>\n      </div>\n    </div>\n\n\n    <agm-map\n      [latitude]=\"46.04840798323542\"\n      [longitude]=\"14.506113341719598\"\n      [zoom]=\"13\"\n      (mapClick)=\"addMarker($event.coords.lat, $event.coords.lng)\"\n      [mapTypeId]='mapType'\n    >\n      <agm-marker\n        *ngFor=\"let sn of sensors\"\n        [latitude]=\"sn.latitude\"\n        [longitude]=\"sn.longitude\"\n        [opacity]=\"sn.alpha\"\n        [markerDraggable]=\"false\"\n        (markerClick)=\"removeSensor($event)\"\n      >\n      </agm-marker>\n    </agm-map>\n    <p *ngIf=\"selectedMarker\">\n      Lat: {{ selectedMarker.lat }} Lng: {{ selectedMarker.lng }}\n    </p>\n  </div>\n</div>\n\n\n  <div class=\"deployment-div m-3\">\n    <div class=\"m-3\">\n      <h4>Gateways</h4>\n      <small>Select the gateways by clicking on them. <br>Unselect the gateways in similar fashion. <br>Gateway location\n        is\n        not saved. Please remember it or write it down in deployment description. </small>\n      <div *ngIf=\"gateways.length > 0\">\n        <p>Free gateways</p>\n        <div class=\"row\">\n          <div *ngFor=\"let gw of gateways\">\n            <div class=\"col-1\" *ngIf=\"gw.chosen == false\">\n              <button type=\"button\" (click)=\"addGatewayToDeploy(gw.gateway._id)\"\n                      class=\"btn btn-outline-primary\">{{gw.gateway.name}}</button>\n            </div>\n          </div>\n        </div>\n\n\n        <p>Selected gateways</p>\n        <div class=\"row\">\n          <div *ngFor=\"let gw of gateways\">\n            <div class=\"col-1\" *ngIf=\"gw.chosen == true\">\n              <button type=\"button\" (click)=\"addGatewayToDeploy(gw.gateway._id)\"\n                      class=\"btn btn-outline-success\">{{gw.gateway.name}}</button>\n            </div>\n          </div>\n        </div>\n      </div>\n\n      <div *ngIf=\"gateways.length == 0\">\n        <p>No free gateways currently availale.</p>\n      </div>\n    </div>\n  </div>\n  <div class=\"deployment-div m-3\">\n    <div class=\"m-3\">\n      <h4>NOTE: Once the deployment is deployed, it cannot be changed!!!</h4>\n      <button type=\"button\" (click)=\"openModal(not_ok, ok)\" class=\"btn btn-outline-danger\">DEPLOY</button>\n    </div>\n  </div>\n\n  <ng-template #not_ok>\n    <div class=\"modal-body text-center bg-custom\">\n      <div *ngFor=\"let err of errorMessages\">\n        <p>{{err}}</p>\n      </div>\n      <button type=\"button\" class=\"btn btn-outline-dark m-1\" (click)=\"decline()\">Close</button>\n    </div>\n  </ng-template>\n\n  <ng-template #ok>\n    <div class=\"modal-body text-center bg-custom\">\n      <p>You are about to deploy this deployment.</p>\n      <button type=\"button\" class=\"btn btn-outline-primary m-1 \" (click)=\"deployDeployment(done, error)\">Deploy</button>\n      <button type=\"button\" class=\"btn btn-outline-dark m-1\" (click)=\"decline()\">Not yet</button>\n    </div>\n  </ng-template>\n\n<ng-template #done>\n  <div class=\"modal-body text-center bg-custom\">\n    <p>Deployment was successfully deployed!</p>\n    <button type=\"button\" class=\"btn btn-outline-dark m-1\" (click)=\"decline()\">Close</button>\n  </div>\n</ng-template>\n\n<ng-template #error>\n  <div class=\"modal-body text-center bg-custom\">\n    <p>Error</p>\n\n    <button type=\"button\" class=\"btn btn-outline-dark m-1\" (click)=\"decline()\">Close</button>\n  </div>\n</ng-template>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<div *ngIf=\"deployment\">\n  <h2 class=\"m-5\">{{deployment.name}}</h2>\n  <div class=\"deployment-div m-3\">\n    <div class=\"m-3\">\n      <form (submit)=\"saveChangesForm()\">\n        <div class=\"form-group\">\n          <label for=\"deploymentName\">Deployment name</label>\n          <input [(ngModel)]=\"depDTO.name\" name=\"name\" type=\"text\" class=\"form-control\" id=\"deploymentName\"\n                 placeholder=\"Enter deployment name\">\n        </div>\n        <div class=\"form-group\">\n          <label for=\"deploymentDescription\">Deployment description</label>\n          <input [(ngModel)]=\"depDTO.description\" name=\"deploymentDescription\" type=\"textarea\" class=\"form-control\"\n                 id=\"deploymentDescription\" placeholder=\"Enter deployment description\">\n        </div>\n        <button type=\"submit\" class=\"btn btn-primary mr-4\">Save Changes</button>\n        <button (click)=\"discardChanges()\" class=\"btn btn-danger\">Discard Changes</button>\n      </form>\n    </div>\n  </div>\n</div>\n\n<div class=\"deployment-div m-3\">\n  <div class=\"m-3\">\n    <h4>Sensors</h4>\n    <small>To place a sensor: <br>1. Click on the map to place a marker <br> 2. Click on the marker to remove it <br> 3.\n      Click on senor name to show its position</small>\n    <div class=\"m-3\">\n      <p>Free senosrs</p>\n      <div class=\"row\">\n        <div *ngFor=\"let sn of sensors\">\n          <div class=\"col-1\" *ngIf=\"sn.chosen == false\">\n            <button type=\"button\" (click)=\"addSensorToDeploy(sn.sensor._id)\" class=\"btn btn-outline-dark\"\n                    disabled>{{sn.sensor.name}}</button>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"m-3\">\n      <p>Placed senosrs</p>\n      <div class=\"row\">\n        <div *ngFor=\"let sn of sensors\">\n          <div class=\"col-1\" *ngIf=\"sn.chosen == true\">\n            <button type=\"button\" (click)=\"showLocation(sn.sensor._id)\"\n                    class=\"btn btn-outline-success\">{{sn.sensor.name}}</button>\n          </div>\n        </div>\n      </div>\n    </div>\n\n\n    <agm-map\n      [latitude]=\"46.04840798323542\"\n      [longitude]=\"14.506113341719598\"\n      [zoom]=\"13\"\n      (mapClick)=\"addMarker($event.coords.lat, $event.coords.lng)\"\n      [mapTypeId]='mapType'\n    >\n      <agm-marker\n        *ngFor=\"let sn of sensors\"\n        [latitude]=\"sn.latitude\"\n        [longitude]=\"sn.longitude\"\n        [opacity]=\"sn.alpha\"\n        [markerDraggable]=\"false\"\n        (markerClick)=\"removeSensor($event)\"\n      >\n      </agm-marker>\n    </agm-map>\n    <p *ngIf=\"selectedMarker\">\n      Lat: {{ selectedMarker.lat }} Lng: {{ selectedMarker.lng }}\n    </p>\n  </div>\n</div>\n\n\n  <div class=\"deployment-div m-3\">\n    <div class=\"m-3\">\n      <h4>Gateways</h4>\n      <small>Select the gateways by clicking on them. <br>Unselect the gateways in similar fashion. <br>Gateway location\n        is\n        not saved. Please remember it or write it down in deployment description. </small>\n      <div *ngIf=\"gateways.length > 0\">\n        <p>Free gateways</p>\n        <div class=\"row\">\n          <div *ngFor=\"let gw of gateways\">\n            <div class=\"col-1\" *ngIf=\"gw.chosen == false\">\n              <button type=\"button\" (click)=\"addGatewayToDeploy(gw.gateway._id)\"\n                      class=\"btn btn-outline-primary\">{{gw.gateway.name}}</button>\n            </div>\n          </div>\n        </div>\n\n\n        <p>Selected gateways</p>\n        <div class=\"row\">\n          <div *ngFor=\"let gw of gateways\">\n            <div class=\"col-1\" *ngIf=\"gw.chosen == true\">\n              <button type=\"button\" (click)=\"addGatewayToDeploy(gw.gateway._id)\"\n                      class=\"btn btn-outline-success\">{{gw.gateway.name}}</button>\n            </div>\n          </div>\n        </div>\n      </div>\n\n      <p>Gateway WiFi credentials</p>\n      <small>Gateway will connect to wifi with the best signal.</small>\n      <br>\n      <button type=\"button\" class=\"btn btn-outline-primary\" (click)=\"addWifiCredentials()\">+</button>\n      <div class=\"row\">\n        <div *ngFor=\"let cred of wifiCredentials\">\n          <div class=\"row wifi-div ml-3 mt-3\">\n            <div class=\"col-12\">\n              <small>ssid</small>\n              <p class=\"wifi-spec\">placeholder{{cred.ssid}}</p>\n            </div>\n            <div class=\"col-12\">\n              <small>pass</small>\n              <p class=\"wifi-spec\">placeholder{{cred.password}}</p>\n            </div>\n            <div class=\"ml-2 mb-2\">\n              <button type=\"button\" class=\"btn btn-outline-danger\" (click)=\"addWifiCredentials()\">-</button>\n            </div>\n          </div>\n\n        </div>\n      </div>\n\n      <div *ngIf=\"gateways.length == 0\">\n        <p>No free gateways currently availale.</p>\n      </div>\n    </div>\n  </div>\n  <div class=\"deployment-div m-3\">\n    <div class=\"m-3\">\n      <h4>NOTE: Once the deployment is deployed, it cannot be changed!!!</h4>\n      <button type=\"button\" (click)=\"openModal(not_ok, ok)\" class=\"btn btn-outline-danger\">DEPLOY</button>\n    </div>\n  </div>\n\n  <ng-template #not_ok>\n    <div class=\"modal-body text-center bg-custom\">\n      <div *ngFor=\"let err of errorMessages\">\n        <p>{{err}}</p>\n      </div>\n      <button type=\"button\" class=\"btn btn-outline-dark m-1\" (click)=\"decline()\">Close</button>\n    </div>\n  </ng-template>\n\n  <ng-template #ok>\n    <div class=\"modal-body text-center bg-custom\">\n      <p>You are about to deploy this deployment.</p>\n      <button type=\"button\" class=\"btn btn-outline-primary m-1 \" (click)=\"deployDeployment(done, error)\">Deploy</button>\n      <button type=\"button\" class=\"btn btn-outline-dark m-1\" (click)=\"decline()\">Not yet</button>\n    </div>\n  </ng-template>\n\n<ng-template #done>\n  <div class=\"modal-body text-center bg-custom\">\n    <p>Deployment was successfully deployed!</p>\n    <button type=\"button\" class=\"btn btn-outline-dark m-1\" (click)=\"decline()\">Close</button>\n  </div>\n</ng-template>\n\n<ng-template #error>\n  <div class=\"modal-body text-center bg-custom\">\n    <p>Error</p>\n\n    <button type=\"button\" class=\"btn btn-outline-dark m-1\" (click)=\"decline()\">Close</button>\n  </div>\n</ng-template>\n");
 
 /***/ }),
 
@@ -84,7 +84,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<h2 class=\"m-5\">Gateways</h2>\n<div class=\"row mb-4\">\n\n  <div class=\"col\">\n    <div *ngIf=\"gateways && gateways.length == 0\">\n      <p>There are no gateways!</p>\n    </div>\n    <div *ngFor=\"let gateway of gateways\">\n      <div class=\"gateway-div mb-4\">\n        <div class=\"row m-3\">\n          <div class=\"col-12\">\n            <h3>{{gateway.name}}</h3>\n          </div>\n          <div class=\"col-3\">\n            <small>MAC:  </small>\n            <p class=\"gateway-spec\"><span *ngFor=\"let num of gateway.mac; index as i\">{{num.toString(16)}}<span *ngIf=\"i<5\">:</span></span> </p>\n            <small>Location: </small>\n            <p class=\"gateway-spec\">{{gateway.current_location[0].toFixed(3)}}, {{gateway.current_location[1].toFixed(3) | uppercase}}</p>\n\n          </div>\n          <div class=\"col-5\">\n            <div *ngIf=\"gateway.current_deployment\">\n            <small>Deployment: </small>\n            <p class=\"gateway-spec\">{{gateway.current_deployment}}</p>\n            </div>\n          </div>\n          <div class=\"col-4\">\n\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<h2 class=\"m-5\">Gateways</h2>\n<div class=\"row mb-4\">\n\n  <div class=\"col\">\n    <div *ngIf=\"gateways && gateways.length == 0\">\n      <p>There are no gateways!</p>\n    </div>\n    <div *ngIf=\"gateways && gateways.length != 0\">\n    <div *ngFor=\"let gateway of gateways\">\n      <div class=\"gateway-div mb-4\">\n        <div class=\"row m-3\">\n          <div class=\"col-12\">\n            <h3>{{gateway.name}}</h3>\n          </div>\n          <div class=\"col-3\">\n            <small>MAC:  </small>\n            <p class=\"gateway-spec\"><span *ngFor=\"let num of gateway.mac; index as i\">{{num.toString(16)}}<span *ngIf=\"i<5\">:</span></span> </p>\n            <small>Location: </small>\n            <p class=\"gateway-spec\">{{gateway.current_location[0].toFixed(3)}}, {{gateway.current_location[1].toFixed(3) | uppercase}}</p>\n\n          </div>\n          <div class=\"col-5\">\n            <div *ngIf=\"gateway.current_deployment\">\n            <small>Deployment: </small>\n            <p class=\"gateway-spec\">{{gateway.current_deployment}}</p>\n            </div>\n          </div>\n          <div class=\"col-4\">\n\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n  </div>\n</div>\n");
 
 /***/ }),
 
@@ -110,7 +110,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("\n\n<div *ngIf=\"deployment\">\n  <h2 class=\"mt-5 ml-5 mb-3\">{{deployment.name}}</h2>\n  <p class=\"ml-5 mb-5\">{{deployment.description}}</p>\n\n  </div>\n<div class=\"deployment-div m-3\">\n  <div class=\"m-2\">\n\n\n    <div class=\"m-3\">\n      <h4>Sensors</h4>\n      <p>Placed senosrs</p>\n\n      <div class=\"row mb-4\">\n\n        <div *ngFor=\"let sensori of sensors\" class=\"col-xl-3 col-lg-6 col-sm-12 m-0\">\n\n          <div class=\"sensor-div mb-4\">\n            <div class=\"row m-3\">\n              <div class=\"col-12\">\n                <h3>{{sensori.sensor.name}}</h3>\n              </div>\n              <div class=\"col-12\">\n\n                <div *ngIf=\"sensori.sensor.latest_measurement\">\n                  <small>Latest decibels: </small>\n                  <p class=\"sensor-spec\">{{sensori.sensor.latest_measurement.decibels}}</p>\n                </div>\n\n                <div *ngIf=\"sensori.measurements\">\n                  <small>Number of measurements: </small>\n                  <p class=\"sensor-spec\">{{sensori.measurements}}</p>\n                </div>\n\n                <div *ngIf=\"sensori.sensor.last_telemetry\">\n                  <small>Last telemetry: </small>\n                  <p class=\"sensor-spec\">{{sensori.sensor.last_telemetry}}</p>\n                </div>\n\n                <div *ngIf=\"sensori.sensor.battery_voltage\">\n                  <small>Battery voltage: </small>\n                  <p class=\"sensor-spec\">{{sensori.sensor.battery_voltage}} V</p>\n                </div>\n\n                <div *ngIf=\"sensori.sensor.firmware_version\">\n                  <small>Firmware version: </small>\n                  <p class=\"sensor-spec\">{{sensori.sensor.firmware_version}}</p>\n                </div>\n\n              </div>\n\n            </div>\n          </div>\n        </div>\n      </div>\n\n\n\n      <div class=\"row\" *ngIf=\"sensors\">\n        <div *ngFor=\"let sn of sensors\">\n          <div class=\"col-1\">\n            <button type=\"button\" (click)=\"showLocation(sn.sensor._id)\"\n                    class=\"btn btn-outline-success\">{{sn.sensor.name}}</button>\n          </div>\n        </div>\n      </div>\n\n      <div *ngIf=\"sensors\" class=\"my-3\">\n      <agm-map\n        [latitude]=\"longitude\"\n        [longitude]=\"latitude\"\n        [zoom]=\"13\"\n        [mapTypeId]='mapType'\n      >\n        <agm-marker\n          *ngFor=\"let sn of sensors\"\n          [latitude]=\"sn.sensor.current_location[0]\"\n          [longitude]=\"sn.sensor.current_location[1]\"\n          [opacity]=\"sn.alpha\"\n          [markerDraggable]=\"false\"\n        >\n        </agm-marker>\n      </agm-map>\n    </div>\n  </div>\n  </div>\n</div>\n\n\n<div class=\"deployment-div m-3\" *ngIf=\"gateways\">\n  <div class=\"m-4\">\n    <h4>Gateways</h4>\n    <div *ngIf=\"gateways.length > 0\" >\n\n      <p>Deployed gateways</p>\n      <div class=\"row\">\n\n\n        <div *ngFor=\"let gw of gateways\" class=\"col-xl-3 col-lg-6 col-sm-12 m-0\">\n\n          <div class=\"sensor-div mb-4\">\n            <div class=\"row m-3\">\n              <div class=\"col-12\">\n                <h3>{{gw.name}}</h3>\n              </div>\n              <div class=\"col-12\">\n\n                <small>MAC:  </small>\n                <p class=\"sensor-spec\"><span *ngFor=\"let num of gw.mac; index as i\">{{num.toString(16)}}<span *ngIf=\"i<5\">:</span></span> </p>\n\n\n                <div *ngIf=\"gw.last_telemetry\">\n                  <small>Last telemetry: </small>\n                  <p class=\"sensor-spec\">{{gw.last_telemetry}}</p>\n                </div>\n\n\n              </div>\n\n            </div>\n          </div>\n        </div>\n\n\n      </div>\n    </div>\n  </div>\n</div>\n\n<!---\n<div class=\"deployment-div m-3\">\n  <div class=\"m-4\">\n    <h4>NOTE: Once the deployment is ended, it cannot be redeployed back!!!</h4>\n    <button type=\"button\" (click)=\"openModal(confirm)\" class=\"btn btn-outline-danger m-2\">FINISH SENSING</button>\n  </div>\n</div>\n\n<ng-template #confirm>\n  <div class=\"modal-body text-center bg-custom\">\n    <p>You are about to deploy this deployment.</p>\n    <button type=\"button\" class=\"btn btn-outline-primary m-1 \" (click)=\"deployDeployment()\">Deploy</button>\n    <button type=\"button\" class=\"btn btn-outline-dark m-1\" (click)=\"decline()\">Not yet</button>\n  </div>\n</ng-template>\n\n--->\n<!---\n<ng-template #not_ok>\n  <div class=\"modal-body text-center bg-custom\">\n    <div *ngFor=\"let err of errorMessages\">\n      <p>{{err}}</p>\n    </div>\n    <button type=\"button\" class=\"btn btn-outline-dark m-1\" (click)=\"decline()\">Close</button>\n  </div>\n</ng-template>\n\n\n--->\n");
+/* harmony default export */ __webpack_exports__["default"] = ("\n\n<div *ngIf=\"deployment\">\n  <h2 class=\"mt-5 ml-5 mb-3\">{{deployment.name}}</h2>\n  <p class=\"ml-5 mb-5\">{{deployment.description}}</p>\n\n  </div>\n<div class=\"deployment-div m-3\">\n  <div class=\"m-2\">\n\n\n    <div class=\"m-3\">\n      <h4>Sensors</h4>\n      <p>Placed senosrs</p>\n\n      <div class=\"row mb-4\">\n\n        <div *ngFor=\"let sensori of sensors\" class=\"col-xl-3 col-lg-6 col-sm-12 m-0\">\n\n          <div class=\"sensor-div mb-4\">\n            <div class=\"row m-3\">\n              <div class=\"col-12\">\n                <h3>{{sensori.sensor.name}}</h3>\n              </div>\n              <div class=\"col-12\">\n\n                <div *ngIf=\"sensori.sensor.latest_measurement\">\n                  <small>Latest decibels: </small>\n                  <p class=\"sensor-spec\">{{sensori.sensor.latest_measurement.decibels}}</p>\n                </div>\n\n                <div *ngIf=\"sensori.measurements\">\n                  <small>Number of measurements: </small>\n                  <p class=\"sensor-spec\">{{sensori.measurements}}</p>\n                </div>\n\n                <div *ngIf=\"sensori.sensor.last_telemetry\">\n                  <small>Last telemetry: </small>\n                  <p class=\"sensor-spec\">{{sensori.sensor.last_telemetry}}</p>\n                </div>\n\n                <div *ngIf=\"sensori.sensor.battery_voltage\">\n                  <small>Battery voltage: </small>\n                  <p class=\"sensor-spec\">{{sensori.sensor.battery_voltage}} V</p>\n                </div>\n\n                <div *ngIf=\"sensori.sensor.firmware_version\">\n                  <small>Firmware version: </small>\n                  <p class=\"sensor-spec\">{{sensori.sensor.firmware_version}}</p>\n                </div>\n\n              </div>\n\n            </div>\n          </div>\n        </div>\n      </div>\n\n\n\n      <div class=\"row\" *ngIf=\"sensors\">\n        <div *ngFor=\"let sn of sensors\">\n          <div class=\"col-1\">\n            <button type=\"button\" (click)=\"showLocation(sn.sensor._id)\"\n                    class=\"btn btn-outline-success\">{{sn.sensor.name}}</button>\n          </div>\n        </div>\n      </div>\n\n      <div *ngIf=\"sensors\" class=\"my-3\">\n      <agm-map\n        [latitude]=\"longitude\"\n        [longitude]=\"latitude\"\n        [zoom]=\"13\"\n        [mapTypeId]='mapType'\n      >\n        <agm-marker\n          *ngFor=\"let sn of sensors\"\n          [latitude]=\"sn.sensor.current_location[0]\"\n          [longitude]=\"sn.sensor.current_location[1]\"\n          [opacity]=\"sn.alpha\"\n          [markerDraggable]=\"false\"\n        >\n        </agm-marker>\n      </agm-map>\n    </div>\n  </div>\n  </div>\n</div>\n\n\n<div class=\"deployment-div m-3\" *ngIf=\"gateways\">\n  <div class=\"m-4\">\n    <h4>Gateways</h4>\n    <div *ngIf=\"gateways.length > 0\" >\n\n      <p>Deployed gateways</p>\n      <div class=\"row\">\n\n\n        <div *ngFor=\"let gw of gateways\" class=\"col-xl-3 col-lg-6 col-sm-12 m-0\">\n\n          <div class=\"sensor-div mb-4\">\n            <div class=\"row m-3\">\n              <div class=\"col-12\">\n                <h3>{{gw.name}}</h3>\n              </div>\n              <div class=\"col-12\">\n\n                <small>MAC:  </small>\n                <p class=\"sensor-spec\"><span *ngFor=\"let num of gw.mac; index as i\">{{num.toString(16)}}<span *ngIf=\"i<5\">:</span></span> </p>\n                <div *ngIf=\"gw.last_telemetry\">\n                  <small>Last telemetry: </small>\n                  <p class=\"sensor-spec\">{{gw.last_telemetry}}</p>\n                </div>\n\n\n              </div>\n\n            </div>\n          </div>\n        </div>\n\n\n      </div>\n    </div>\n  </div>\n</div>\n\n\n<div class=\"deployment-div m-3\">\n  <div class=\"m-4\">\n    <h4>NOTE: Once the deployment is ended, it cannot be redeployed back!!!</h4>\n    <button type=\"button\" (click)=\"openModal(confirm)\" class=\"btn btn-outline-danger m-2\">FINISH SENSING</button>\n  </div>\n</div>\n\n<ng-template #confirm>\n  <div class=\"modal-body text-center bg-custom\">\n    <p>You are about to deploy this deployment.</p>\n    <button type=\"button\" class=\"btn btn-outline-primary m-1 \" (click)=\"finishDeployment()\">Finish</button>\n    <button type=\"button\" class=\"btn btn-outline-dark m-1\" (click)=\"decline()\">Not yet</button>\n  </div>\n</ng-template>\n\n\n<!---\n<ng-template #not_ok>\n  <div class=\"modal-body text-center bg-custom\">\n    <div *ngFor=\"let err of errorMessages\">\n      <p>{{err}}</p>\n    </div>\n    <button type=\"button\" class=\"btn btn-outline-dark m-1\" (click)=\"decline()\">Close</button>\n  </div>\n</ng-template>\n\n\n--->\n");
 
 /***/ }),
 
@@ -716,7 +716,7 @@ DeploymentsComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("agm-map { height: 600px; /* height is required */ }\r\n.deployment-div{\r\n  border: #bbbbff;\r\n  border-radius: 0.4em;\r\n  border-style: solid;\r\n  border-width: 0.001em;\r\n\r\n}\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9lZGl0LWRlcGxveW1lbnQvZWRpdC1kZXBsb3ltZW50LmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsVUFBVSxhQUFhLEVBQUUsdUJBQXVCLEVBQUU7QUFDbEQ7RUFDRSxlQUFlO0VBQ2Ysb0JBQW9CO0VBQ3BCLG1CQUFtQjtFQUNuQixxQkFBcUI7O0FBRXZCIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9lZGl0LWRlcGxveW1lbnQvZWRpdC1kZXBsb3ltZW50LmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyJhZ20tbWFwIHsgaGVpZ2h0OiA2MDBweDsgLyogaGVpZ2h0IGlzIHJlcXVpcmVkICovIH1cclxuLmRlcGxveW1lbnQtZGl2e1xyXG4gIGJvcmRlcjogI2JiYmJmZjtcclxuICBib3JkZXItcmFkaXVzOiAwLjRlbTtcclxuICBib3JkZXItc3R5bGU6IHNvbGlkO1xyXG4gIGJvcmRlci13aWR0aDogMC4wMDFlbTtcclxuXHJcbn1cclxuIl19 */");
+/* harmony default export */ __webpack_exports__["default"] = ("agm-map { height: 600px; /* height is required */ }\r\n.deployment-div{\r\n  border: #bbbbff;\r\n  border-radius: 0.4em;\r\n  border-style: solid;\r\n  border-width: 0.001em;\r\n\r\n}\r\n.wifi-div{\r\n  border: #bbbbff;\r\n  border-radius: 0.4em;\r\n  border-style: solid;\r\n  border-width: 0.001em;\r\n}\r\n.wifi-spec{\r\n  border-radius: 5px;\r\n  background: #ddeeff;\r\n  padding: 0.251em;\r\n}\r\n\r\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvY29tcG9uZW50cy9lZGl0LWRlcGxveW1lbnQvZWRpdC1kZXBsb3ltZW50LmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsVUFBVSxhQUFhLEVBQUUsdUJBQXVCLEVBQUU7QUFDbEQ7RUFDRSxlQUFlO0VBQ2Ysb0JBQW9CO0VBQ3BCLG1CQUFtQjtFQUNuQixxQkFBcUI7O0FBRXZCO0FBSUE7RUFDRSxlQUFlO0VBQ2Ysb0JBQW9CO0VBQ3BCLG1CQUFtQjtFQUNuQixxQkFBcUI7QUFDdkI7QUFFQTtFQUNFLGtCQUFrQjtFQUNsQixtQkFBbUI7RUFDbkIsZ0JBQWdCO0FBQ2xCIiwiZmlsZSI6InNyYy9hcHAvY29tcG9uZW50cy9lZGl0LWRlcGxveW1lbnQvZWRpdC1kZXBsb3ltZW50LmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyJhZ20tbWFwIHsgaGVpZ2h0OiA2MDBweDsgLyogaGVpZ2h0IGlzIHJlcXVpcmVkICovIH1cclxuLmRlcGxveW1lbnQtZGl2e1xyXG4gIGJvcmRlcjogI2JiYmJmZjtcclxuICBib3JkZXItcmFkaXVzOiAwLjRlbTtcclxuICBib3JkZXItc3R5bGU6IHNvbGlkO1xyXG4gIGJvcmRlci13aWR0aDogMC4wMDFlbTtcclxuXHJcbn1cclxuXHJcblxyXG5cclxuLndpZmktZGl2e1xyXG4gIGJvcmRlcjogI2JiYmJmZjtcclxuICBib3JkZXItcmFkaXVzOiAwLjRlbTtcclxuICBib3JkZXItc3R5bGU6IHNvbGlkO1xyXG4gIGJvcmRlci13aWR0aDogMC4wMDFlbTtcclxufVxyXG5cclxuLndpZmktc3BlY3tcclxuICBib3JkZXItcmFkaXVzOiA1cHg7XHJcbiAgYmFja2dyb3VuZDogI2RkZWVmZjtcclxuICBwYWRkaW5nOiAwLjI1MWVtO1xyXG59XHJcbiJdfQ== */");
 
 /***/ }),
 
@@ -760,6 +760,7 @@ let EditDeploymentComponent = class EditDeploymentComponent {
     ngOnInit() {
         this.id = this.activatedRoute.snapshot.paramMap.get("id");
         console.log(this.id);
+        this.wifiCredentials = [];
         this.getDeployment();
         this.getSensors();
         this.getGateways();
@@ -767,6 +768,9 @@ let EditDeploymentComponent = class EditDeploymentComponent {
     getSensors() {
         this.sensorService.getSensors().then(result => {
             console.log(result);
+            let sorted = result.sort((a, b) => this.getTime(b.last_telemetry) - this.getTime(a.last_telemetry));
+            console.log(result);
+            console.log(sorted);
             this.sensors = [];
             for (let sn of result) {
                 if (!sn.current_deployment || sn.current_deployment == '') {
@@ -775,6 +779,10 @@ let EditDeploymentComponent = class EditDeploymentComponent {
             }
             console.log(this.sensors);
         });
+    }
+    getTime(date) {
+        console.log(date != null ? date.valueOf() : 0);
+        return date != null ? date.valueOf() : 0;
     }
     openModal(not_ok, ok) {
         this.errorMessages = [];
@@ -849,9 +857,14 @@ let EditDeploymentComponent = class EditDeploymentComponent {
             this.getDeployment();
             this.deploymentService.deployDeployment(this.deployment._id).then((data) => {
                 console.log(data);
+                this.modalRef.hide();
+                this.navigateToReview(this.deployment._id);
                 //this.errorMessages.push(res.message);
             });
         });
+    }
+    navigateToReview(id) {
+        this.router.navigateByUrl(`reviewdeployment/${id}`);
     }
     addGatewayToDeploy(id) {
         for (let gw of this.gateways) {
@@ -859,6 +872,9 @@ let EditDeploymentComponent = class EditDeploymentComponent {
                 gw.chosen = !gw.chosen;
             }
         }
+    }
+    addWifiCredentials() {
+        this.wifiCredentials.push({ ssid: "", password: "" });
     }
     getDeployment() {
         this.deploymentService.getOneDeployment(this.id).then(result => {
@@ -990,6 +1006,7 @@ let GatewaysComponent = class GatewaysComponent {
     }
     getGateways() {
         this.gatewayService.getGateways().then(result => {
+            console.log(result);
             this.gateways = result;
         });
     }
@@ -1082,6 +1099,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_sensor_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/sensor.service */ "./src/app/services/sensor.service.ts");
 /* harmony import */ var _services_deployment_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/deployment.service */ "./src/app/services/deployment.service.ts");
 /* harmony import */ var _services_gateway_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../services/gateway.service */ "./src/app/services/gateway.service.ts");
+/* harmony import */ var ngx_bootstrap_modal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ngx-bootstrap/modal */ "./node_modules/ngx-bootstrap/modal/fesm2015/ngx-bootstrap-modal.js");
+
 
 
 
@@ -1089,11 +1108,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let ReviewDeploymentComponent = class ReviewDeploymentComponent {
-    constructor(deploymentService, sensorService, gatewayService, activatedRoute) {
+    constructor(deploymentService, sensorService, gatewayService, activatedRoute, modalService, router) {
         this.deploymentService = deploymentService;
         this.sensorService = sensorService;
         this.gatewayService = gatewayService;
         this.activatedRoute = activatedRoute;
+        this.modalService = modalService;
+        this.router = router;
         this.mapType = "hybrid";
         this.longitude = 0;
         this.latitude = 0;
@@ -1148,12 +1169,67 @@ let ReviewDeploymentComponent = class ReviewDeploymentComponent {
             }
         }
     }
+    openModal(confirm) {
+        /* this.errorMessages = [];
+     
+         let gw_num = 0;
+         for(let gw of this.gateways){
+           if(gw.chosen == true){
+             gw_num++;
+           }
+         }
+         if(gw_num < 1){
+           this.errorMessages.push("You don't have any gateways selected!");
+         }
+     
+         let sn_num = 0;
+         for(let sn of this.sensors){
+           if(sn.chosen == true){
+             sn_num++;
+           }
+         }
+         if(sn_num < 1){
+           this.errorMessages.push("Place at least one sensor!");
+         }
+     
+         if(!this.deployment.name || this.deployment.name == ''){
+           this.errorMessages.push("Save the name of this deployment!");
+         }
+     
+         if(this.deployment.status != 'pending'){
+           this.errorMessages.push("Something went wrong with your deployment. Is it already deployed?");
+         }
+     
+         if(this.errorMessages.length != 0) {
+           this.modalRef = this.modalService.show(not_ok, {class: 'modal-sm'});
+         } else {
+           this.modalRef = this.modalService.show(confirm, {class: 'modal-sm'});
+     
+         }*/
+        this.modalRef = this.modalService.show(confirm, { class: 'modal-sm' });
+    }
+    decline() {
+        this.modalRef.hide();
+    }
+    finishDeployment() {
+        this.deploymentService.finishDeployment(this.deployment._id).then((data) => {
+            console.log(data);
+            this.modalRef.hide();
+            this.navigateBack();
+            //this.errorMessages.push(res.message);
+        });
+    }
+    navigateBack() {
+        this.router.navigateByUrl(`deployments`);
+    }
 };
 ReviewDeploymentComponent.ctorParameters = () => [
     { type: _services_deployment_service__WEBPACK_IMPORTED_MODULE_4__["DeploymentService"] },
     { type: _services_sensor_service__WEBPACK_IMPORTED_MODULE_3__["SensorService"] },
     { type: _services_gateway_service__WEBPACK_IMPORTED_MODULE_5__["GatewayService"] },
-    { type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["ActivatedRoute"] }
+    { type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["ActivatedRoute"] },
+    { type: ngx_bootstrap_modal__WEBPACK_IMPORTED_MODULE_6__["BsModalService"] },
+    { type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"] }
 ];
 ReviewDeploymentComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -1348,6 +1424,14 @@ let DeploymentService = class DeploymentService {
     }
     getDeployments() {
         const url = `${this.apiUrl}/deployment`;
+        return this.http
+            .get(url)
+            .toPromise()
+            .then(answer => answer)
+            .catch(this.obdelajNapako);
+    }
+    finishDeployment(id) {
+        const url = `${this.apiUrl}/deployment/finish/` + id;
         return this.http
             .get(url)
             .toPromise()
