@@ -59,6 +59,7 @@ export class EditDeploymentComponent implements OnInit {
   }
 
   private getTime(date?: Date) {
+    console.log( date != null ? date.valueOf() : 0);
     return date != null ? date.valueOf() : 0;
   }
 

@@ -250,11 +250,167 @@ const getGWMacs = async (deploymentid) => {
 }
 
 
+
+
+
+const postDataSensorWebsocket = async (JSNdata) => {
+
+    let data = JSON.parse(JSNdata);
+
+
+    // najdi senzor
+    let sensorMac = data.mac;
+    console.log(sensorMac);
+    let currentSensor = await sensorModel.find({mac: sensorMac}).select({
+        _id: 1,
+        current_deployment: 1,
+        last_data: 1,
+        current_location: 1,
+        name: 1
+    }).limit(1).exec();
+    let newSize = 1;
+    console.log(currentSensor);
+
+    if (currentSensor != null && currentSensor.length == 1) {
+        let oneSensor = currentSensor[0];
+        if (oneSensor.current_deployment != null && oneSensor.current_deployment != '') {
+            let currentData;
+            if (oneSensor.last_data != null) {
+                currentData = await dataModel.findById(oneSensor.last_data).select({
+                    _id: 1,
+                    size: 1,
+                    last: 1,
+                    first: 1
+                }).exec();
+            }
+            if (currentData == null || currentData.length == 0 || currentData.size >= 1000) {
+                currentData = new dataModel();
+                currentData.deployment = oneSensor.current_deployment;
+                currentData.location = oneSensor.current_location;
+                currentData.sensor = oneSensor._id;
+                currentData.size = 1;
+                let oo = await currentData.save();
+                // oneSensor.all_data.push(currentData._id);
+                oneSensor.last_data = currentData._id;
+                let res = await oneSensor.save();
+            } else {
+                //newSize = (await dataModel.aggregate([{$match: {_id: currentData._id}}, {$project: {data: {$size: '$data'}}}]))[0].data + 1;
+                newSize = currentData.size + 1;
+            }
+            console.log(currentData);
+
+
+            let measurement = {
+                frequencyRange: data.fft_range,
+                fftValues: data.fft_values,
+                decibels: data.decibels,
+                measured_at: new Date(data.timestamp * 1000),
+                //measured_at: Date.now()
+            };
+            //console.log(Date(data.timestamp));
+            console.log(currentData.last);
+            console.log(measurement.measured_at);
+            console.log(currentData.last < measurement.measured_at);
+
+            if (currentData.last < measurement.measured_at) {
+                currentData.last = measurement.measured_at;
+            }
+            if (currentData.first > measurement.measured_at) {
+                currentData.first = measurement.measured_at;
+            }
+            await sensorModel.updateOne({_id: oneSensor._id}, {latest_measurement: measurement});
+            await dataModel.updateOne({_id: currentData._id}, {
+                size: newSize,
+                last: currentData.last,
+                first: currentData.first,
+                $addToSet: {data: measurement}
+            }, (err, data) => {
+                if (err) {
+                }
+
+            });
+
+
+        } else {
+        }
+    } else {
+
+    }
+
+
+    return "ok";
+}
+
+
+const PostSensorTelemetryWebsockets = async (JSNdata) => {
+
+
+    let data = JSON.parse(JSNdata);
+
+
+    // najdi senzor
+    let sensorMac = data.mac;
+    console.log(sensorMac);
+
+
+    let currentSensor = await sensorModel.find({mac: sensorMac}).limit(1).exec();
+    console.log(currentSensor);
+
+    if (currentSensor != null && currentSensor.length == 1) {
+        let oneSensor = currentSensor[0];
+        console.log(oneSensor);
+
+        await sensorModel.updateOne({_id: oneSensor._id}, {battery_voltage: data.battery_voltage, last_telemetry: Date.now()});
+
+    }
+
+
+
+    sensorModel.find({mac: sensorMac}, async (err, sensor) => {
+        if (err) {
+            return res.status(500).json(err);
+        } else {
+            if (!sensor || sensor.length == 0) {
+                console.log(`Could not find sensor with id: ${id}}`);
+                return res.status(404).json({'message': `Could not find sensor with id: ${id}`});
+            } else {
+                console.log(sensor);
+                if (data.voltage) {
+                    sensor.battery_voltage = data.voltage;
+                }
+                if (data.version) {
+                    sensor.firmware_version = data.version;
+                }
+                sensor.last_telemetry = Date.now();
+                console.log(sensor);
+
+                await sensorModel.updateOne({_id: sensor._id}, {battery_voltage: data.voltage, last_telemetry: Date.now()});
+                /*sensor.save((err, sensor_sv) => {
+                    if (err) {
+                        return res.status(500).json(err);
+                    } else {
+                        return res.status(200).json(sensor_sv);
+                    }
+                })*/
+
+            }
+        }
+
+    });
+
+}
+
+
+
+
+
 module.exports = {
     getAllSensor,
     getAllByIdSensor,
     postSensor,
     postTelemetrySensor,
     postDataSensorSensor,
-    putSensor
+    putSensor,
+    postDataSensorWebsocket,
+    PostSensorTelemetryWebsockets
 };
