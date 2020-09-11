@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, TemplateRef} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {Deployment} from "../../models/deployment";
 import {Sensor} from "../../models/sensor";
@@ -7,6 +7,7 @@ import {SensorService} from "../../services/sensor.service";
 import {DeploymentService} from "../../services/deployment.service";
 import {GatewayService} from "../../services/gateway.service";
 
+import {BsModalRef, BsModalService} from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-review-deployment',
@@ -18,7 +19,9 @@ export class ReviewDeploymentComponent implements OnInit {
   constructor(private deploymentService: DeploymentService,
               private sensorService: SensorService,
               private gatewayService: GatewayService,
-              private activatedRoute: ActivatedRoute) { }
+              private activatedRoute: ActivatedRoute,
+              private modalService: BsModalService,
+              private router: Router) { }
 
 
   public deployment: Deployment;
@@ -28,6 +31,7 @@ export class ReviewDeploymentComponent implements OnInit {
   public mapType = "hybrid";
   public longitude = 0;
   public latitude = 0;
+  modalRef: BsModalRef;
 
 
   ngOnInit() {
@@ -94,4 +98,74 @@ export class ReviewDeploymentComponent implements OnInit {
   }
 
 
+  public openModal(confirm: TemplateRef<any>) {
+   /* this.errorMessages = [];
+
+    let gw_num = 0;
+    for(let gw of this.gateways){
+      if(gw.chosen == true){
+        gw_num++;
+      }
+    }
+    if(gw_num < 1){
+      this.errorMessages.push("You don't have any gateways selected!");
+    }
+
+    let sn_num = 0;
+    for(let sn of this.sensors){
+      if(sn.chosen == true){
+        sn_num++;
+      }
+    }
+    if(sn_num < 1){
+      this.errorMessages.push("Place at least one sensor!");
+    }
+
+    if(!this.deployment.name || this.deployment.name == ''){
+      this.errorMessages.push("Save the name of this deployment!");
+    }
+
+    if(this.deployment.status != 'pending'){
+      this.errorMessages.push("Something went wrong with your deployment. Is it already deployed?");
+    }
+
+    if(this.errorMessages.length != 0) {
+      this.modalRef = this.modalService.show(not_ok, {class: 'modal-sm'});
+    } else {
+      this.modalRef = this.modalService.show(confirm, {class: 'modal-sm'});
+
+    }*/
+
+    this.modalRef = this.modalService.show(confirm, {class: 'modal-sm'});
+
+  }
+
+  decline(): void {
+    this.modalRef.hide();
+  }
+
+
+  public finishDeployment(){
+    this.deploymentService.finishDeployment(this.deployment._id).then((data) =>{
+
+      console.log(data);
+      this.modalRef.hide();
+      this.navigateBack();
+
+      //this.errorMessages.push(res.message);
+    });
+
+
+
+  }
+
+  public navigateBack(){
+    this.router.navigateByUrl(`deployments`);
+  }
+
+
+
+
 }
+
+

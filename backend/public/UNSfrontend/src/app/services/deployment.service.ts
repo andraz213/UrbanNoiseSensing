@@ -24,6 +24,15 @@ export class DeploymentService {
       .catch(this.obdelajNapako);
   }
 
+  public finishDeployment(id: string): Promise<any>{
+    const url = `${this.apiUrl}/deployment/finish/` + id;
+    return this.http
+      .get(url)
+      .toPromise()
+      .then(answer => answer as any)
+      .catch(this.obdelajNapako);
+  }
+
   public getOneDeployment(id: string): Promise<Deployment>{
     const url = `${this.apiUrl}/deployment/` + id;
     return this.http
