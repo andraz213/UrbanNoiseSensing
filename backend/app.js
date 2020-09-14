@@ -11,6 +11,8 @@ require('./models/db');
 var indexRouter = require('./routes/index');
 var apiRouter = require('./routes/api');
 var sensorController = require('./controllers/sensor');
+
+
 var port = normalizePort(process.env.PORT || 3000);
 
 

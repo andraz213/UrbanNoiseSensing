@@ -95,7 +95,15 @@ client.onMessage([&](WebsocketsMessage message){
   }
 }
 
+
+long prev_config = -10000;
+
 void get_config(){
+
+  if(millis() - prev_config < 10000){
+    return;
+  }
+  prev_config = millis();
 
   uint8_t mac [6];
 
