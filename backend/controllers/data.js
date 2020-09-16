@@ -14,6 +14,55 @@ const getAllDataByDeployment = async (req, res) => {
     let agregat = [
         {
             '$match': {
+                'deployment': new ObjectId('5f5b6b7da74e82002305bba2')
+            }
+        }, {
+            '$unwind': {
+                'path': '$data'
+            }
+        }, {
+            '$sort': {
+                'data.measured_at': -1
+            }
+        }, {
+            '$sample': {
+                'size': 10
+            }
+        }, {
+            '$group': {
+                '_id': '$sensor',
+                'size': {
+                    '$sum': 1
+                },
+                'location': {
+                    '$first': '$location'
+                },
+                'deployment': {
+                    '$first': '$deployment'
+                },
+                'sensor': {
+                    '$first': '$sensor'
+                },
+                'first': {
+                    '$min': '$data.measured_at'
+                },
+                'last': {
+                    '$max': '$data.measured_at'
+                },
+                'data': {
+                    '$push': '$data'
+                }
+            }
+        }
+    ];
+
+
+
+
+
+        /*[
+        {
+            '$match': {
                 'deployment': new ObjectId(dep_id)
             }
         }, {
@@ -42,7 +91,7 @@ const getAllDataByDeployment = async (req, res) => {
             }
         }
     }
-    ];
+    ];*/
 
     let data = await dataModel.aggregate(agregat).exec();
 
@@ -106,14 +155,176 @@ const getAllDataByDeployment = async (req, res) => {
     console.log(data);*/
 
 
-    return res.status(200).json(processed_data);
+    return res.status(200).json(data);
 }
 const getSpeceficDataByDeployment = (req, res) => {}
-const getLastnNyDeployment = (req, res) => {}
+const getLastNByDeployment = (req, res) => {
+
+    let dep_id = req.params.deployment_id;
+    let n = parseInt(req.params.last_n);
+    let n_limit = parseInt(Math.min(90000, n*20));
+
+    let agregat = [
+        {
+            '$match': {
+                'deployment': new ObjectId(dep_id)
+            }
+        }, {
+            '$unwind': {
+                'path': '$data'
+            }
+        }, {
+            '$sort': {
+                'data.measured_at': -1
+            }
+        }, {
+            '$limit': n_limit
+        }, {
+            '$group': {
+                '_id': '$sensor',
+                'location': {
+                    '$first': '$location'
+                },
+                'deployment': {
+                    '$first': '$deployment'
+                },
+                'sensor': {
+                    '$first': '$sensor'
+                },
+                'data': {
+                    '$push': '$data'
+                }
+            }
+        }, {
+            '$project': {
+                '_id': 1,
+                'location': 1,
+                'deployment': 1,
+                'sensor': 1,
+                'sliced_data': {
+                    '$slice': [
+                        '$data', n
+                    ]
+                }
+            }
+        }, {
+            '$unwind': {
+                'path': '$sliced_data'
+            }
+        }, {
+            '$group': {
+                '_id': '$sensor',
+                'location': {
+                    '$first': '$location'
+                },
+                'deployment': {
+                    '$first': '$deployment'
+                },
+                'sensor': {
+                    '$first': '$sensor'
+                },
+                'first': {
+                    '$min': '$sliced_data.measured_at'
+                },
+                'last': {
+                    '$max': '$sliced_data.measured_at'
+                },
+                'data': {
+                    '$push': '$sliced_data'
+                }
+            }
+        }
+    ];
+
+
+
+    dataModel.aggregate(agregat, (err, data) => {
+        if(err){
+            console.log(err);
+            return res.status(500).json(err);
+        }
+        return res.status(200).json(data);
+    });
+
+}
+
+
+const getLastNSecondsByDeployment = async (req, res) => {
+
+    let n  = req.params.last_seconds * 1000;
+    let dep_id = req.params.deployment_id;
+    console.log(n);
+    console.log(dep_id);
+    console.log(new Date(Date.now()));
+    console.log(new Date(Date.now() - n));
+
+
+
+    let agregat = [
+        {
+            '$match': {
+                'deployment': new ObjectId(dep_id),
+                'data.measured_at': {
+                    '$gt': new Date(Date.now() - n)
+                }
+            }
+        }, {
+            '$unwind': {
+                'path': '$data'
+            }
+        }, {
+            '$match': {
+                'data.measured_at': {
+                    '$gt': new Date(Date.now() - n)
+                }
+            }
+        }, {
+            '$sort': {
+                'data.measured_at': -1
+            }
+        }, {
+            '$group': {
+                '_id': '$sensor',
+                'size': {
+                    '$sum': 1
+                },
+                'location': {
+                    '$first': '$location'
+                },
+                'deployment': {
+                    '$first': '$deployment'
+                },
+                'sensor': {
+                    '$first': '$sensor'
+                },
+                'first': {
+                    '$min': '$data.measured_at'
+                },
+                'last': {
+                    '$max': '$data.measured_at'
+                },
+                'data': {
+                    '$push': '$data'
+                }
+            }
+        }
+    ];
+    console.log(agregat);
+
+    dataModel.aggregate(agregat, (err, data) => {
+        if(err){
+            return res.status(500).json(err);
+        }
+        return res.status(200).json(data);
+
+    })
+
+}
 
 
 module.exports = {
     getAllDataByDeployment,
     getSpeceficDataByDeployment,
-    getLastnNyDeployment
+    getLastNByDeployment,
+    getLastNSecondsByDeployment
 };

@@ -39,7 +39,9 @@ router.get('/data/deployment/:deployment_id', dataController.getAllDataByDeploym
 
 router.post('/data/deployment/:deployment_id', dataController.getSpeceficDataByDeployment);
 
-router.get('/data/deployment/:deployment_id/:last_n', dataController.getLastnNyDeployment);
+router.get('/data/deployment/:deployment_id/:last_n', dataController.getLastNByDeployment);
+
+router.get('/data/deployment/:deployment_id/seconds/:last_seconds', dataController.getLastNSecondsByDeployment);
 
 
 /*
