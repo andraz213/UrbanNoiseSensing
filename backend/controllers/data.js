@@ -21,6 +21,12 @@ const getAllDataByDeployment = async (req, res) => {
                 'path': '$data'
             }
         }, {
+            '$match': {
+                'data.measured_at': {
+                    '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
+                }
+            }
+        }, {
             '$sort': {
                 'data.measured_at': -1
             }
@@ -158,6 +164,7 @@ const getAllDataByDeployment = async (req, res) => {
     return res.status(200).json(data);
 }
 const getSpeceficDataByDeployment = (req, res) => {}
+
 const getLastNByDeployment = (req, res) => {
 
     let dep_id = req.params.deployment_id;
@@ -322,9 +329,135 @@ const getLastNSecondsByDeployment = async (req, res) => {
 }
 
 
+
+const GetInterestingIntervalsDataDeployment = async (req, res) => {
+
+    let dep_id = req.params.deployment_id;
+
+    let get_n_seconds = [
+        {
+            '$match': {
+                'deployment': new ObjectId(dep_id)
+            }
+        }, {
+            '$unwind': {
+                'path': '$data'
+            }
+        }, {
+            '$match': {
+                'data.measured_at': {
+                    '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
+                }
+            }
+        }, {
+            '$group': {
+                '_id': '$data.measured_at',
+                'measured': {
+                    '$first': '$data.measured_at'
+                }
+            }
+        }, {
+            '$bucketAuto': {
+                'groupBy': '$measured',
+                'buckets': 1,
+                'output': {
+                    'num': {
+                        '$sum': 1
+                    }
+                }
+            }
+        }
+    ];
+
+
+    let num_data = await dataModel.aggregate(get_n_seconds).exec();
+    let num = num_data[0].num;
+    console.log(num);
+
+    let intervali = Math.floor(num / 30);
+    console.log(intervali);
+
+
+
+
+    let agregat = [
+        {
+            '$match': {
+                'deployment': new ObjectId(dep_id)
+            }
+        }, {
+            '$unwind': {
+                'path': '$data'
+            }
+        }, {
+            '$match': {
+                'data.measured_at': {
+                    '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
+                }
+            }
+        }, {
+            '$group': {
+                '_id': '$data.measured_at',
+                'timestamp': {
+                    '$first': '$data.measured_at'
+                },
+                'average': {
+                    '$avg': '$data.decibels'
+                },
+                'deviation': {
+                    '$stdDevPop': '$data.decibels'
+                }
+            }
+        }, {
+            '$sort': {
+                'timestamp': 1
+            }
+        }, {
+            '$bucketAuto': {
+                'groupBy': '$timestamp',
+                'buckets': intervali,
+                'output': {
+                    'first': {
+                        '$min': '$timestamp'
+                    },
+                    'last': {
+                        '$max': '$timestamp'
+                    },
+                    'average': {
+                        '$avg': '$average'
+                    },
+                    'deviation_average': {
+                        '$avg': '$deviation'
+                    },
+                    'decibel_average_deviation': {
+                        '$stdDevPop': '$average'
+                    }
+                }
+            }
+        }, {
+            '$sort': {
+                'deviation_average': -1
+            }
+        }
+    ];
+
+    dataModel.aggregate(agregat, (err,data) => {
+        if(err){
+            return res.status(400).json(err);
+        }
+        return res.status(200).json(data);
+    })
+
+
+
+}
+
+
+
 module.exports = {
     getAllDataByDeployment,
     getSpeceficDataByDeployment,
     getLastNByDeployment,
-    getLastNSecondsByDeployment
+    getLastNSecondsByDeployment,
+    GetInterestingIntervalsDataDeployment
 };

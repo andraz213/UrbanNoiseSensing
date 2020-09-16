@@ -35,6 +35,8 @@ GET /api/data/deployment/{deployment.id}/{last_n}
 POST /api/data/deployment/{deployment.id}/
  */
 
+router.get('/data/deployment/interesting/:deployment_id', dataController.GetInterestingIntervalsDataDeployment);
+
 router.get('/data/deployment/:deployment_id', dataController.getAllDataByDeployment);
 
 router.post('/data/deployment/:deployment_id', dataController.getSpeceficDataByDeployment);
@@ -42,6 +44,7 @@ router.post('/data/deployment/:deployment_id', dataController.getSpeceficDataByD
 router.get('/data/deployment/:deployment_id/:last_n', dataController.getLastNByDeployment);
 
 router.get('/data/deployment/:deployment_id/seconds/:last_seconds', dataController.getLastNSecondsByDeployment);
+
 
 
 /*
