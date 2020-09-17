@@ -16,6 +16,7 @@ import { SensorMapComponent } from './components/sensor-map/sensor-map.component
 
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ReviewDeploymentComponent } from './components/review-deployment/review-deployment.component';
+import { ExploreMomentsComponent } from './components/explore-moments/explore-moments.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { ReviewDeploymentComponent } from './components/review-deployment/review
     CreateDeploymentComponent,
     EditDeploymentComponent,
     SensorMapComponent,
-    ReviewDeploymentComponent
+    ReviewDeploymentComponent,
+    ExploreMomentsComponent
   ],
   imports: [
     BrowserModule,

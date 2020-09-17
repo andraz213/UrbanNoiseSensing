@@ -277,7 +277,7 @@ const GetInterestingIntervalsDataDeployment = async (req, res) => {
     console.log(num);
 
     let intervali = Math.ceil(num / 30);
-    let limit = Math.ceil(intervali / 10);
+    let limit = Math.ceil(Math.sqrt(intervali));
     console.log(intervali);
 
 
