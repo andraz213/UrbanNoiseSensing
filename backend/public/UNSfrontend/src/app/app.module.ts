@@ -17,6 +17,10 @@ import { SensorMapComponent } from './components/sensor-map/sensor-map.component
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ReviewDeploymentComponent } from './components/review-deployment/review-deployment.component';
 import { ExploreMomentsComponent } from './components/explore-moments/explore-moments.component';
+import { DeploymentOverviewComponent } from './components/deployment-overview/deployment-overview.component';
+import { DeploymentSensorComponent } from './components/deployment-sensor/deployment-sensor.component';
+import { DeploymentGatewayComponent } from './components/deployment-gateway/deployment-gateway.component';
+import { DeploymentDataComponent } from './components/deployment-data/deployment-data.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +33,11 @@ import { ExploreMomentsComponent } from './components/explore-moments/explore-mo
     EditDeploymentComponent,
     SensorMapComponent,
     ReviewDeploymentComponent,
-    ExploreMomentsComponent
+    ExploreMomentsComponent,
+    DeploymentOverviewComponent,
+    DeploymentSensorComponent,
+    DeploymentGatewayComponent,
+    DeploymentDataComponent
   ],
   imports: [
     BrowserModule,

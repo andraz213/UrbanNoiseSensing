@@ -1,0 +1,24 @@
+agm-map { height: 600px; /* height is required */ }
+.deployment-div{
+  border: #bbbbff;
+  border-radius: 0.4em;
+  border-style: solid;
+  border-width: 0.001em;
+
+}
+
+
+
+.sensor-div{
+  border: #bbbbff;
+  border-radius: 0.4em;
+  border-style: solid;
+  border-width: 0.001em;
+}
+
+.sensor-spec{
+  border-radius: 5px;
+  background: #ddeeff;
+  padding: 0.251em;
+}
+

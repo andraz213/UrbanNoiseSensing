@@ -1,0 +1,82 @@
+<div class="deployment-div m-3">
+  <div class="m-2">
+
+
+    <div class="m-3">
+      <h4>Sensors</h4>
+      <p>Placed senosrs</p>
+
+      <div class="row mb-4">
+
+        <div *ngFor="let sensori of sensors" class="col-xl-3 col-lg-6 col-sm-12 m-0">
+
+          <div class="sensor-div mb-4">
+            <div class="row m-3">
+              <div class="col-12">
+                <h3>{{sensori.sensor.name}}</h3>
+              </div>
+              <div class="col-12">
+
+                <div *ngIf="sensori.sensor.latest_measurement">
+                  <small>Latest decibels: </small>
+                  <p class="sensor-spec">{{sensori.sensor.latest_measurement.decibels}}</p>
+                </div>
+
+                <div *ngIf="sensori.measurements">
+                  <small>Number of measurements: </small>
+                  <p class="sensor-spec">{{sensori.measurements}}</p>
+                </div>
+
+                <div *ngIf="sensori.sensor.last_telemetry">
+                  <small>Last telemetry: </small>
+                  <p class="sensor-spec">{{sensori.sensor.last_telemetry}}</p>
+                </div>
+
+                <div *ngIf="sensori.sensor.battery_voltage">
+                  <small>Battery voltage: </small>
+                  <p class="sensor-spec">{{sensori.sensor.battery_voltage}} V</p>
+                </div>
+
+                <div *ngIf="sensori.sensor.firmware_version">
+                  <small>Firmware version: </small>
+                  <p class="sensor-spec">{{sensori.sensor.firmware_version}}</p>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="row" *ngIf="sensors">
+        <div *ngFor="let sn of sensors">
+          <div class="col-1">
+            <button type="button" (click)="showLocation(sn.sensor._id)"
+                    class="btn btn-outline-success">{{sn.sensor.name}}</button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="sensors" class="my-3">
+        <agm-map
+          [latitude]="longitude"
+          [longitude]="latitude"
+          [zoom]="13"
+          [mapTypeId]='mapType'
+        >
+          <agm-marker
+            *ngFor="let sn of sensors"
+            [latitude]="sn.sensor.current_location[0]"
+            [longitude]="sn.sensor.current_location[1]"
+            [opacity]="sn.alpha"
+            [markerDraggable]="false"
+          >
+          </agm-marker>
+        </agm-map>
+      </div>
+    </div>
+  </div>
+</div>
