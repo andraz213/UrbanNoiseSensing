@@ -408,6 +408,19 @@ const GetAcerageOverAllSensors = async (req, res) => {
             '$sort': {
                 'timestamp': 1
             }
+        }, {
+            '$bucketAuto': {
+                'groupBy': '$timestamp',
+                'buckets': 1000,
+                'output': {
+                    'average': {
+                        '$avg': '$average'
+                    },
+                    'time': {
+                        '$first': '$timestamp'
+                    }
+                }
+            }
         }
 
     ];
