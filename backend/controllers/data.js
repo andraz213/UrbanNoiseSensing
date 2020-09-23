@@ -360,7 +360,69 @@ const GetInterestingIntervalsDataDeployment = async (req, res) => {
 
     ];
 
-    dataModel.aggregate(agregat, (err, data) => {
+    let interests = await dataModel.aggregate(agregat).exec();
+
+
+    let oragregat = [];
+
+    for(let int in interests){
+
+
+        let mini = {
+            'data.measured_at': {
+                '$gte': interests[int].first,
+                '$lt': interests[int].last,
+            }
+        }
+        oragregat.push(mini)
+        console.log(mini);
+        console.log(oragregat);
+    }
+
+    let interes_data_agregat = [
+        {
+            '$match': {'deployment': new ObjectId(dep_id)
+            }
+        }, {
+            '$unwind': {
+                'path': '$data'
+            }
+        }, {
+            '$match': {
+                '$or': oragregat
+            }
+        }, {
+            '$group': {
+                '_id': '$sensor',
+                'size': {
+                    '$sum': 1
+                },
+                'location': {
+                    '$first': '$location'
+                },
+                'deployment': {
+                    '$first': '$deployment'
+                },
+                'sensor': {
+                    '$first': '$sensor'
+                },
+                'first': {
+                    '$min': '$data.measured_at'
+                },
+                'last': {
+                    '$max': '$data.measured_at'
+                },
+                'data': {
+                    '$push': '$data'
+                }
+            }
+        }
+    ];
+
+    console.log(interes_data_agregat);
+
+
+    dataModel.aggregate(interes_data_agregat, (err, data) => {
         if (err) {
             console.log(err);
             return res.status(400).json(err);
