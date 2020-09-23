@@ -375,8 +375,6 @@ const GetInterestingIntervalsManuallyDataDeployment = async (req, res) => {
             }
         }
         oragregat.push(mini)
-        console.log(mini);
-        console.log(oragregat);
     }
 
     let interes_data_agregat = [

@@ -7,7 +7,7 @@ from datetime import *
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 import requests
 import json
-from Orange.data import Table, Domain, StringVariable, ContinuousVariable, DiscreteVariable
+from Orange.data import Table, Domain, StringVariable, ContinuousVariable, DiscreteVariable, TimeVariable
 from Orange.preprocess import Impute, Continuize
 from Orange.widgets import gui, settings
 from Orange.widgets.widget import OWWidget, Default, Output
@@ -30,7 +30,7 @@ class UNSdata(OWWidget):
     resizing_enabled = True
     selected = []
     n_attributes = 0
-
+    last_measurements = 100
     n_intervals = 10
     interval_len = 30
     query_type = 0
@@ -62,11 +62,11 @@ class UNSdata(OWWidget):
         ibox = gui.indentedBox(self.radiobox)
 
         gui.spin(
-            ibox, self, "interval_len", 1, 100, label="Interval length",
+            ibox, self, "interval_len", 1, 100000, label="Interval length",
             controlWidth=60, callback=self.number_changed)
 
         gui.spin(
-            ibox, self, "n_intervals", 1, 100, label="Number of intervals",
+            ibox, self, "n_intervals", 1, 100000, label="Number of intervals",
             controlWidth=60, callback=self.number_changed)
 
         gui.appendRadioButton(self.radiobox, "Custom intervals")
@@ -77,6 +77,14 @@ class UNSdata(OWWidget):
 
         gui.spin(
             nbox, self, "last_seconds", 1, 10000000, label="Last seconds",
+            controlWidth=60, callback=self.number_changed)
+
+        gui.appendRadioButton(self.radiobox, "Last n measurements on each sensor")
+
+        nmbox = gui.indentedBox(self.radiobox)
+
+        gui.spin(
+            nmbox, self, "last_measurements", 1, 10000000, label="Last measurements",
             controlWidth=60, callback=self.number_changed)
 
         self.radiobox.setDisabled(not self.query_controls)
@@ -126,6 +134,10 @@ class UNSdata(OWWidget):
             if self.query_type == 1:
                 url += 'data/deployment/interesting/'
                 url += str(dep_id)
+                url += '/'
+                url += str(self.interval_len)
+                url += '/'
+                url += str(self.n_intervals)
 
             if self.query_type == 2:
                 print("yeet")
@@ -133,9 +145,16 @@ class UNSdata(OWWidget):
             if self.query_type == 3:
                 url += 'data/deployment/'
                 url += str(dep_id)
-                #url += '/seconds/'
-                url += '/'
+                url += '/seconds/'
                 url += str(self.last_seconds)
+
+            if self.query_type == 4:
+                url += 'data/deployment/'
+                url += str(dep_id)
+                url += '/'
+                url += str(self.last_measurements)
+
+            print(url)
 
             response = requests.get(url, headers={'content-type': 'application/json', 'accept': 'application/json'})
             if response.status_code == 200:
@@ -146,6 +165,9 @@ class UNSdata(OWWidget):
                 lat = []
                 timestamp = []
                 ids = []
+                date_time = []
+                fft_data = []
+                frequens = []
 
                 for id, sensor in enumerate(recieved_data):
                     for dd in sensor["data"]:
@@ -160,12 +182,27 @@ class UNSdata(OWWidget):
 
                         time = datetime.strptime(timestr, '%Y-%m-%d %H:%M:%S.%f')
                         print(time.timestamp())
+                        print(str(time))
                         timestamp.append(time.timestamp())
+                        date_time.append(str(time))
+                        fft_data.append(dd["fftValues"])
+
+                        frekvence = [(i/len(dd["fftValues"]))*dd["frequencyRange"] for i in range(len(dd["fftValues"]))]
+                        frequens = frekvence
+
+                time_var = TimeVariable()
+                to_zip_td = [time_var.parse(i) for i in date_time]
+
+                con_domena = [ContinuousVariable("decibels"), ContinuousVariable("sensor_id"), ContinuousVariable("longitude"), ContinuousVariable("lattitude"), ContinuousVariable("timestamp")]
+                for ff in frequens:
+                    con_domena.append(ContinuousVariable(str(ff)))
+
+                fft_data = list(map(list, zip(*fft_data)))
 
                 transformed_data =Table.from_list(
-                    Domain(
-                        [ContinuousVariable("decibels"), ContinuousVariable("sensor_id"), ContinuousVariable("longitude"), ContinuousVariable("lattitude"), ContinuousVariable("timestamp")]),
-                    list(zip(decibels, ids, long, lat, timestamp))
+                    Domain(con_domena,
+                        [TimeVariable('datetime')]),
+                    list(zip(decibels, ids, long, lat, timestamp, *fft_data, to_zip_td))
                 )
 
                 print(transformed_data)
