@@ -35,6 +35,8 @@ GET /api/data/deployment/{deployment.id}/{last_n}
 POST /api/data/deployment/{deployment.id}/
  */
 
+router.get('/data/deployment/interesting/:deployment_id/:interval/:count', dataController.GetInterestingIntervalsManuallyDataDeployment);
+
 router.get('/data/deployment/interesting/:deployment_id', dataController.GetInterestingIntervalsDataDeployment);
 
 router.get('/data/deployment/average/:deployment_id', dataController.GetAcerageOverAllSensors);

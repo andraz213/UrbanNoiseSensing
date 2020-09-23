@@ -231,6 +231,207 @@ const getLastNSecondsByDeployment = async (req, res) => {
 
 }
 
+const GetInterestingIntervalsManuallyDataDeployment = async (req, res) => {
+    let dep_id = req.params.deployment_id;
+
+    let interval_len = parseInt(req.params.interval);
+    let count = parseInt(req.params.count);
+
+    let get_n_seconds = [
+        {
+            '$match': {
+                'deployment': new ObjectId(dep_id)
+            }
+        }, {
+            '$unwind': {
+                'path': '$data'
+            }
+        }, {
+            '$match': {
+                'data.measured_at': {
+                    '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
+                }
+            }
+        }, {
+            '$group': {
+                '_id': '$data.measured_at',
+                'measured': {
+                    '$first': '$data.measured_at'
+                }
+            }
+        }, {
+            '$bucketAuto': {
+                'groupBy': '$measured',
+                'buckets': 1,
+                'output': {
+                    'num': {
+                        '$sum': 1
+                    }
+                }
+            }
+        }
+    ];
+
+    let num_data = await dataModel.aggregate(get_n_seconds).exec();
+    let num = num_data[0].num;
+    console.log(num);
+    interval_len = Math.max(1, interval_len);
+    let intervali = Math.max(Math.ceil(num / interval_len), 1);
+    let limit = Math.max(count, 1);
+    console.log(intervali);
+
+
+    let agregat = [
+        {
+            '$match': {
+                'deployment': new ObjectId(dep_id)
+            }
+        }, {
+            '$unwind': {
+                'path': '$data'
+            }
+        }, {
+            '$match': {
+                'data.measured_at': {
+                    '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
+                }
+            }
+        }, {
+            '$group': {
+                '_id': '$data.measured_at',
+                'timestamp': {
+                    '$first': '$data.measured_at'
+                },
+                'average': {
+                    '$avg': '$data.decibels'
+                },
+                'deviation': {
+                    '$stdDevPop': '$data.decibels'
+                }
+            }
+        }, {
+            '$sort': {
+                'timestamp': 1
+            }
+        }, {
+            '$bucketAuto': {
+                'groupBy': '$timestamp',
+                'buckets': intervali,
+                'output': {
+                    'first': {
+                        '$min': '$timestamp'
+                    },
+                    'last': {
+                        '$max': '$timestamp'
+                    },
+                    'average': {
+                        '$avg': '$average'
+                    },
+                    'deviation_average': {
+                        '$avg': '$deviation'
+                    },
+                    'decibel_average_deviation': {
+                        '$stdDevPop': '$average'
+                    }
+                }
+            }
+        }, {
+            '$addFields': {
+                'multi': {
+                    '$multiply': ['$deviation_average', '$deviation_average']
+                }
+            }
+        }, {
+            '$addFields': {
+                'estimator': {
+                    '$add': [
+                        '$multi', '$decibel_average_deviation'
+                    ]
+                }
+            }
+        },
+        {
+            '$sort': {
+                'estimator': -1
+            }
+        }, {
+            '$limit': limit
+        }
+
+    ];
+
+    let interests = await dataModel.aggregate(agregat).exec();
+
+
+    let oragregat = [];
+
+    for(let int in interests){
+
+
+        let mini = {
+            'data.measured_at': {
+                '$gte': interests[int].first,
+                '$lte': interests[int].last,
+            }
+        }
+        oragregat.push(mini)
+        console.log(mini);
+        console.log(oragregat);
+    }
+
+    let interes_data_agregat = [
+        {
+            '$match': {'deployment': new ObjectId(dep_id)
+            }
+        }, {
+            '$unwind': {
+                'path': '$data'
+            }
+        }, {
+            '$match': {
+                '$or': oragregat
+            }
+        }, {
+            '$group': {
+                '_id': '$sensor',
+                'size': {
+                    '$sum': 1
+                },
+                'location': {
+                    '$first': '$location'
+                },
+                'deployment': {
+                    '$first': '$deployment'
+                },
+                'sensor': {
+                    '$first': '$sensor'
+                },
+                'first': {
+                    '$min': '$data.measured_at'
+                },
+                'last': {
+                    '$max': '$data.measured_at'
+                },
+                'data': {
+                    '$push': '$data'
+                }
+            }
+        }
+    ];
+
+    console.log(interes_data_agregat);
+
+
+    dataModel.aggregate(interes_data_agregat, (err, data) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).json(err);
+        }
+        return res.status(200).json(data);
+    })
+
+
+}
 
 const GetInterestingIntervalsDataDeployment = async (req, res) => {
 
@@ -505,5 +706,6 @@ module.exports = {
     getLastNByDeployment,
     getLastNSecondsByDeployment,
     GetInterestingIntervalsDataDeployment,
-    GetAcerageOverAllSensors
+    GetAcerageOverAllSensors,
+    GetInterestingIntervalsManuallyDataDeployment
 };
