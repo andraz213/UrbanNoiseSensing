@@ -1,4 +1,5 @@
 import math
+from collections import defaultdict
 
 import Orange
 import numpy as np
@@ -48,6 +49,7 @@ class UNSdata(OWWidget):
     n_intervals = 10
     interval_len = 30
     query_type = 0
+    output_type = 0
 
     last_seconds = 100
 
@@ -66,7 +68,6 @@ class UNSdata(OWWidget):
         gui.rubber(self.controlArea)
 
         box = gui.vBox(self.mainArea, "Configure data query")
-        grid = QGridLayout()
 
         self.radiobox = gui.radioButtons(box, self, "query_type", callback=self.radio_changed)
 
@@ -103,16 +104,24 @@ class UNSdata(OWWidget):
 
         self.radiobox.setDisabled(not self.query_controls)
 
-        self.apply_button = gui.button(self.mainArea, self, self.tr("&Apply"),
-                   callback=self.apply)
-
-
 
         self.objects = {}
         self.lb_objects = gui.listBox(self.controlArea, self, "selected", "lb_labels", box="Deployments",
                                     callback=self.sel_changed,
                                       sizeHint=QSize(300, 300))
         self.lb_objects.setFocusPolicy(Qt.NoFocus)
+
+        out_box = gui.vBox(self.mainArea, "Output")
+
+        self.out_box = gui.radioButtons(out_box, self, "output_type", callback=self.radio_changed)
+
+        gui.appendRadioButton(self.out_box, "Matrix")
+        gui.appendRadioButton(self.out_box, "Tensor")
+
+        self.apply_button = gui.button(self.mainArea, self, self.tr("&Apply"),
+                                       callback=self.apply)
+
+        self.out_box.setDisabled(not self.query_controls)
 
         self.get_deployments()
 
@@ -180,50 +189,13 @@ class UNSdata(OWWidget):
             if response.status_code == 200:
 
                 recieved_data = response.json()
-                print(recieved_data)
-                decibels = []
-                long = []
-                lat = []
-                timestamp = []
-                ids = []
-                date_time = []
-                fft_data = []
-                frequens = []
+                transformed_data = []
 
-                for id, sensor in enumerate(recieved_data):
-                    for dd in sensor["data"]:
-                        decibels.append(dd["decibels"])
-                        ids.append(id)
+                if self.output_type == 0:
+                    transformed_data = self.create_matrix(recieved_data)
 
-                        lat.append(sensor["location"][0])
-                        long.append(sensor["location"][1])
-                        timestr = str(dd["measured_at"])
-                        timestr = timestr.replace("T", " ")
-                        timestr = timestr.replace("Z", "")
-
-                        time = datetime.strptime(timestr, '%Y-%m-%d %H:%M:%S.%f')
-
-                        timestamp.append(time.timestamp())
-                        date_time.append(str(time))
-                        fft_data.append(dd["fftValues"])
-
-                        frekvence = [math.floor(((i+0.5)/len(dd["fftValues"]))*dd["frequencyRange"]) for i in range(len(dd["fftValues"]))]
-                        frequens = frekvence
-
-                time_var = TimeVariable()
-                to_zip_td = [time_var.parse(i) for i in date_time]
-
-                con_domena = [ContinuousVariable("decibels"), ContinuousVariable("sensor_id"), ContinuousVariable("longitude"), ContinuousVariable("lattitude"), ContinuousVariable("timestamp")]
-                for ff in frequens:
-                    con_domena.append(ContinuousVariable(str(ff)))
-
-                fft_data = list(map(list, zip(*fft_data)))
-
-                transformed_data =Table.from_list(
-                    Domain(con_domena,
-                        [TimeVariable('datetime')]),
-                    list(zip(decibels, ids, long, lat, timestamp, *fft_data, to_zip_td))
-                )
+                if self.output_type == 1:
+                    transformed_data = self.create_tensor(recieved_data)
 
                 self.Information.done()
                 self.Outputs.data.send(transformed_data)
@@ -237,6 +209,100 @@ class UNSdata(OWWidget):
                 #output = Orange.data.Table.from_list()
 
 
+    def create_tensor(self, json_data):
+        recieved_data = json_data
+        print(recieved_data)
+        decibels = []
+        long = []
+        lat = []
+        timestamp = []
+        ids = []
+        date_time = []
+        fft_data = []
+        frequens = []
+
+        for id, sensor in enumerate(recieved_data):
+            for dd in sensor["data"]:
+                decibels.append(dd["decibels"])
+                ids.append(id)
+
+                lat.append(sensor["location"][0])
+                long.append(sensor["location"][1])
+                timestr = str(dd["measured_at"])
+                timestr = timestr.replace("T", " ")
+                timestr = timestr.replace("Z", "")
+
+                time = datetime.strptime(timestr, '%Y-%m-%d %H:%M:%S.%f')
+
+                timestamp.append(time.timestamp())
+                date_time.append(str(time))
+                fft_data.append(dd["fftValues"])
+
+                frekvence = [math.floor(((i + 0.5) / len(dd["fftValues"])) * dd["frequencyRange"]) for i in
+                             range(len(dd["fftValues"]))]
+                frequens = frekvence
+
+        time_var = TimeVariable()
+        to_zip_td = [time_var.parse(i) for i in date_time]
+
+        con_domena = [ContinuousVariable("decibels"), ContinuousVariable("sensor_id"), ContinuousVariable("longitude"),
+                      ContinuousVariable("lattitude"), ContinuousVariable("timestamp")]
+        for ff in frequens:
+            con_domena.append(ContinuousVariable(str(ff)))
+
+        fft_data = list(map(list, zip(*fft_data)))
+
+        transformed_data = Table.from_list(
+            Domain(con_domena,
+                   [TimeVariable('datetime')]),
+            list(zip(decibels, ids, long, lat, timestamp, *fft_data, to_zip_td))
+        )
+
+        return transformed_data
+
+
+
+    def create_matrix(self, json_data):
+        recieved_data = json_data
+        print(recieved_data)
+        n_sensors = len(recieved_data)
+
+        final_data = [defaultdict(int) for i in range(n_sensors)]
+
+        for id, sensor in enumerate(recieved_data):
+            for dd in sensor["data"]:
+                timestr = str(dd["measured_at"])
+                timestr = timestr.replace("T", " ")
+                timestr = timestr.replace("Z", "")
+
+                time_var = TimeVariable()
+                time = time_var.parse(str(datetime.strptime(timestr, '%Y-%m-%d %H:%M:%S.%f')))
+
+                for n, defdic in enumerate(final_data):
+                    defdic[time] += 0
+                    if n == id:
+                        defdic[time] = dd["decibels"]
+
+
+        data_matrix = []
+
+        for key in final_data[0].keys():
+            temp = []
+            temp.append(key)
+            for n, sens_data in enumerate(final_data):
+                temp.append(sens_data[key])
+
+            data_matrix.append(temp)
+
+        con_domena = []
+
+        for i in range(n_sensors):
+            con_domena.append(ContinuousVariable("sensor_" + str(i)))
+
+
+        transformed_data = Table.from_list( Domain([TimeVariable('datetime')], con_domena),data_matrix)
+
+        return transformed_data
 
 
     def number_changed(self):
@@ -252,6 +318,7 @@ class UNSdata(OWWidget):
     def sel_changed(self):
         self.query_controls = False
         self.radiobox.setDisabled(not self.query_controls)
+        self.out_box.setDisabled(not self.query_controls)
         print("sds")
         print(self.number)
         if self.lb_objects.count() == 0:
@@ -264,6 +331,7 @@ class UNSdata(OWWidget):
             if resp.status_code == 200:
                 self.query_controls = True
                 self.radiobox.setDisabled(not self.query_controls)
+                self.out_box.setDisabled(not self.query_controls)
                 print(resp.json())
 
 
