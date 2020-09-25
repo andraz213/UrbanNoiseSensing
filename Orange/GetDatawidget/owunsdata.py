@@ -1,9 +1,14 @@
+import math
+
 import Orange
 import numpy as np
 from AnyQt.QtCore import Qt, QSize
+from IPython.core.display import Math
 from PyQt5.QtWidgets import QListWidgetItem, QGridLayout
 from orangewidget.utils.widgetpreview import WidgetPreview
 from datetime import *
+
+from orangewidget.widget import Msg
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 import requests
 import json
@@ -21,6 +26,15 @@ class UNSdata(OWWidget):
 
     class Outputs:
         data = Output("Data", Orange.data.Table)
+
+    class Error(OWWidget.Error):
+        error = Msg("Coulld not get data!")
+
+    class Information(OWWidget.Information):
+        getting_data = Msg("Getting data")
+        done = Msg("Done")
+
+
 
 
     BASE_URL = 'https://urbannoisesensing.herokuapp.com/api/'
@@ -123,6 +137,7 @@ class UNSdata(OWWidget):
 
     def apply(self):
         if self.lb_objects.count() != 0:
+            self.Information.getting_data()
             selected_deployment = self.lb_objects.currentItem().data(Qt.UserRole)
             dep_id = selected_deployment["_id"]
             url = self.BASE_URL
@@ -154,10 +169,16 @@ class UNSdata(OWWidget):
                 url += '/'
                 url += str(self.last_measurements)
 
-            print(url)
+
+
 
             response = requests.get(url, headers={'content-type': 'application/json', 'accept': 'application/json'})
+            if response.status_code != 200:
+                self.Error.error()
+                return
+
             if response.status_code == 200:
+
                 recieved_data = response.json()
                 print(recieved_data)
                 decibels = []
@@ -173,21 +194,20 @@ class UNSdata(OWWidget):
                     for dd in sensor["data"]:
                         decibels.append(dd["decibels"])
                         ids.append(id)
-                        long.append(sensor["location"][0])
-                        lat.append(sensor["location"][1])
+
+                        lat.append(sensor["location"][0])
+                        long.append(sensor["location"][1])
                         timestr = str(dd["measured_at"])
                         timestr = timestr.replace("T", " ")
                         timestr = timestr.replace("Z", "")
-                        print(timestr)
 
                         time = datetime.strptime(timestr, '%Y-%m-%d %H:%M:%S.%f')
-                        print(time.timestamp())
-                        print(str(time))
+
                         timestamp.append(time.timestamp())
                         date_time.append(str(time))
                         fft_data.append(dd["fftValues"])
 
-                        frekvence = [(i/len(dd["fftValues"]))*dd["frequencyRange"] for i in range(len(dd["fftValues"]))]
+                        frekvence = [math.floor(((i+0.5)/len(dd["fftValues"]))*dd["frequencyRange"]) for i in range(len(dd["fftValues"]))]
                         frequens = frekvence
 
                 time_var = TimeVariable()
@@ -205,7 +225,7 @@ class UNSdata(OWWidget):
                     list(zip(decibels, ids, long, lat, timestamp, *fft_data, to_zip_td))
                 )
 
-                print(transformed_data)
+                self.Information.done()
                 self.Outputs.data.send(transformed_data)
 
 
@@ -230,17 +250,21 @@ class UNSdata(OWWidget):
 
 
     def sel_changed(self):
+        self.query_controls = False
+        self.radiobox.setDisabled(not self.query_controls)
         print("sds")
         print(self.number)
         if self.lb_objects.count() == 0:
             self.send("Object", None)
         else:
-            self.query_controls = True
-            self.radiobox.setDisabled(not self.query_controls)
+
             jsn_data = self.lb_objects.currentItem().data(Qt.UserRole)
             url = 'https://urbannoisesensing.herokuapp.com/api/deployment/' + str(jsn_data["_id"])
             resp = requests.get(url, headers={'content-type': 'application/json', 'accept': 'application/json'})
-            print(resp.json())
+            if resp.status_code == 200:
+                self.query_controls = True
+                self.radiobox.setDisabled(not self.query_controls)
+                print(resp.json())
 
 
 
