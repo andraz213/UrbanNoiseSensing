@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ObjectId = require("mongoose");
 const dataModel = mongoose.model('data');
 const sensorModel = mongoose.model('sensor');
 const gatewayModel = mongoose.model('gateway');
@@ -60,21 +61,52 @@ const finishDeployment  = async (req, res) => {
     // posodobi gatewaye
     for(let gw of deployment.gateways){
         try {
-            await gatewayModel.updateOne({_id: gw.sensor_id}, {current_deployment: null, current_location: []});
+            await gatewayModel.updateOne({_id: gw.sensor_id}, {current_deployment: null, current_location: [], wifi_credentials: []});
         } catch (e) {
             res_messages.push(e);
         }
     }
 
+
+
+
     // posodobi deployment
+
+    let get_n_measurements = [
+        {
+            '$match': {
+                'deployment': mongoose.Types.ObjectId(id)
+            }
+        }, {
+            '$unwind': {
+                'path': '$data'
+            }
+        }, {
+            '$match': {
+                'data.measured_at': {
+                    '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
+                }
+            }
+        }, {
+            '$bucketAuto': {
+                'groupBy': '$data.measured_at',
+                'buckets': 1,
+                'output': {
+                    'num': {
+                        '$sum': 1
+                    }
+                }
+            }
+        }
+    ];
+
+
+
     deployment.status = 'finished';
     deployment.finish = Date.now();
-    let numbers = JSON.parse(JSON.stringify(await dataModel.aggregate([{$match: {deployment: mongoose.Types.ObjectId(id)}}, {$project: {data: {$size: '$data'}, sensor: "$sensor"}}])));
-    let all_measurements = 0;
-    for(let nm of numbers){
-        all_measurements += nm.data;
-    }
-    deployment.all_measurements = all_measurements;
+    let numbers = JSON.parse(JSON.stringify(await dataModel.aggregate(get_n_measurements).exec()));
+    let all_measurements = numbers[0].num;
+    deployment.measurement_num = all_measurements;
     console.log(deployment);
 
     deployment.save((err, data)=>{
@@ -269,17 +301,43 @@ return -1;
 
 
 const getDeploymentById = async (req, res) => {
+
+
+
+
     let id = await req.params.deployment_id;
-    let numbers = JSON.parse(JSON.stringify(await dataModel.aggregate([{$match: {deployment: mongoose.Types.ObjectId(id)}}, {$project: {data: {$size: '$data'}, sensor: "$sensor"}}])));
+
+    let number_agregation = [
+        {
+            '$match': {
+                'deployment': mongoose.Types.ObjectId(id)
+            }
+        }, {
+            '$unwind': {
+                'path': '$data'
+            }
+        }, {
+            '$match': {
+                'data.measured_at': {
+                    '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
+                }
+            }
+        }, {
+            '$group': {
+                '_id': '$sensor',
+                'num': {
+                    '$sum': 1
+                }
+            }
+        }
+    ];
+    let numbers = await dataModel.aggregate(number_agregation).exec();
+    console.log(numbers);
     let number_agregate = [];
     for(let nnum of numbers){
-        let index = isInArraySensor(number_agregate, nnum.sensor);
-        if(index == -1){
-            number_agregate.push({sensor: nnum.sensor, num: nnum.data});
-        }else{
-            number_agregate[index].num += nnum.data;
-        }
+        number_agregate.push({sensor: nnum._id, num: nnum.num});
     }
+    console.log(number_agregate);
     deploymentModel.findById(id, async (error, deployment) => {
         if (error) {
             return res.status(500).json(error);

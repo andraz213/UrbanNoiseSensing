@@ -7,8 +7,16 @@ const nameGenerator = require('../misc/names');
 
 const getAllSensor = async (req, res) => {
 
-    try{
-      let sensors = await sensorModel.find().select({_id:1, name:1, current_location:1, last_telemetry:1, firmware_version: 1, battery_voltage: 1, current_deployment:1});
+    try {
+        let sensors = await sensorModel.find().select({
+            _id: 1,
+            name: 1,
+            current_location: 1,
+            last_telemetry: 1,
+            firmware_version: 1,
+            battery_voltage: 1,
+            current_deployment: 1
+        });
         return res.status(200).json(sensors);
     } catch (err) {
         return res.status(500).json(err);
@@ -19,7 +27,7 @@ const getAllByIdSensor = async (req, res) => {
     let id = req.params.sensor_id;
 
 
-    try{
+    try {
         let sensors = await sensorModel.find({_id: id});
         return res.status(200).json(sensors);
     } catch (err) {
@@ -60,7 +68,7 @@ const postSensor = async (req, res) => {
                 let gw_macs = [];
                 console.log(sensor[0].current_deployment);
                 if (sensor[0].current_deployment != null) {
-                    gw_macs = await getGWMacs(sensor[0].  current_deployment);
+                    gw_macs = await getGWMacs(sensor[0].current_deployment);
                 }
 
                 let sensorObj = JSON.parse(JSON.stringify(sensor));
@@ -76,6 +84,7 @@ const postSensor = async (req, res) => {
 
 
 }
+
 const postTelemetrySensor = (req, res) => {
     let id = req.params.sensor_id;
     let {voltage, version} = req.body;
@@ -88,10 +97,10 @@ const postTelemetrySensor = (req, res) => {
                 console.log(`Could not find sensor with id: ${id}}`);
                 return res.status(404).json({'message': `Could not find sensor with id: ${id}`});
             } else {
-                if(voltage) {
+                if (voltage) {
                     sensor.battery_voltage = voltage;
                 }
-                if(version) {
+                if (version) {
                     sensor.firmware_version = version;
                 }
                 sensor.last_telemetry = Date.now();
@@ -111,8 +120,6 @@ const postTelemetrySensor = (req, res) => {
 
 }
 
-
-
 const postDataSensorSensor = async (req, res) => {
 
     res.status(200);
@@ -122,13 +129,19 @@ const postDataSensorSensor = async (req, res) => {
     let dataObj = JSON.parse(JSON.stringify(req.body));
     let statusreport = {"success": 0, "failure": 0, "messages": []};
 
-    for(let jk = 0; jk<1; jk++) {
+    for (let jk = 0; jk < 1; jk++) {
 
         for (let data of dataObj) {
 
             // najdi senzor
             let sensorMac = data.mac;
-            let currentSensor = await sensorModel.find({mac: sensorMac}).select({_id:1, current_deployment:1, last_data:1, current_location:1, name:1}).limit(1).exec();
+            let currentSensor = await sensorModel.find({mac: sensorMac}).select({
+                _id: 1,
+                current_deployment: 1,
+                last_data: 1,
+                current_location: 1,
+                name: 1
+            }).limit(1).exec();
             let newSize = 1;
             console.log(currentSensor);
 
@@ -137,7 +150,12 @@ const postDataSensorSensor = async (req, res) => {
                 if (oneSensor.current_deployment != null && oneSensor.current_deployment != '') {
                     let currentData;
                     if (oneSensor.last_data != null) {
-                        currentData = await dataModel.findById(oneSensor.last_data).select({_id: 1, size: 1, last: 1, first: 1}).exec();
+                        currentData = await dataModel.findById(oneSensor.last_data).select({
+                            _id: 1,
+                            size: 1,
+                            last: 1,
+                            first: 1
+                        }).exec();
                     }
                     if (currentData == null || currentData.length == 0 || currentData.size >= 10) {
                         currentData = new dataModel();
@@ -156,7 +174,6 @@ const postDataSensorSensor = async (req, res) => {
                     console.log(currentData);
 
 
-
                     let measurement = {
                         frequencyRange: data.data.frequencyRange,
                         fftValues: data.data.fftValues,
@@ -173,7 +190,12 @@ const postDataSensorSensor = async (req, res) => {
                         currentData.first = measurement.measured_at;
                     }
                     await sensorModel.updateOne({_id: oneSensor._id}, {latest_measurement: measurement});
-                    await dataModel.updateOne({_id: currentData._id}, {size: newSize, last: currentData.last, first: currentData.first, $addToSet: {data: measurement}}, (err, data) => {
+                    await dataModel.updateOne({_id: currentData._id}, {
+                        size: newSize,
+                        last: currentData.last,
+                        first: currentData.first,
+                        $addToSet: {data: measurement}
+                    }, (err, data) => {
                         if (err) {
                             statusreport.failure += 1;
                             statusreport.messages.push({"messge": `could not save data`, 'data': measurement});
@@ -185,11 +207,14 @@ const postDataSensorSensor = async (req, res) => {
 
                 } else {
                     statusreport.failure += 1;
-                    statusreport.messages.push({"messge": `sensor ${oneSensor.name} is not deployed`, 'data': data.data });
+                    statusreport.messages.push({
+                        "messge": `sensor ${oneSensor.name} is not deployed`,
+                        'data': data.data
+                    });
                 }
             } else {
                 statusreport.failure += 1;
-                statusreport.messages.push({"messge": `could not find sensor ${data.mac}`, 'data': data.data });
+                statusreport.messages.push({"messge": `could not find sensor ${data.mac}`, 'data': data.data});
             }
 
         }
@@ -206,21 +231,21 @@ const putSensor = (req, res) => {
     let new_s = req.body;
 
     sensorModel.findById(id, (err, sensor) => {
-        if(err){
+        if (err) {
             console.log(err);
             return res.status(400).json(err);
-        } else{
+        } else {
             console.log(sensor);
-            if(!sensor || sensor.length == 0){
+            if (!sensor || sensor.length == 0) {
                 return res.status(204).json({'message': `Sensor ${id} dose not exist!`});
             }
-            for(let element in new_s){
+            for (let element in new_s) {
                 sensor[element] = new_s[element];
             }
             sensor.save((err, sensor_sv) => {
-                if(err){
+                if (err) {
                     return res.status(500).json(err);
-                }else{
+                } else {
                     return res.status(200).json(sensor_sv);
                 }
             })
@@ -229,7 +254,6 @@ const putSensor = (req, res) => {
 
     });
 }
-
 
 const getGWMacs = async (deploymentid) => {
     let gw_macs = [];
@@ -248,10 +272,6 @@ const getGWMacs = async (deploymentid) => {
     });
     return gw_macs;
 }
-
-
-
-
 
 const postDataSensorWebsocket = async (JSNdata) => {
 
@@ -341,7 +361,6 @@ const postDataSensorWebsocket = async (JSNdata) => {
     return "ok";
 }
 
-
 const PostSensorTelemetryWebsockets = async (JSNdata) => {
 
 
@@ -360,10 +379,12 @@ const PostSensorTelemetryWebsockets = async (JSNdata) => {
         let oneSensor = currentSensor[0];
         console.log(oneSensor);
 
-        await sensorModel.updateOne({_id: oneSensor._id}, {battery_voltage: data.battery_voltage, last_telemetry: Date.now()});
+        await sensorModel.updateOne({_id: oneSensor._id}, {
+            battery_voltage: data.battery_voltage,
+            last_telemetry: Date.now()
+        });
 
     }
-
 
 
     sensorModel.find({mac: sensorMac}, async (err, sensor) => {
@@ -384,7 +405,10 @@ const PostSensorTelemetryWebsockets = async (JSNdata) => {
                 sensor.last_telemetry = Date.now();
                 console.log(sensor);
 
-                await sensorModel.updateOne({_id: sensor._id}, {battery_voltage: data.voltage, last_telemetry: Date.now()});
+                await sensorModel.updateOne({_id: sensor._id}, {
+                    battery_voltage: data.voltage,
+                    last_telemetry: Date.now()
+                });
                 /*sensor.save((err, sensor_sv) => {
                     if (err) {
                         return res.status(500).json(err);
@@ -399,10 +423,6 @@ const PostSensorTelemetryWebsockets = async (JSNdata) => {
     });
 
 }
-
-
-
-
 
 module.exports = {
     getAllSensor,
