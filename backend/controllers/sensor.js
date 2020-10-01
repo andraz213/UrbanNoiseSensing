@@ -179,7 +179,7 @@ const postDataSensorSensor = async (req, res) => {
                         frequencyRange: data.fft_range,
                         fftValues: data.fft_values,
                         decibels: data.decibels,
-                        measured_at: new Date(timestamp * 1000),
+                        measured_at: new Date(data.timestamp * 1000),
                     };
 
                     console.log(measurement);
