@@ -32,6 +32,7 @@ export class DeploymentSensorComponent implements OnInit {
 
     this.getSensors();
 
+
   }
 
 
@@ -50,6 +51,7 @@ export class DeploymentSensorComponent implements OnInit {
     this.sensors = [];
     for(let sen of this.deployment.sensors) {
       this.sensorService.getOneSensor(sen.sensor_id).then((reses) => {
+        console.log(reses);
         let res = reses[0];
         this.sensors.push({sensor: res, alpha: 0.4, measurements: this.findnumber(sen.sensor_id)});
         this.longitude += res.current_location[0] / this.deployment.sensors.length;
@@ -58,6 +60,10 @@ export class DeploymentSensorComponent implements OnInit {
         console.log(res);
       });
     }
+    console.log(this.deployment);
+    console.log(this.sensors);
+    console.log(this.longitude);
+    console.log(this.latitude);
   }
 
 

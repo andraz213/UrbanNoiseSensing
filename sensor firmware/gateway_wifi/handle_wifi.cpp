@@ -20,6 +20,9 @@ const char* password = "uns12wifi34";
 const char* serverName = "http://urbannoisesensing.herokuapp.com";
 
 
+long average_RTT [50][2];
+int average_RTT_index = 0;
+
 const char* websockets_server_host =  "urbannoisesensing.herokuapp.com"; //"192.168.1.7"; //Enter server adress
 const uint16_t websockets_server_port = 80; //  3000; // Enter server port
 bool got_reply = false;
@@ -40,9 +43,21 @@ void init_wifi() {
       Serial.print("|");
       delay(250);
     }
-    init_time();
 
-    print_text(String("Success!"), String(ssid), "", "");
+    if(WiFi.status() != WL_CONNECTED){
+        /*esp_wifi_disconnect();
+        esp_wifi_stop();
+        esp_wifi_deinit();*/
+        WiFi.disconnect(true);
+        print_text(String("Failed!"), String(ssid), "", "");
+    } else {
+      init_time();
+
+      print_text(String("Success!"), String(ssid), "", "");
+    }
+
+
+
     delay(1000);
   }
 
@@ -71,7 +86,6 @@ client.onMessage([&](WebsocketsMessage message){
     Serial.println(message.data());
     got_reply = true;
 });
-
 
 
 
@@ -164,15 +178,25 @@ void send_data(){
         got_reply = false;
         client.send(jsn);
         long sent = millis();
-        while(got_reply != true && millis() - sent < 3000){
+        while(got_reply != true && millis() - sent < 1){
           if(client.available()) {
             client.poll();
           }
         }
 
+        got_reply = true;
+
         if(got_reply == true){
+          long RTT = millis() - sent;
           Serial.print("               RTT time for websockets: ");
-          Serial.println(millis() - sent);
+          Serial.println(RTT);
+          average_RTT[average_RTT_index][0] = millis();
+          average_RTT[average_RTT_index][1] = RTT;
+          average_RTT_index ++;
+          average_RTT_index %= 50;
+
+
+
           remove_first();
         }
 
@@ -198,4 +222,34 @@ void send_data(){
   }
 
 
+}
+
+
+int get_RTT_average(){
+
+  long average_RTT_num = 0;
+  int num = 0;
+  for(int i = 0; i<50; i++){
+    if(millis() - average_RTT[i][0] <= 1000){
+      average_RTT_num += average_RTT[i][1];
+      num ++;
+    }
+  }
+  if(num == 0){
+    return 0;
+  }
+  average_RTT_num /= num;
+  return (int)average_RTT_num;
+}
+
+
+int get_sent_in_last_second(){
+
+  int num = 0;
+  for(int i = 0; i<50; i++){
+    if(millis() - average_RTT[i][0] <= 1000){
+      num ++;
+    }
+  }
+  return num;
 }

@@ -124,26 +124,6 @@ const finishDeployment  = async (req, res) => {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 This is the moneymaker
 

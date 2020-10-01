@@ -1,4 +1,5 @@
 
+#include "handle_oled.h"
 #include "handle_wifi.h"
 #include "handle_serial.h"
 
@@ -42,12 +43,21 @@ void setup() {
 
 
 }
+long prev_display = 0;
 
 void loop() {
   // put your main code here, to run repeatedly:
   if(millis() - last_wifi >  5000){
     init_wifi();
     last_wifi = millis();
+  }
+
+  int rtt_avg = get_RTT_average();
+  int rtt_num = get_sent_in_last_second();
+  if(millis() - prev_display > 333){
+    prev_display = millis();
+    print_text(String("Previous second:"), String(rtt_num), String("Average RTT: "), String(rtt_avg));
+    delay(10);
   }
 
 }
