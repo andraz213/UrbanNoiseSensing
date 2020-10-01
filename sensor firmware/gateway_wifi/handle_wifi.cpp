@@ -15,20 +15,29 @@
 #include "internal_config.h"
 #include <ArduinoJson.h>
 #include <ArduinoWebsockets.h>
+const char* ssid = "PSP256";
+const char* password = "siol2004";
+
+/*
 const char* ssid = "UNSwifi";
 const char* password = "uns12wifi34";
-const char* serverName = "http://urbannoisesensing.herokuapp.com";
+*/
+const char* serverName = "http://urbannoisesensing.biolab.si";
 
 
 long average_RTT [50][2];
 int average_RTT_index = 0;
 
-const char* websockets_server_host =  "urbannoisesensing.herokuapp.com"; //"192.168.1.7"; //Enter server adress
-const uint16_t websockets_server_port = 80; //  3000; // Enter server port
+String jsn_body = "";
+
+
+const char* websockets_server_host =  "urbannoisesensing.biolab.si"; //"192.168.1.7"; //Enter server adress
+const uint16_t websockets_server_port = 90; //  3000; // Enter server port
 bool got_reply = false;
 using namespace websockets;
 
 WebsocketsClient client;
+HTTPClient httpClient;
 
 void init_wifi() {
   if (WiFi.status() != WL_CONNECTED) {
@@ -72,7 +81,9 @@ void TaskWifi( void *pvParameters ) {
   get_config();
 
 
-  bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
+  // bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
+  bool connected = httpClient.begin(serverName);
+
   if(connected) {
     Serial.println("Connected!");
     //client.send("Hello Server");
@@ -92,22 +103,21 @@ client.onMessage([&](WebsocketsMessage message){
   for (;;) {
     get_config();
 
-  vTaskDelay(1);
+  vTaskDelay(10);
 
-  if(client.available()) {
-    client.poll();
-  }
+  prepare_jsn_data();
 
-  if(client.available()){
+  if(jsn_body.length() != 0 && WiFi.status() == WL_CONNECTED){
     send_data();
   }
-  else{
-    connected = client.connect(websockets_server_host, websockets_server_port, "/");
-  }
+
   //delay(5);
 
   }
 }
+
+
+
 
 
 long prev_config = -10000;
@@ -152,7 +162,59 @@ void get_config(){
 
 
 
+
 void send_data(){
+
+  String url = serverName;
+  url += String("/api/sensor/data");
+  Serial.println(url);
+  HTTPClient http;
+  http.begin(url);
+  http.addHeader("Content-Type", "application/json");
+  Serial.println(jsn_body);
+  got_reply = false;
+  long sent = millis();
+  int httpResponseCode = http.POST(jsn_body);
+  http.end();
+
+
+    jsn_body = "";
+
+  got_reply = true;
+
+
+          long RTT = millis() - sent;
+          Serial.print("               RTT time for websockets: ");
+          Serial.println(RTT);
+          average_RTT[average_RTT_index][0] = millis();
+          average_RTT[average_RTT_index][1] = RTT;
+          average_RTT_index ++;
+          average_RTT_index %= 50;
+
+    }
+
+    /*
+
+    if(message -> type == (int)SENOSR_TELEMETRY){
+        doc["type"] = "SENOSR_TELEMETRY";
+
+
+        JsonArray mac = doc.createNestedArray("mac");
+        for(int i = 0; i<6; i++){
+          mac.add(message->mac[i]);
+        }
+        telemetry_message * data = (telemetry_message *)message->message;
+        doc["battery_voltage"] = data->battery_voltage;
+        String jsn;
+        serializeJson(doc, jsn);
+        client.send(jsn);
+        remove_first();
+    }
+  }
+}
+*/
+
+void send_data_websocket(){
 
   StaticJsonDocument<500> doc;
   message_queue * message = get_first();
@@ -217,11 +279,7 @@ void send_data(){
         client.send(jsn);
         remove_first();
     }
-
-
   }
-
-
 }
 
 
@@ -252,4 +310,44 @@ int get_sent_in_last_second(){
     }
   }
   return num;
+}
+
+
+void prepare_jsn_data(){
+  if(jsn_body.length() != 0){
+    return;
+  }
+
+  int it = 0;
+  DynamicJsonDocument doc(12000);
+  message_queue * message = get_first();
+
+  while(it < 10 && message != (message_queue*)0){
+    if(message -> type != (int)SENOSR_TELEMETRY){
+      JsonObject measurement = doc.createNestedObject();
+
+      JsonArray mac = measurement.createNestedArray("mac");
+      for(int i = 0; i<6; i++){
+        mac.add(message->mac[i]);
+      }
+      sending_list * data = (sending_list *)message->message;
+      measurement["fft_range"] = data->fft_range;
+      measurement["decibels"] = data->decibels;
+      measurement["timestamp"] = data->timestamp;
+      JsonArray fft_values = measurement.createNestedArray("fft_values");
+      for(int i = 0; i<16; i++){
+        fft_values.add(data->fft_values[i]);
+      }
+
+      it++;
+    }
+      remove_first();
+      message = get_first();
+
+  }
+
+  serializeJson(doc, jsn_body);
+
+  Serial.println(jsn_body);
+
 }

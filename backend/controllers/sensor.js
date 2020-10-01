@@ -132,6 +132,7 @@ const postDataSensorSensor = async (req, res) => {
     for (let jk = 0; jk < 1; jk++) {
 
         for (let data of dataObj) {
+            console.log(data);
 
             // najdi senzor
             let sensorMac = data.mac;
@@ -175,13 +176,13 @@ const postDataSensorSensor = async (req, res) => {
 
 
                     let measurement = {
-                        frequencyRange: data.data.frequencyRange,
-                        fftValues: data.data.fftValues,
+                        frequencyRange: data.data.fft_range,
+                        fftValues: data.data.fft_values,
                         decibels: data.data.decibels,
-                        //measured_at: data.data.measured_at,
-                        measured_at: Date.now()
+                        measured_at: new Date(data.timestamp * 1000),
                     };
 
+                    console.log(measurement);
 
                     if (currentData.last < measurement.measured_at) {
                         currentData.last = measurement.measured_at;
@@ -221,7 +222,7 @@ const postDataSensorSensor = async (req, res) => {
     }
 
     statusreport.success = dataObj.length - statusreport.failure;
-
+    console.log(statusreport);
     // res.status(200).json(statusreport);
 
 }

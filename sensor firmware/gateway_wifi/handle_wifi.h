@@ -12,5 +12,6 @@ void send_data();
 void update_display();
 int get_RTT_average();
 int get_sent_in_last_second();
+void prepare_jsn_data();
 
 #endif

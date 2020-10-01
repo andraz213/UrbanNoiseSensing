@@ -13,7 +13,7 @@
 
 const char* ssid = "UNSwifi";
 const char* password = "uns12wifi34";
-const char* serverName = "http://urbannoisesensing.herokuapp.com";
+const char* serverName = "http://urbannoisesensing.biolab.si";
 
 HTTPClient http;
 
