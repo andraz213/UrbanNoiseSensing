@@ -23,7 +23,7 @@ export class ReviewDeploymentComponent implements OnInit {
 
 
   public deployment: Deployment;
-  private id:string;
+  public id:string;
   modalRef: BsModalRef;
 
   public openTab = "overview";

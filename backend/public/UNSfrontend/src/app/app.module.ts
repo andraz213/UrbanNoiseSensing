@@ -23,6 +23,7 @@ import { DeploymentSensorComponent } from './components/deployment-sensor/deploy
 import { DeploymentGatewayComponent } from './components/deployment-gateway/deployment-gateway.component';
 import { DeploymentDataComponent } from './components/deployment-data/deployment-data.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { AverageChartComponent } from './components/average-chart/average-chart.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     DeploymentOverviewComponent,
     DeploymentSensorComponent,
     DeploymentGatewayComponent,
-    DeploymentDataComponent
+    DeploymentDataComponent,
+    AverageChartComponent
   ],
   imports: [
     BrowserModule,
