@@ -4,26 +4,8 @@
 <div class="row">
   <div class="col-12">
 
-    <div class="deployment-div m-3">
-      <ngx-charts-line-chart
-        [view]="view"
-        [scheme]="colorScheme"
-
-        [showXAxisLabel]="showXAxisLabel"
-        [showYAxisLabel]="showYAxisLabel"
-        [xAxis]="xAxis"
-        [yAxis]="yAxis"
-        [xAxisLabel]="xAxisLabel"
-        [yAxisLabel]="yAxisLabel"
-        [timeline]="timeline"
-        [results]="average_data"
-        [autoScale]=true
-        [gradient]=true
-        (select)="onSelect($event)"
-        (activate)="onActivate($event)"
-        (deactivate)="onDeactivate($event)"
-      >
-      </ngx-charts-line-chart>
+    <div class="deployment-div m-3 pr-5">
+      <app-average-chart [id]="id"></app-average-chart>
     </div>
 
   </div>

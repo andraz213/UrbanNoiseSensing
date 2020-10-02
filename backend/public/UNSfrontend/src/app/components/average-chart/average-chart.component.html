@@ -1,1 +1,23 @@
-<p>average-chart works!</p>
+<div class="row">
+  <div class="col-12 py-5">
+    <ngx-charts-line-chart
+      [scheme]="colorScheme"
+
+      [showXAxisLabel]="showXAxisLabel"
+      [showYAxisLabel]="showYAxisLabel"
+      [xAxis]="xAxis"
+      [yAxis]="yAxis"
+      [xAxisLabel]="xAxisLabel"
+      [yAxisLabel]="yAxisLabel"
+      [timeline]="timeline"
+      [results]="average_data"
+      [autoScale]=true
+      [gradient]=true
+      [maxXAxisTickLength]=100
+      (select)="onSelect($event)"
+      (activate)="onActivate($event)"
+      (deactivate)="onDeactivate($event)"
+    >
+    </ngx-charts-line-chart>
+  </div>
+</div>
