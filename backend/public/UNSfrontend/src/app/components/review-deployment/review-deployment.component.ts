@@ -19,9 +19,7 @@ export class ReviewDeploymentComponent implements OnInit {
   constructor(private deploymentService: DeploymentService,
               private sensorService: SensorService,
               private gatewayService: GatewayService,
-              private activatedRoute: ActivatedRoute,
-              private modalService: BsModalService,
-              private router: Router) { }
+              private activatedRoute: ActivatedRoute) { }
 
 
   public deployment: Deployment;
@@ -44,30 +42,6 @@ export class ReviewDeploymentComponent implements OnInit {
     });
   }
 
-
-  public openModal(confirm: TemplateRef<any>) {
-
-    this.modalRef = this.modalService.show(confirm, {class: 'modal-sm'});
-
-  }
-
-  decline(): void {
-    this.modalRef.hide();
-  }
-
-
-  public finishDeployment(){
-    this.deploymentService.finishDeployment(this.deployment._id).then((data) =>{
-      console.log(data);
-      this.modalRef.hide();
-      this.navigateBack();
-    });
-
-  }
-
-  public navigateBack(){
-    this.router.navigateByUrl(`deployments`);
-  }
 
 
   public switchTab(name: string){
