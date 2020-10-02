@@ -104,10 +104,13 @@ client.onMessage([&](WebsocketsMessage message){
     get_config();
 
   vTaskDelay(10);
-
   prepare_jsn_data();
+  //Serial.println(jsn_body);
+  if(!jsn_body){
+    jsn_body = "";
+  }
 
-  if(jsn_body.length() != 0 && WiFi.status() == WL_CONNECTED){
+  if(jsn_body && jsn_body.length() != 0 && WiFi.status() == WL_CONNECTED){
     send_data();
   }
 
@@ -171,14 +174,14 @@ void send_data(){
   HTTPClient http;
   http.begin(url);
   http.addHeader("Content-Type", "application/json");
-  Serial.println(jsn_body);
   got_reply = false;
   long sent = millis();
   int httpResponseCode = http.POST(jsn_body);
   http.end();
 
-
+  if(httpResponseCode == 200){
     jsn_body = "";
+  }
 
   got_reply = true;
 
@@ -314,15 +317,15 @@ int get_sent_in_last_second(){
 
 
 void prepare_jsn_data(){
-  if(jsn_body.length() != 0){
+  if(jsn_body.length() > 10){
     return;
   }
 
   int it = 0;
-  DynamicJsonDocument doc(12000);
+  DynamicJsonDocument doc(25000);
   message_queue * message = get_first();
 
-  while(it < 10 && message != (message_queue*)0){
+  while(it < 32 && message != (message_queue*)0){
     if(message -> type != (int)SENOSR_TELEMETRY){
       JsonObject measurement = doc.createNestedObject();
 
@@ -346,8 +349,15 @@ void prepare_jsn_data(){
 
   }
 
-  serializeJson(doc, jsn_body);
+  if(it == 0){
+    jsn_body = "";
+    return;
+  }
 
-  Serial.println(jsn_body);
+  String jj;
+  serializeJson(doc, jj);
+
+  jsn_body = jj;
+
 
 }
