@@ -3,6 +3,8 @@ import {Deployment} from "../../models/deployment";
 import {DeploymentService} from "../../services/deployment.service";
 import {BsModalRef, BsModalService} from "ngx-bootstrap/modal";
 import {Router} from "@angular/router";
+import { BrowserModule } from '@angular/platform-browser';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @Component({
   selector: 'app-deployment-overview',

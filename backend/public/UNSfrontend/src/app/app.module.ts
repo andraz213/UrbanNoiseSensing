@@ -13,6 +13,7 @@ import { EditDeploymentComponent } from './components/edit-deployment/edit-deplo
 import { AgmCoreModule } from '@agm/core';
 import {environment} from "../environments/environment";
 import { SensorMapComponent } from './components/sensor-map/sensor-map.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ReviewDeploymentComponent } from './components/review-deployment/review-deployment.component';
@@ -21,6 +22,7 @@ import { DeploymentOverviewComponent } from './components/deployment-overview/de
 import { DeploymentSensorComponent } from './components/deployment-sensor/deployment-sensor.component';
 import { DeploymentGatewayComponent } from './components/deployment-gateway/deployment-gateway.component';
 import { DeploymentDataComponent } from './components/deployment-data/deployment-data.component';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [
@@ -43,6 +45,8 @@ import { DeploymentDataComponent } from './components/deployment-data/deployment
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    NgxChartsModule,
+    BrowserAnimationsModule,
     ModalModule.forRoot(),
     FormsModule,
     AgmCoreModule.forRoot({apiKey: environment.mapsKey})
