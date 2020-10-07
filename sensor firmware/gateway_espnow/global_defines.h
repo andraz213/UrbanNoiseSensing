@@ -6,6 +6,7 @@
 #define SAMPLING_FREQUENCY      (I2S_CLOCK/512)
 #define DOWNSAMPLE_FACTOR       (SENSED_SIZE/SAMPLES_SIZE)
 #define DOWNSAMPLED_FREQUENCY   (SAMPLING_FREQUENCY/DOWNSAMPLE_FACTOR)
+#define REAL_RANGE              (DOWNSAMPLED_FREQUENCY / 2)
 
 #define SAMPLES_SIZE            256
 #define SENSED_SIZE             SAMPLING_FREQUENCY/10
@@ -55,6 +56,12 @@ typedef struct  {
   int type;
   char* message;
 } message_queue;
+
+typedef struct  {
+  int message_type;
+  uint64_t time;
+  int interval;
+} gateway_time_sync;
 
 
 enum message_types {
