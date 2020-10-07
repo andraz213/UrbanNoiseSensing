@@ -148,6 +148,7 @@ const deployDeployment = async (req, res) =>{
 
                        console.log("DEPLOYED GATEWAYS")
                        dep.status = 'deployed';
+                       dep.measurement_interval = 1;
 
                        dep.save((err, data) => {
                            if (err) {
@@ -230,7 +231,33 @@ const updateSensors = async (dep, res) => {
 
 
 
+const updateDeploymentInterval = (req, res) => {
 
+    let id = req.params.deployment_id;
+    let interval = req.params.interval;
+
+    deploymentModel.findById(id, (err, deployment) => {
+        if(err){
+            console.log(err);
+            return res.status(400).json(err);
+        } else{
+            console.log(deployment);
+            if(!deployment || deployment.length == 0){
+                return res.status(204).json({'message': `Deployment ${id} dose not exist!`});
+            }
+            deployment.measurement_interval = interval
+            console.log(deployment);
+            deployment.save((err, deployment_sv) => {
+                if(err){
+                    return res.status(500).json(err);
+                }else{
+                    return res.status(200).json(deployment_sv);
+                }
+            })
+
+        }
+    });
+}
 
 
 const updateDeployment = (req, res) => {
@@ -346,5 +373,6 @@ module.exports = {
     updateDeployment,
     getDeploymentById,
     deployDeployment,
-    finishDeployment
+    finishDeployment,
+    updateDeploymentInterval
 };

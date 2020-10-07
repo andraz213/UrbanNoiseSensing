@@ -61,7 +61,8 @@ const deploymentSchema = new mongoose.Schema({
     start: Date,
     finish: Date,
     measurement_num: Number,
-    tags: [String]
+    tags: [String],
+    measurement_interval: Number
 });
 
 
