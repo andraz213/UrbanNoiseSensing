@@ -47,29 +47,14 @@ void do_sensing() {
   // while true loop
   int nummber_of_iteeer = 0;
   while (true) {
-    print_usec();
-    if(!digitalRead(27)){
-      oled_on();
-      draw_rect();
+    int st = 0;
+    while(get_usecs() > 900000){
+      st++;
     }
-    // set cpu frequency to 20mhz to lower the consumption
-    setCpuFrequencyMhz(20);
-    // get the sensor data
-    sensing_start = get_secs();
 
-    get_samples((int*)&samples_pub);
-    oled_off();
-    Serial.println((unsigned long) sensing_start);
-    // set cpu frequency to 240mhz for processing
-    setCpuFrequencyMhz(240);
-    // process the data
-    calculate_fft((int*)&samples_pub, (double*)&fft_downsampled, DOWNSAMPLED__FFT);
-    decibels = 0.0;
-    decibels = calculate_decibels((int*)&samples_pub, SAMPLES_SIZE);
-
-    // put data into a sending queue
-    add_to_sending_queue((double*) &fft_downsampled, decibels, sensing_start);
-
+    if(is_interval_now()){
+      sensing_and_data_preparation();
+    }
 
 
     // sleep for a random amount of time to prevent signal congestion
@@ -83,16 +68,8 @@ void do_sensing() {
     }
 
 
+    sending_and_telemetry();
 
-    // set cpu frequency to 80mhz for sending
-    setCpuFrequencyMhz(80);
-
-    // do the sending
-    esp_wifi_start();
-    sync_time_and_telemetry();
-    send_data();
-
-    esp_wifi_stop();
 
 
     // enter light sleep
@@ -125,8 +102,48 @@ void printout_config(){
   print_text(String("UrbanNoiseSensing"), name, mac_string, battery);
   delay(5000);
   oled_off();
+}
 
 
 
+void sending_and_telemetry(){
+
+  // set cpu frequency to 80mhz for sending
+  setCpuFrequencyMhz(80);
+
+  // do the sending
+  esp_wifi_start();
+  sync_time_and_telemetry();
+  send_data();
+
+  esp_wifi_stop();
+
+}
+
+
+
+void sensing_and_data_preparation(){
+  print_usec();
+  if(!digitalRead(27)){
+    oled_on();
+    draw_rect();
+  }
+  // set cpu frequency to 20mhz to lower the consumption
+  setCpuFrequencyMhz(20);
+  // get the sensor data
+  sensing_start = get_secs();
+
+  get_samples((int*)&samples_pub);
+  oled_off();
+  Serial.println((unsigned long) sensing_start);
+  // set cpu frequency to 240mhz for processing
+  setCpuFrequencyMhz(240);
+  // process the data
+  calculate_fft((int*)&samples_pub, (double*)&fft_downsampled, DOWNSAMPLED__FFT);
+  decibels = 0.0;
+  decibels = calculate_decibels((int*)&samples_pub, SAMPLES_SIZE);
+
+  // put data into a sending queue
+  add_to_sending_queue((double*) &fft_downsampled, decibels, sensing_start);
 
 }

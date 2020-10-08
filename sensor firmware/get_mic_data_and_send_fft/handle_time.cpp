@@ -62,6 +62,24 @@ unsigned int get_secs() {
   return sec_now;
 }
 
+bool is_interval_now(){
+  unsigned int secs = get_secs();
+  Serial.println("ostanek pri deljenju casa:");
+  Serial.println(secs % sensing_interval);
+  if(secs % sensing_interval == 0){
+    return true;
+  }
+  return false;
+
+}
+
+unsigned int get_usecs() {
+  struct timeval tv_now;
+  gettimeofday(&tv_now, NULL);
+  unsigned int sec_now = (unsigned int)tv_now.tv_usec;
+  return sec_now;
+}
+
 long get_random_sleep_time() {
   struct timeval tv_now;
   gettimeofday(&tv_now, NULL);
@@ -125,4 +143,9 @@ void handle_gateway_time(char *payload, int length) {
   Serial.println("got time lol");
   Serial.println((int)tv_sec);
   Serial.println(sensing_interval);
+}
+
+
+int get_interval(){
+  return sensing_interval;
 }

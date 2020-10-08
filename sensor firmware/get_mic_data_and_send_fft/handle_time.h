@@ -14,4 +14,9 @@ void print_usec();
 
 unsigned int get_secs();
 
+unsigned int get_usecs();
+
+int get_interval();
+
+bool is_interval_now();
 #endif
