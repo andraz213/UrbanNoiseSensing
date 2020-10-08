@@ -85,37 +85,54 @@ const postSensor = async (req, res) => {
 
 }
 
-const postTelemetrySensor = (req, res) => {
-    let id = req.params.sensor_id;
-    let {voltage, version} = req.body;
+const postTelemetrySensor = async (req, res) => {
+    res.status(200);
+    res.send();
+    res.end();
 
-    sensorModel.findById(id, (err, sensor) => {
-        if (err) {
-            return res.status(500).json(err);
-        } else {
-            if (!sensor || sensor.length == 0) {
-                console.log(`Could not find sensor with id: ${id}}`);
-                return res.status(404).json({'message': `Could not find sensor with id: ${id}`});
-            } else {
-                if (voltage) {
-                    sensor.battery_voltage = voltage;
-                }
-                if (version) {
-                    sensor.firmware_version = version;
-                }
-                sensor.last_telemetry = Date.now();
-                sensor.save((err, sensor_sv) => {
-                    if (err) {
-                        return res.status(500).json(err);
-                    } else {
-                        return res.status(200).json(sensor_sv);
-                    }
-                })
+    let dataObj = JSON.parse(JSON.stringify(req.body));
 
+    for(let data of dataObj) {
+
+        let sensorMac = data.mac;
+        let currentSensor = await sensorModel.find({mac: sensorMac}).limit(1).exec();
+        await sensorModel.updateOne({_id: currentSensor[0].id}, {battery_voltage: data.battery_voltage, last_telemetry: Date.now()}).exec();
+
+      /*  currentSensor.save((err, sens)=>{
+            if(err) {
+                console.log(err);
             }
-        }
+        });*/
+        /*
+        sensorModel.findById(id, (err, sensor) => {
+            if (err) {
+                return res.status(500).json(err);
+            } else {
+                if (!sensor || sensor.length == 0) {
+                    console.log(`Could not find sensor with id: ${id}}`);
+                    return res.status(404).json({'message': `Could not find sensor with id: ${id}`});
+                } else {
+                    if (voltage) {
+                        sensor.battery_voltage = voltage;
+                    }
+                    if (version) {
+                        sensor.firmware_version = version;
+                    }
+                    sensor.last_telemetry = Date.now();
+                    sensor.save((err, sensor_sv) => {
+                        if (err) {
+                            return res.status(500).json(err);
+                        } else {
+                            return res.status(200).json(sensor_sv);
+                        }
+                    })
 
-    });
+                }
+            }
+
+        });*/
+
+    }
 
 
 }
