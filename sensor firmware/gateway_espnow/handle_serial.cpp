@@ -1,5 +1,6 @@
 #include "handle_serial.h"
 #include "global_defines.h"
+#include "handle_esp_now.h"
 #include <Arduino.h>
 #include <esp_wifi.h>
 #include <esp_wifi_internal.h>
@@ -42,32 +43,48 @@ void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
 bool got_time = false;
 
 void handle_gateway_time(uint8_t *payload, uint16_t length){
-got_time = true;
-int64_t time_us;
-memcpy(&time_us, (char*)(payload + sizeof(int)), sizeof(int64_t));
 
-// ugly, but it works
-time_t      tv_sec = (time_t)0;
-suseconds_t tv_usec = (suseconds_t)0;
+  got_time = true;
 
-int fact = 1;
-for(int i = 0; i<6; i++){
-  tv_usec += (time_us%10)*fact;
-  time_us -= time_us%10;
-  time_us /= 10;
-  fact*= 10;
-}
+  Serial.println(length);
+  Serial.println(sizeof(gateway_time_sync));
 
-fact = 1;
-while(time_us){
-  tv_sec += (time_us%10)*fact;
-  time_us -= time_us%10;
-  time_us /= 10;
-  fact*= 10;
-}
+  int size = sizeof(int) * 2 + sizeof(int64_t);
+  if(length == size){
 
-struct timeval tv = { .tv_sec = tv_sec, .tv_usec = tv_usec };
-settimeofday(&tv, NULL);
+    int64_t time_us = 0;
+    int interval = 0;
+    memcpy(&interval, (char*)(payload + sizeof(int) +  sizeof(int64_t)), sizeof(int));
+    set_sensing_interval(interval);
+    memcpy(&time_us, (char*)(payload + sizeof(int)), sizeof(int64_t));
+
+    Serial.println(interval);
+
+    // ugly, but it works
+    time_t      tv_sec = (time_t)0;
+    suseconds_t tv_usec = (suseconds_t)0;
+
+    int fact = 1;
+    for(int i = 0; i<6; i++){
+      tv_usec += (time_us%10)*fact;
+      time_us -= time_us%10;
+      time_us /= 10;
+      fact*= 10;
+    }
+
+    fact = 1;
+    while(time_us){
+      tv_sec += (time_us%10)*fact;
+      time_us -= time_us%10;
+      time_us /= 10;
+      fact*= 10;
+    }
+
+    struct timeval tv = { .tv_sec = tv_sec, .tv_usec = tv_usec };
+    settimeofday(&tv, NULL);
+
+  }
+
 }
 
 
@@ -79,7 +96,8 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   int type = 0;
   memcpy(&type, (char*)payload, sizeof(int));
 
-
+  Serial.println(length);
+  Serial.println(type);
 
   if (type == (int) GATEWAY_TIME) {
     handle_gateway_time(payload,length);
@@ -122,6 +140,8 @@ void update_time() {
   bus.receive(1000);
   bus.update();
   got_time = false;
+
+  Serial.println("updating time");
 
   gateway_time_request * msg = (gateway_time_request *)heap_caps_malloc(sizeof(gateway_time_request), MALLOC_CAP_8BIT);
 
@@ -190,7 +210,7 @@ void TaskSerial( void *pvParameters ) {
       Serial.println(bus.update());
     }
 
-    if (millis() - last_time_update > 5000) {
+    if (millis() - last_time_update > 1000) {
       last_time_update = millis();
       update_time();
       delay(50);

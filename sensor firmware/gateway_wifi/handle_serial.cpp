@@ -95,6 +95,7 @@ void update_gateway_time() {
     int64_t time_us = get_us_time();
     if (time_us != -1) {
 
+
       Serial.println((long)time_us);
       int size = sizeof(int) + sizeof(int64_t);
       int message_typ = (int)GATEWAY_TIME;
@@ -223,12 +224,15 @@ void handle_time_request(uint8_t *payload){
     int64_t time_us = get_us_time();
     if (time_us != -1) {
 
+      int interval = get_measurement_interval();
+
       Serial.println((long)time_us);
-      int size = sizeof(int) + sizeof(int64_t);
+      int size = 2*sizeof(int) + sizeof(int64_t);
       int message_typ = (int)GATEWAY_TIME;
       char* message = (char*)heap_caps_malloc(size, MALLOC_CAP_8BIT);
       memcpy(message, (char*)&message_typ, sizeof(int));
       memcpy(message + sizeof(int), (char*)&time_us, sizeof(int64_t));
+      memcpy(message + sizeof(int) + sizeof(int64_t), (char*)&interval, sizeof(int));
       uint16_t result = bus.reply(message, size);
       free(message);
     }

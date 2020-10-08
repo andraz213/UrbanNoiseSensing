@@ -13,6 +13,8 @@
 long previous_time_sync = 0;
 bool got_time = false;
 
+int sensing_interval = 0;
+
 long previous_sending_sec = 0;
 
 void sync_time_and_telemetry() {
@@ -96,6 +98,7 @@ void handle_gateway_time(char *payload, int length) {
   got_time = true;
   int64_t time_us;
   memcpy(&time_us, (char*)(payload + sizeof(int)), sizeof(int64_t));
+  memcpy(&sensing_interval, (char*)(payload + sizeof(int) + sizeof(int64_t)), sizeof(int));
 
   // ugly, but it works
   time_t      tv_sec = (time_t)0;
@@ -121,4 +124,5 @@ void handle_gateway_time(char *payload, int length) {
   settimeofday(&tv, NULL);
   Serial.println("got time lol");
   Serial.println((int)tv_sec);
+  Serial.println(sensing_interval);
 }

@@ -32,6 +32,15 @@ int64_t get_us_time() {
 }
 
 
+int measurement_interval = 1;
+
+int get_measurement_interval(){
+  return measurement_interval;
+}
+
+void set_measurement_interval(int interval){
+  measurement_interval = interval;
+}
 
 
 void print_time() {

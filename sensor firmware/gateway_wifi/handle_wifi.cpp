@@ -30,6 +30,8 @@ int average_RTT_index = 0;
 
 String jsn_body = "";
 
+String jsn_telemetry = "";
+
 
 const char* websockets_server_host =  "urbannoisesensing.biolab.si"; //"192.168.1.7"; //Enter server adress
 const uint16_t websockets_server_port = 90; //  3000; // Enter server port
@@ -78,7 +80,7 @@ void TaskWifi( void *pvParameters ) {
   while(WiFi.status() != WL_CONNECTED) {
     vTaskDelay(10);
   }
-  get_config();
+  get_wifi_config();
 
 
   // bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
@@ -101,7 +103,7 @@ client.onMessage([&](WebsocketsMessage message){
 
 
   for (;;) {
-    get_config();
+    get_wifi_config();
 
   vTaskDelay(10);
   prepare_jsn_data();
@@ -109,12 +111,20 @@ client.onMessage([&](WebsocketsMessage message){
   if(!jsn_body){
     jsn_body = "";
   }
+  if(!jsn_telemetry){
+    jsn_telemetry = "";
+  }
 
   if(jsn_body && jsn_body.length() != 0 && WiFi.status() == WL_CONNECTED){
     send_data();
   }
 
+  if(jsn_telemetry && jsn_telemetry.length() != 0 && WiFi.status() == WL_CONNECTED){
+    send_telemetry();
+  }
   //delay(5);
+
+  get_measurement_interval_config();
 
   }
 }
@@ -125,7 +135,7 @@ client.onMessage([&](WebsocketsMessage message){
 
 long prev_config = -10000;
 
-void get_config(){
+void get_wifi_config(){
 
   if(millis() - prev_config < 10000){
     return;
@@ -152,6 +162,13 @@ void get_config(){
     Serial.println(result);
     Serial.println(result.length());
 
+    write_config(result);
+
+    String deployment_id = get_current_deployment();
+    get_config_name();
+
+
+
     //http.end();
     /*
     if (httpResponseCode == 200) {
@@ -175,6 +192,7 @@ void send_data(){
   http.begin(url);
   http.addHeader("Content-Type", "application/json");
   got_reply = false;
+  Serial.println(jsn_body);
   long sent = millis();
   int httpResponseCode = http.POST(jsn_body);
   http.end();
@@ -187,7 +205,7 @@ void send_data(){
 
 
           long RTT = millis() - sent;
-          Serial.print("               RTT time for websockets: ");
+          Serial.print("               RTT time for http: ");
           Serial.println(RTT);
           average_RTT[average_RTT_index][0] = millis();
           average_RTT[average_RTT_index][1] = RTT;
@@ -196,26 +214,40 @@ void send_data(){
 
     }
 
-    /*
-
-    if(message -> type == (int)SENOSR_TELEMETRY){
-        doc["type"] = "SENOSR_TELEMETRY";
 
 
-        JsonArray mac = doc.createNestedArray("mac");
-        for(int i = 0; i<6; i++){
-          mac.add(message->mac[i]);
+    void send_telemetry(){
+
+      String url = serverName;
+      url += String("/api/sensor/telemetry");
+      Serial.println(url);
+      HTTPClient http;
+      http.begin(url);
+      http.addHeader("Content-Type", "application/json");
+      got_reply = false;
+      Serial.println(jsn_telemetry);
+      long sent = millis();
+      int httpResponseCode = http.POST(jsn_telemetry);
+      http.end();
+
+      if(httpResponseCode == 200){
+        jsn_telemetry = "";
+      }
+
+      got_reply = true;
+
+
+              long RTT = millis() - sent;
+              Serial.print("               RTT time for http: ");
+              Serial.println(RTT);
+              average_RTT[average_RTT_index][0] = millis();
+              average_RTT[average_RTT_index][1] = RTT;
+              average_RTT_index ++;
+              average_RTT_index %= 50;
+
         }
-        telemetry_message * data = (telemetry_message *)message->message;
-        doc["battery_voltage"] = data->battery_voltage;
-        String jsn;
-        serializeJson(doc, jsn);
-        client.send(jsn);
-        remove_first();
-    }
-  }
-}
-*/
+
+
 
 void send_data_websocket(){
 
@@ -317,15 +349,17 @@ int get_sent_in_last_second(){
 
 
 void prepare_jsn_data(){
-  if(jsn_body.length() > 10){
+  if(jsn_body.length() > 10 || jsn_telemetry.length() > 10){
     return;
   }
 
   int it = 0;
+  int itele = 0;
   DynamicJsonDocument doc(25000);
+  DynamicJsonDocument tele_doc(5000);
   message_queue * message = get_first();
 
-  while(it < 32 && message != (message_queue*)0){
+  while(it < 32 && itele < 10 && message != (message_queue*)0){
     if(message -> type != (int)SENOSR_TELEMETRY){
       JsonObject measurement = doc.createNestedObject();
 
@@ -344,20 +378,64 @@ void prepare_jsn_data(){
 
       it++;
     }
+
+
+    if(message -> type == (int)SENOSR_TELEMETRY){
+      JsonObject telemetry = tele_doc.createNestedObject();
+
+      JsonArray mac = telemetry.createNestedArray("mac");
+      for(int i = 0; i<6; i++){
+        mac.add(message->mac[i]);
+      }
+      telemetry_message * data = (telemetry_message *)message->message;
+      telemetry["battery_voltage"] = data->battery_voltage;
+      Serial.println("adding telemetry");
+      itele++;
+    }
       remove_first();
       message = get_first();
 
   }
+  if(it != 0){
+    String jj;
+    serializeJson(doc, jj);
+    jsn_body = jj;
+  }
+
+  if(itele != 0){
+    String jt;
+    serializeJson(tele_doc, jt);
+    jsn_telemetry = jt;
+  }
 
   if(it == 0){
     jsn_body = "";
-    return;
   }
 
-  String jj;
-  serializeJson(doc, jj);
+  if(itele == 0){
+    jsn_telemetry = "";
+  }
+}
 
-  jsn_body = jj;
 
+long previous_interval_config = 0;
+void get_measurement_interval_config(){
+  String deployment_id = get_current_deployment();
 
+  if(deployment_id.length() > 5 && millis() - previous_interval_config > 1000 && WiFi.status() == WL_CONNECTED){
+    String url = String(serverName) + String("/api/deployment/interval/") + deployment_id;
+    Serial.println(url);
+    HTTPClient http;
+    http.begin(url);
+    //http.addHeader("Content-Type", "application/json");
+    int httpResponseCode = http.GET();
+    Serial.println(httpResponseCode);
+    previous_interval_config = millis() - 500;
+    if(httpResponseCode == 200){
+      previous_interval_config = millis();
+      String result = http.getString();
+      int interval = parse_interval_config(result);
+      set_measurement_interval(interval);
+    }
+  }
 }
