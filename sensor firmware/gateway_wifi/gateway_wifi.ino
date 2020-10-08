@@ -12,6 +12,8 @@ void setup() {
   Serial2.begin(921600);
   Serial2.setRxBufferSize(1024);
 
+  setCpuFrequencyMhz(240);
+
   // init two tasks
 
 

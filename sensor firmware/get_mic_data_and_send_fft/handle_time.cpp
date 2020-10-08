@@ -21,7 +21,7 @@ void sync_time_and_telemetry() {
 
   got_time = false;
 
-  if (previous_time_sync == 0 || millis() - previous_time_sync > 3000) {
+  if (previous_time_sync == 0 || millis() - previous_time_sync > 2000) {
 
     telemetry_message to_send;
     to_send.message_type = SENOSR_TELEMETRY;
@@ -117,6 +117,9 @@ void handle_gateway_time(char *payload, int length) {
   int64_t time_us;
   memcpy(&time_us, (char*)(payload + sizeof(int)), sizeof(int64_t));
   memcpy(&sensing_interval, (char*)(payload + sizeof(int) + sizeof(int64_t)), sizeof(int));
+  if(sensing_interval < 1){
+    sensing_interval = 1;
+  }
 
   // ugly, but it works
   time_t      tv_sec = (time_t)0;

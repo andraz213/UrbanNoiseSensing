@@ -42,29 +42,21 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
      overwritten when a new message is dispatched */
   int type = 0;
   memcpy(&type, (char*)payload, sizeof(int));
-  Serial.println(":::::::::::::::::::::::::::::::::");
-  Serial.println(type);
-  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
 
   if (type == (int) TIME_REQUEST) {
     handle_time_request(payload);
     return;
   }
 
-  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
   int datalen = length - sizeof(int) - 6;
   char * mac =  (char*)heap_caps_malloc(sizeof(char) * 6, MALLOC_CAP_8BIT);
   char * data = (char*)heap_caps_malloc(sizeof(char) * datalen, MALLOC_CAP_8BIT);
 
-  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
   while(data == 0){
-  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
     data = (char*)heap_caps_malloc(sizeof(char) * datalen, MALLOC_CAP_8BIT);
   }
   memcpy(mac, (char*)payload + sizeof(int), sizeof(char) * 6);
   memcpy(data, (char*)payload + sizeof(int) + 6, sizeof(char) * datalen);
-  Serial.println(datalen);
-  Serial.println((long)data);
   if (type == (int) SENSOR_READING) {
     handle_sensor_reading(mac, data, datalen, type);
 
@@ -95,8 +87,6 @@ void update_gateway_time() {
     int64_t time_us = get_us_time();
     if (time_us != -1) {
 
-
-      Serial.println((long)time_us);
       int size = sizeof(int) + sizeof(int64_t);
       int message_typ = (int)GATEWAY_TIME;
       char* message = (char*)heap_caps_malloc(size, MALLOC_CAP_8BIT);
@@ -192,9 +182,6 @@ void handle_sensor_telemetry(char * mac, char * data, int datalen, int type){
       telemetry_message * hnd = (telemetry_message *)heap_caps_malloc(sizeof(telemetry_message), MALLOC_CAP_8BIT);
 
       memcpy(hnd, (char*)data + datalen - sizeof(telemetry_message), sizeof(telemetry_message));
-      Serial.println(datalen);
-      Serial.print("                VOLTAGE BABY  ");
-      Serial.println(hnd->battery_voltage);
       free(hnd);
       char * tmp = (char*)heap_caps_malloc(sizeof(telemetry_message), MALLOC_CAP_8BIT);
       memcpy(tmp, data, sizeof(telemetry_message));
@@ -226,7 +213,6 @@ void handle_time_request(uint8_t *payload){
 
       int interval = get_measurement_interval();
 
-      Serial.println((long)time_us);
       int size = 2*sizeof(int) + sizeof(int64_t);
       int message_typ = (int)GATEWAY_TIME;
       char* message = (char*)heap_caps_malloc(size, MALLOC_CAP_8BIT);
@@ -246,7 +232,4 @@ void handle_time_request(uint8_t *payload){
   }
   long end = micros();
   bus.receive(500);
-  Serial.println(end - start_time);
-  Serial.println(num);
-
 }

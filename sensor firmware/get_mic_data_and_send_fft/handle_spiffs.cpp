@@ -50,6 +50,7 @@ bool write_config(String config) {
       res = file.write(buf, config.length());
 
       file.close();
+      free(buf);
     }
   }
   return res;

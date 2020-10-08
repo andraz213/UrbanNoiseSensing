@@ -1,6 +1,7 @@
 #include "handle_json.h"
 
 
+
 String get_config_name() {
 
   DynamicJsonDocument doc(5000);
@@ -33,9 +34,8 @@ DynamicJsonDocument doc(5000);
       JsonObject root = doc[0];
       if(!root["current_deployment"].isNull()){
         const char* current_deployment = root["current_deployment"];
-
-        Serial.println(String(current_deployment));
-        return String(current_deployment); // "Madelyn84"
+        String res = String(current_deployment);
+        return res; // "Madelyn84"
       }
     }
   }
@@ -58,11 +58,44 @@ int parse_interval_config(String json){
         }
       }
     }
-
     return 1;
-
-
 }
+
+
+void get_wifi_credentials(WiFiMulti wifiMulti){
+
+  DynamicJsonDocument doc(5000);
+  String json = get_config();
+    if(json.length() > 0){
+      deserializeJson(doc, json);
+      if(doc.size() > 0){
+        if(!doc["wifi_credentials"].isNull()){
+          JsonArray wifi_credentials = doc["wifi_credentials"];
+          int len = wifi_credentials.size();
+          Serial.println("BRUW");
+          Serial.println(len);
+          if(len > 0){
+            for(int i = 0; i<len; i++){
+              if(wifi_credentials[i].size() == 2){
+                if(!wifi_credentials[i][0].isNull() && !wifi_credentials[i][1].isNull()){
+                  const char* ssid = wifi_credentials[i][0];
+                  const char* password = wifi_credentials[i][1];
+                  Serial.println(ssid);
+                  Serial.println(password);
+                  wifiMulti.addAP(ssid, password);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+}
+
+
+
+
+
 
 /*
 

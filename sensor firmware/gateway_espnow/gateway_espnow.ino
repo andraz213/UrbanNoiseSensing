@@ -9,6 +9,9 @@ void setup() {
   Serial.begin(115200);
   Serial2.begin(921600);
   Serial2.setRxBufferSize(1024);
+
+  setCpuFrequencyMhz(240);
+  
   init_wifi();
 
   // init two tasks

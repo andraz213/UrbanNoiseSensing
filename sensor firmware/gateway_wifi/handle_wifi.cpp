@@ -18,19 +18,23 @@
 const char* ssid = "PSP256";
 const char* password = "siol2004";
 
-/*
-const char* ssid = "UNSwifi";
-const char* password = "uns12wifi34";
-*/
+
+const char* ssid2 = "UNSwifi";
+const char* password2 = "uns12wifi34";
 const char* serverName = "http://urbannoisesensing.biolab.si";
+
+WiFiMulti wifiMulti;
 
 
 long average_RTT [50][2];
 int average_RTT_index = 0;
 
 String jsn_body = "";
-
 String jsn_telemetry = "";
+int data_tries = 0;
+int telemetry_tries = 0;
+
+HTTPClient http;
 
 
 const char* websockets_server_host =  "urbannoisesensing.biolab.si"; //"192.168.1.7"; //Enter server adress
@@ -41,6 +45,8 @@ using namespace websockets;
 WebsocketsClient client;
 HTTPClient httpClient;
 
+
+/*
 void init_wifi() {
   if (WiFi.status() != WL_CONNECTED) {
     print_text(String("Connecting to "), String(ssid), "", "");
@@ -59,6 +65,7 @@ void init_wifi() {
         /*esp_wifi_disconnect();
         esp_wifi_stop();
         esp_wifi_deinit();*/
+        /*
         WiFi.disconnect(true);
         print_text(String("Failed!"), String(ssid), "", "");
     } else {
@@ -73,7 +80,36 @@ void init_wifi() {
   }
 
 
+}*/
+
+
+void init_wifi() {
+  if (WiFi.status() != WL_CONNECTED) {
+    //wifiMulti.cleanAPlist();
+    wifiMulti.addAP(ssid, password);
+    wifiMulti.addAP(ssid2, password2);
+    //get_wifi_credentials(wifiMulti);
+    print_text(String("Connecting to "), String(ssid), "", "");
+    Serial.println("wifi");
+    // init esp_now
+    //WiFi.mode(WIFI_STA);
+    //int a = esp_wifi_set_protocol( WIFI_IF_STA, WIFI_PROTOCOL_11B | WIFI_PROTOCOL_11G | WIFI_PROTOCOL_11N );
+
+    if(wifiMulti.run() != WL_CONNECTED){
+        print_text(String("Failed!"), String(ssid), "", "");
+    } else {
+      init_time();
+
+      print_text(String("Success!"), String(ssid), "", "");
+    }
+    delay(1000);
+  }
+
+
 }
+
+
+
 
 void TaskWifi( void *pvParameters ) {
 
@@ -95,14 +131,19 @@ void TaskWifi( void *pvParameters ) {
 
 // run callback when messages are received
 client.onMessage([&](WebsocketsMessage message){
-    Serial.print("Got Message: ");
-    Serial.println(message.data());
     got_reply = true;
 });
 
 
+  long prev_ram = 0;
 
   for (;;) {
+    if(millis() - prev_ram > 1000){
+      Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
+      prev_ram = millis();
+    }
+    init_wifi();
+
     get_wifi_config();
 
   vTaskDelay(10);
@@ -117,14 +158,22 @@ client.onMessage([&](WebsocketsMessage message){
 
   if(jsn_body && jsn_body.length() != 0 && WiFi.status() == WL_CONNECTED){
     send_data();
+    data_tries++;
+    if(data_tries > 10){
+      jsn_body = "";
+    }
   }
 
   if(jsn_telemetry && jsn_telemetry.length() != 0 && WiFi.status() == WL_CONNECTED){
     send_telemetry();
+    telemetry_tries++;
+    if(telemetry_tries > 10){
+      jsn_telemetry = "";
+    }
   }
   //delay(5);
-
   get_measurement_interval_config();
+
 
   }
 }
@@ -147,29 +196,22 @@ void get_wifi_config(){
   if(get_espnow_mac(mac)){
     String body = "{\"mac\":[" + String(mac[0]) + "," + String(mac[1]) + "," + String(mac[2]) + "," + String(mac[3]) + "," + String(mac[4]) + "," + String(mac[5]) + "]}";
 
-    Serial.println(body);
     String url = String(serverName) + String("/api/gateway/");
     Serial.println(url);
-    HTTPClient http;
+
     http.begin(url);
     http.addHeader("Content-Type", "application/json");
     int httpResponseCode = http.POST(body);
     Serial.println(httpResponseCode);
 
-
     String result = http.getString();
 
     Serial.println(result);
     Serial.println(result.length());
-
     write_config(result);
 
-    String deployment_id = get_current_deployment();
-    get_config_name();
 
-
-
-    //http.end();
+    http.end();
     /*
     if (httpResponseCode == 200) {
       return true;
@@ -192,7 +234,6 @@ void send_data(){
   http.begin(url);
   http.addHeader("Content-Type", "application/json");
   got_reply = false;
-  Serial.println(jsn_body);
   long sent = millis();
   int httpResponseCode = http.POST(jsn_body);
   http.end();
@@ -225,7 +266,6 @@ void send_data(){
       http.begin(url);
       http.addHeader("Content-Type", "application/json");
       got_reply = false;
-      Serial.println(jsn_telemetry);
       long sent = millis();
       int httpResponseCode = http.POST(jsn_telemetry);
       http.end();
@@ -389,7 +429,6 @@ void prepare_jsn_data(){
       }
       telemetry_message * data = (telemetry_message *)message->message;
       telemetry["battery_voltage"] = data->battery_voltage;
-      Serial.println("adding telemetry");
       itele++;
     }
       remove_first();
@@ -415,27 +454,35 @@ void prepare_jsn_data(){
   if(itele == 0){
     jsn_telemetry = "";
   }
+
+  data_tries = 0;
+  telemetry_tries = 0;
+
 }
 
 
 long previous_interval_config = 0;
 void get_measurement_interval_config(){
-  String deployment_id = get_current_deployment();
+  if(millis() - previous_interval_config > 1000){
+    String deployment_id = get_current_deployment();
 
-  if(deployment_id.length() > 5 && millis() - previous_interval_config > 1000 && WiFi.status() == WL_CONNECTED){
-    String url = String(serverName) + String("/api/deployment/interval/") + deployment_id;
-    Serial.println(url);
-    HTTPClient http;
-    http.begin(url);
-    //http.addHeader("Content-Type", "application/json");
-    int httpResponseCode = http.GET();
-    Serial.println(httpResponseCode);
-    previous_interval_config = millis() - 500;
-    if(httpResponseCode == 200){
-      previous_interval_config = millis();
-      String result = http.getString();
-      int interval = parse_interval_config(result);
-      set_measurement_interval(interval);
+    if(deployment_id.length() > 5 && WiFi.status() == WL_CONNECTED){
+      String url = String(serverName) + String("/api/deployment/interval/") + deployment_id;
+      Serial.println(url);
+      //HTTPClient http;
+      http.begin(url);
+      //http.addHeader("Content-Type", "application/json");
+      int httpResponseCode = http.GET();
+      Serial.println(httpResponseCode);
+      previous_interval_config = millis() - 500;
+      if(httpResponseCode == 200){
+        previous_interval_config = millis();
+        String result = http.getString();
+        int interval = parse_interval_config(result);
+        set_measurement_interval(interval);
+      }
+
+      http.end();
     }
   }
 }
