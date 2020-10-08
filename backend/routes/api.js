@@ -29,6 +29,8 @@ router.put('/deployment/:deployment_id', deploymentController.updateDeployment);
 
 router.get('/deployment/:deployment_id', deploymentController.getDeploymentById);
 
+router.get('/deployment/interval/:deployment_id', deploymentController.getIntervalByDeployment);
+
 
 
 /*
@@ -44,6 +46,7 @@ router.get('/data/deployment/interesting/:deployment_id', dataController.GetInte
 router.get('/data/deployment/average/:deployment_id', dataController.GetAcerageOverAllSensors);
 
 router.get('/data/deployment/:deployment_id', dataController.getAllDataByDeployment);
+
 
 router.post('/data/deployment/:deployment_id', dataController.getSpeceficDataByDeployment);
 

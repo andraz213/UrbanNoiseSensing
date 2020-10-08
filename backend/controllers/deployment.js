@@ -363,6 +363,24 @@ const getDeploymentById = async (req, res) => {
     });
 }
 
+const getIntervalByDeployment = async (req, res) => {
+    let id = await req.params.deployment_id;
+    try {
+        let deployment = await deploymentModel.findById(id).select({
+            _id: 1,
+            measurement_interval: 1
+        }).limit(1).exec();
+
+        if(deployment) {
+            return res.status(200).json(deployment);
+        }
+    }
+    catch (err){
+        return res.status(400).json(err);
+    }
+
+
+}
 
 
 
@@ -374,5 +392,6 @@ module.exports = {
     getDeploymentById,
     deployDeployment,
     finishDeployment,
-    updateDeploymentInterval
+    updateDeploymentInterval,
+    getIntervalByDeployment
 };
