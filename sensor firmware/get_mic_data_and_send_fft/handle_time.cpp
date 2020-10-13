@@ -13,7 +13,7 @@
 long previous_time_sync = 0;
 bool got_time = false;
 
-int sensing_interval = 0;
+int sensing_interval = 1;
 
 long previous_sending_sec = 0;
 
@@ -65,8 +65,8 @@ unsigned int get_secs() {
 bool is_interval_now(){
   unsigned int secs = get_secs();
   Serial.println("ostanek pri deljenju casa:");
-  Serial.println(secs % sensing_interval);
-  if(secs % sensing_interval == 0){
+  Serial.println(secs % get_interval());
+  if(secs % get_interval() == 0){
     return true;
   }
   return false;
@@ -150,5 +150,8 @@ void handle_gateway_time(char *payload, int length) {
 
 
 int get_interval(){
+  if(sensing_interval < 1){
+    return 1;
+  }
   return sensing_interval;
 }

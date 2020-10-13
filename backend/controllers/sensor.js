@@ -8,7 +8,7 @@ const nameGenerator = require('../misc/names');
 const getAllSensor = async (req, res) => {
 
     try {
-        let sensors = await sensorModel.find().select({
+        let sensors = await sensorModel.find().sort([['last_telemetry', -1]]).select({
             _id: 1,
             name: 1,
             current_location: 1,
@@ -19,6 +19,7 @@ const getAllSensor = async (req, res) => {
         });
         return res.status(200).json(sensors);
     } catch (err) {
+        console.log(err);
         return res.status(500).json(err);
     }
 }
@@ -70,6 +71,7 @@ const postSensor = async (req, res) => {
                 if (sensor[0].current_deployment != null) {
                     gw_macs = await getGWMacs(sensor[0].current_deployment);
                 }
+                delete sensor[0]['deployments'];
 
                 let sensorObj = JSON.parse(JSON.stringify(sensor));
                 sensorObj[0]["gateways"] = gw_macs;
