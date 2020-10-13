@@ -1,7 +1,7 @@
 # Sensor network for urban noise sensing with IoT
 Bachelors thesis
 
-Currently on: https://urbannoisesensing.herokuapp.com/
+Currently on: http://urbannoisesensing.biolab.si/
 
 
 ## Overview
