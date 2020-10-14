@@ -1,0 +1,144 @@
+diplomska naloga
+(primer: pavlin poličar, poglavje-podpoglavje)
+
+
+# Abstract 
+
+Kako je zvok slab, namen da preučimo kje in kako se srečujemo z zvokom in kako se je najbolje ukvarjati s tem
+Zasnovali smo sistem za spremljanje in analizo zvoka s pomočjo več senzorjev
+
+# uvod (vsaka črtica svoj odstavek)
+
+Hrup nas obkorža kamorkoli gremo. Na nas ima stalen ali preglasen hrup lahko negativne posledice, zato smo se odločili zasnovati sistem za analizo hrup, ki bo pomagal pri sprejemanju urbanističnih odločitev.
+
+- iot na splošno, kakšne probleme rešuje
+
+Iot je tehnologija, ki je v zadnjih letih postala omniprezentna v naših življenjih in omogoča napravam, da sprejemajo pametnejše odločitve in vplivajo na dogodke izven njihovega konteksta zmogljivosti.
+
+- opis našega problema, zahteve
+
+Želeli smo si zasnovati fleksibilen sistem za spremljanje in analizo jakosti in oblike hrupa. V nasprotju z veliko drugimi rešitvami, se naša nanaša predvsem na analizo mikro območij. Vse komponente morajo biti prenosljive, preproste za uporabo in cenovno zelo dostopne.
+
+- obstoječe rešitve (tri)
+
+SONYC je projekt, kjer v New Yorku spremljajo raven zvoka preko zvočnih posnetkov, njihova rešitev je stalna in dražja
+
+- delo v nalogi
+
+?? nevem točno kaj naj bi bilo tukaj ??
+
+
+# tehnologije (vsaka črtica tri odstavki, dodaj kakšno sliko, pazi na licence slik, vse mora biti v slovenščini, lahko tudi zrišeš kakšno shemo)
+
+
+
+## mikrokontrolerji
+
+MIkrokontrolerji so ena najmanjših oblik računalnikov. Uporabljajo se v skoraj vseh elektronskih napravah. Veliko naprav ima več mikrokontrolerjev. 
+Rešujejo od najbolj osnovnih problemov kot so polnenje baterij do zelo zahtevnih in kritičnih operacij kot so zaviralni sistemi v avtomobilu in razne avtonomne postaje.
+Projekt Arduino je mladim programerjem in raziskovalcem približal delo z mikrokontrolerji, tako da so zaradi manjše začetne cene in lahkim razvojem vedno bolj populrani  
+
+## merjenje hrupa (senzorji)
+
+Svojevrsten tehnološki čudež so MEMS naprave. Pod to spadajo tudi MEMS mikrofoni, ki smo jih uporabili pri zajemanju podatkov. Ti mikrofoni imajo že vgrajene pretvornike iz analognega v digitalni signal. Ker gre za tehnologijo, ki je podobna izdelavi procesorskih čipov, so lahko razlike med enotami precej manjše od navadnih mikrofonov. Te mikrofone odlikuje tudi zelo majhna poraba in izredno majhna fizična velikost.
+
+## povezljivost
+
+Moderni mikrokontrolerji omogočajo precej različnih možnosti povezovanja. Najbolj razširjeni so protokoli wifi, ble, lora in NRF24. Pri odločanju med temi protokoli smo iskali optimalno mešanico cenovne ugodnosti, dosega povezave, hitrosti povezave in majhne porabe energije. (tabela s podatki o teh tehnologijah).
+
+## programska oprema za IOT
+
+
+
+## strežniški del
+
+
+
+# rešitev
+
+
+## uporabniške zahteve (detaljne zahteve, lahko jih spišeš po sklopih)
+
+Zasnovo in implementacijo sistema smo temeljili na dobri uporabniški izkušnji. Zahteve so bile:
+- intuitivno in gospodarno upravljanje s senzorji in zbirniki
+- Pregled nad stanjem in lokacijo senzorjev
+- Razdelitev podatkov v smiselne zaključene enote
+- Uporabne poizvedbe po podatkih, za potrebe podatkovne analitike
+- Točni in čim bolj polni podatki o hrupu 
+
+## arhitektura (nujno shema)
+
+Projekt je zasnovan večnivosjsko. Uporabljen je bil princip MVC z dodatkom fizičnih naprav za zajemanje podatkov. Na zalednem delu shranjujemo podatke v bazi mongoDB, ki nam omogoča veliko izbire pri snovanju agregacij podatkov in shranjevanja podtakov v uporabne strukture, ki omogočajo lažji razvoj in hitrejše delovanje sistema. 
+
+Podatke s senzorjev in iz uporabniškega vmesnika sprejema in dostavlja strežnik, zasnovan s tehnologijo NodeJS. Odprtih ima več API podatkovnih dostopnih točk (joj ne spomnm se bolše besede), hkrati pa skrbi za dostavo spletnega uporabniškega vmsenika. 
+
+Uporabniki in skrbniki lahko s sistemom upravljajo preko spletnega vmesnika, ki omogoča pregled nad deploymenti, predgled nad stanjem senzorjev, ustvarjanjem nobvih deploymentov in osnovnim pregledom nad podatki.
+
+Koncept zajemanje in pošiljanje podatkov smo zasnovali na principu topologije zvezde, ki je že precej uveljavljen v industriji iot rešitev in internetu na splošno. Več senzorjev pošilja podatke na eno zbirno enoto, ki jih preko internetne povezave posreduje zalednemu delu.
+
+Podtakovno analizo smo končnemu uporabniku omogočili z implementacijo widgeta, v kontekstu programa za podtakovno znanost Orange. Možnih je več različnih agregacij podatkov.
+
+## merilna enota
+
+Pri zasnovi merilne enote smo se spopadli s specifičnimi zahtevami, ki so močno vplivale na odločitve pri implementaciji.
+
+ 
+Glavni del merilne enote je mikrokontroler ESP32, ki omogoča več načinov brezžične komiunikacije z zadovoljivo dolgim dosegom. 
+Pri izbiri komunikacijskega portokola smo bili pozorni na overhead, ki mora biti zaradi strogih zahtev po majhni porabi energije čim manjši. Odločili smo se za uporabo ESPNOW. Na fizičnem nivoju je ta protokol isti kot wifi, ima pa prednost daljšega dometa in pošiljanje podatkov brez vzpostavljanja povezave. 
+
+Za napajanje smo uporabili dve 18650 li ion bateriji, ki naj bi napajali napravo vsaj en mesec. 
+
+Pri izbiri mikrofona smo se zaradi lažjega sestavljanja in majše cene omejli samo na mikrofone, ki so že montirani na svojih ploščicah z dostopnimi kontakti za podatke in napajanje.
+
+Ekran je vključen za lažje prepoznavanje napak in nastavljanje.
+
+Za lažje uporavljanje merilnih enot, smo implementirali dva načina delovanja med katerima lahko preklapljamo s stikalom. 
+Ko je enota v načinu za uporavljanju, se poveže na specifično wifi omrežje, se registrira v sistem in dobi podatke, ki jih potrebuje za zaznavanje in pošiljanje podtakov. Na ekranu se izpišujejo ime te enote in trenutni podatki o zvoku.
+Način za zaznavanje in pošiljanje podatkov zbudi enoto iz spanja, zbere podatke o zvoku, jih pošlje na zbirno enoto in od zbirne enote zahteva signal za časovno sinhronizacijo.
+
+## zbirnik
+
+Namen zbirne enote je posredovanje podatkov iz merilnih enot na strežnik in sinhronizacija časa na merilnih enotah. 
+Ker ESPNOW protokol deluje samo med ESP napravami, smo pri zbirni enoti uporabili dva ista ESP32 čipa kot v merilni enoti.
+Dva ESP32 čipa sta potrebna, ker isti čip ne more istočasno komunicirati prekko wifi in ESPNOW protokolov. Tako je en čip namenjen pošiljanju podatkov nastrežnik, drugi pa je namenjen prejemu podatkov iz merilnih enot. Med seboj komunicirata preko serijske UART povezave in protokola PJON, ki omogoča hitrejši razvoj zanesljivih podatkovnih povezav med mikrokontrolerji.
+OLED zasloni prikazujejo statustiko pošiljanja in sprejemanja sporočil.
+
+## strežnik (konfigurator, API)
+
+Strežniški del smo zasnovali tako, da navzven odpira api vmesnike. 
+Zaledni del smo napisali v jeziku javascript in deluje v okolju NodeJS. Namestili smo ga na strežnik, ki je del biolaba. Na naslovu http://urbannoisesensing.biolab.si
+Podatki so razdeljeni v več entitet, vsaka ima preko API rest vmesnika omogočene določene metode.
+Sensor:
+Hrani podatke o posamezni merilni enoti (mac, ime, trenutna lokacija, napetost baterije, trenutni deployment,...). Vmesnik omogoča pridobivanje osnovih podatkov o vseh senzorjih, polne podatke o določenem senzorju, registracijo novega senzorja z mac naslovom, pošiljanje zbranih podatkov o hrupu in pošiljanje podatkov o stanju baterije.
+
+Gateway:
+Hrani podatke o zbirni enoti (mac, ime, wifi gesla in imena, trenutni deployment). Vmesnik omogoča pridovianje osnovnih podatkov o vseh zbirnih enotah, pridobivanje vseh podatkov o posamezni enoti in registracijo nove enote z mac naslovom. 
+
+Deployment:
+Hrani podatke o deploymentih (ime, opis, katere merilne enote so del tega in kje so bile, katere zbirne enote so del tega, časovni okvri zajetih podatkov, število zajetih podatkov, trenutno stanje deploymenta). Vmesnik omogoča dodajanje novega deploymenta, začetek zbiranja podatkov z določenim deploymentom, končanje zbiranja podatkov, pridobivanje osnovnih podatkov o vseh deploymentih, pridobivanje vseh podatkov o specifičem deploymentu.  
+
+Data:
+Hrani zbrane podatke o hrupu (senzor, lokacija, začetni čas, končni čas, število meritev v tem dokumentu, meritve s svojimi atributi). Podatki so strukturirani v razdelke, ki so omejeni glede na število zbranih podatkov. Takšna razdelitev podatkov v skupine omogoča hitrejše iskanje po podatkih in zmanjšuje zmedo. Vmesnik omogoča več zanimivih agregacij podatkov. Recimo zadnjih n meritev iz vsake merilne enote, podatki ki so bili zbrani v zadnjih n sekundah, vsi zbrani podatki v določenem časovnem obdobju, podatki iz n najbolj razgibanih poljubnih časovnih intervalov.
+ 
+
+
+
+## podatkovna analitika
+
+Projekt, ki temelji na zbiranju podatkov je neuporaben brez dobrih orodij za podatkovno analitiko. Zato smo razvili widget za pridobivanje podtakov v kontekstu programa Orange. S tem smo uporabniku omogočili hitro in učinkovito analizo ažurnih podatkov. 
+Widget omogoča uporabo vseh agregacij, ki jih ponuja entiteta data. Uporabnik ima na voljo dva načina priprave izhodnih podatkov. Izbira lahko med tensorji in matrico. 
+
+ ** slike in primeri uporabe v Orange **
+
+
+# primera uporabe
+(motivacija, postavitev, rezultati, interpetacija - štirje odstavki)
+
+Na vse senzorske in zbirne enote je nameščena enaka koda. Ko se 
+ 
+##  kosilnica
+## glasnost na faksu
+#zaključek (ni podpoglavij, samo trije odstavki)
+- sklepne misli (kaj je bila naša naloga)
+- rezultat (kako smo jo uspešno rešili)
+- kaj še ostane (če bi imel čas in denar, kaj bi še lahko naredil iz tega, urbanisti, ...)

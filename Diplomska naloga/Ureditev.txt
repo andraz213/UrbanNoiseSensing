@@ -1,0 +1,28 @@
+diplomska naloga
+(primer: pavlin poličar, poglavje-podpoglavje)
+uvod (vsaka črtica svoj odstavek)
+- iot na splošno, kakšne probleme rešuje
+- opis našega problema, zahteve
+- obstoječe rešitve (tri)
+- delo v nalogi
+tehnologije (vsaka črtica tri odstavki, dodaj kakšno sliko, pazi na licence slik, vse mora biti v slovenščini, lahko tudi zrišeš kakšno shemo)
+- mikrokontrolerji
+- merjenje hrupa (senzorji)
+- povezljivost
+- programska oprema za IOT
+- strežniški del
+rešitev
+- uporabniške zahteve (detaljne zahteve, lahko jih spišeš po sklopih)
+- arhitektura (nujno shema)
+- merilna enota
+- zbirnik
+- strežnik (konfigurator, API)
+- podatkovna analitika
+primera uporabe
+(motivacija, postavitev, rezultati, interpetacija - štirje odstavki)
+- kosilnica
+- glasnost na faksu
+zaključek (ni podpoglavij, samo trije odstavki)
+- sklepne misli (kaj je bila naša naloga)
+- rezultat (kako smo jo uspešno rešili)
+- kaj še ostane (če bi imel čas in denar, kaj bi še lahko naredil iz tega, urbanisti, ...)
