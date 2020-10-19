@@ -181,9 +181,6 @@ const updateGateways = async (dep, res) => {
                 return -1;// res.status(404).json({'message': 'Could not find the gateway'});
             } else {
                 gwy.current_deployment = dep._id;
-                if(gwy.deployments.indexOf(dep._id) === -1) {
-                    gwy.deployments.push(dep._id);
-                }
                 gwy.current_location = [0,0];
                 console.log(gwy);
                 // @@@ še data bucket je treba ustvarit
@@ -212,9 +209,6 @@ const updateSensors = async (dep, res) => {
 
                 sens.current_deployment = dep._id;
                 sens.current_location = sen.location;
-                if(sens.deployments.indexOf(dep._id) === -1) {
-                    sens.deployments.push(dep._id);
-                }
 
                await sens.save((err, data) => {
                     if(err){
