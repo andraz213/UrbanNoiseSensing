@@ -309,10 +309,9 @@ return -1;
 
 const getDeploymentById = async (req, res) => {
 
-
-
-
     let id = await req.params.deployment_id;
+
+    console.log(id);
 
     let number_agregation = [
         {
@@ -338,7 +337,7 @@ const getDeploymentById = async (req, res) => {
             }
         }
     ];
-    let numbers = await dataModel.aggregate(number_agregation, {allowDiskUse: true}).exec();
+    let numbers = await dataModel.aggregate(number_agregation).exec();
     console.log(numbers);
     let number_agregate = [];
     for(let nnum of numbers){

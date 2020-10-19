@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   apiUrl: "http://urbannoisesensing.biolab.si/api",
+  //apiUrl: "http://localhost:3000/api",
   mapsKey: "AIzaSyA9amYWGlkh7IzlVQIlZr4YIjHsWU1fHlA"
 };
 
