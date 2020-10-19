@@ -43,7 +43,7 @@ void do_maintanence() {
 
 }
 
-long previous_got_data = -60000;
+long previous_got_data = -30000;
 void connect_and_get_data() {
   if (millis() - previous_got_data > 60000) {
     print_text(String("Connecting to:"), String(ssid), String(""), String(""));

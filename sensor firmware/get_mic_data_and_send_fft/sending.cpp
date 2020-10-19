@@ -18,12 +18,15 @@ esp_now_peer_info_t peerInfo1;
 bool sended = false;
 bool sending_succeeded = false;
 
+bool wifi_on = false;
+
 void setup_wifi_and_LR() {
 
   // Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
   int a = esp_wifi_set_protocol( ESP_IF_WIFI_STA, WIFI_PROTOCOL_LR);
   hanlde_wifi_init_fail(a);
+  wifi_on = true;
 
   // Init ESP-NOW
   if (esp_now_init() != ESP_OK) {
@@ -55,16 +58,22 @@ void setup_wifi_and_LR() {
 
 
 
+int n_dont_send = 0;
 
 void send_data() {
   long start = millis();
 
+  n_dont_send--;
+  if(n_dont_send > 0){
+    return;
+  }
 
   // Add peer
   sending_list * to_send = get_first();
 
 
   while (to_send != 0 && millis() - start < 110) {
+    turn_on_wifi_for_esp_now();
 
     data_message sending_message;
     memcpy(&sending_message.data, to_send, sizeof(sending_list));
@@ -92,6 +101,9 @@ void send_data() {
     sended = false;
   }
 
+  if(to_send == 0){
+    n_dont_send = ((int)random(5) + 5);
+  }
 
 }
 
@@ -107,6 +119,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 
   if (type == (int)SENSOR_TIME) {
     Serial.println("time_request");
+      Serial.println(millis());
     handle_gateway_time((char*)incomingData, len);
   }
 
@@ -120,6 +133,9 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
     sending_succeeded = true;
   }
   sended = true;
+
+  Serial.println("sent");
+    Serial.println(millis());
 
 }
 
@@ -139,4 +155,20 @@ void hanlde_wifi_init_fail(int a) {
     Serial.println(" , Error in Mode LR!");
   }
 
+}
+
+
+void turn_on_wifi_for_esp_now(){
+  if(!wifi_on){
+    esp_wifi_start();
+    wifi_on = true;
+  }
+}
+
+
+void turn_off_wifi_for_esp_now(){
+  if(wifi_on){
+    esp_wifi_stop();
+    wifi_on = false;
+  }
 }

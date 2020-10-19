@@ -1,5 +1,7 @@
 #include "handle_json.h"
 
+uint8_t mac_cache [6];
+bool mac_cached = false;
 
 String get_config_name() {
 
@@ -25,25 +27,34 @@ String get_config_name() {
 
 void get_gateway_mac(uint8_t * mac) {
 
-  DynamicJsonDocument doc(5000);
 
-  String json = get_config();
+  if(!mac_cached){
 
-  if(json.length() != 0){
-    deserializeJson(doc, json);
-    if(doc.size() > 0){
+    for (int i = 0; i < 6; i++) {
+      mac_cache[i] = (uint8_t)255;
+    }
 
-      JsonObject root = doc[0];
-      if(!root["gateways"].isNull()){
-        JsonArray root_mac_gateways = root["gateways"];
-        if(root_mac_gateways.size() > 0){
-          JsonArray gateways_0 = root_mac_gateways[0];
+    mac_cached = true;
 
-          if(!root_mac_gateways.isNull() && root_mac_gateways.size() == 1 && root_mac_gateways[0].size() == 6){
-            for (int i = 0; i < 6; i++) {
-              mac[i] = (uint8_t)gateways_0[i];
+    DynamicJsonDocument doc(5000);
+
+    String json = get_config();
+
+    if(json.length() != 0){
+      deserializeJson(doc, json);
+      if(doc.size() > 0){
+
+        JsonObject root = doc[0];
+        if(!root["gateways"].isNull()){
+          JsonArray root_mac_gateways = root["gateways"];
+          if(root_mac_gateways.size() > 0){
+            JsonArray gateways_0 = root_mac_gateways[0];
+
+            if(!root_mac_gateways.isNull() && root_mac_gateways.size() == 1 && root_mac_gateways[0].size() == 6){
+              for (int i = 0; i < 6; i++) {
+                mac_cache[i] = (uint8_t)gateways_0[i];
+              }
             }
-            return;
           }
         }
       }
@@ -51,11 +62,8 @@ void get_gateway_mac(uint8_t * mac) {
   }
 
   for (int i = 0; i < 6; i++) {
-    mac[i] = (uint8_t)255;
+    mac[i] = (uint8_t)mac_cache[i];
   }
-  return;
-
-
 }
 
 

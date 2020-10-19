@@ -112,11 +112,15 @@ void sending_and_telemetry(){
   setCpuFrequencyMhz(80);
 
   // do the sending
-  esp_wifi_start();
-  sync_time_and_telemetry();
   send_data();
+  sync_time_and_telemetry();
 
-  esp_wifi_stop();
+
+  while(!can_go_to_sleep_beacause_of_getting_time()){
+    delay(1);
+  }
+
+  turn_off_wifi_for_esp_now();
 
 }
 

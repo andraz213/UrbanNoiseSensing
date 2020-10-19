@@ -22,6 +22,8 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status){
 
   if(ESP_NOW_SEND_SUCCESS == status){
     time_recieved = true;
+    Serial.println("confirmed");
+    Serial.println(millis());
   }
 
 }
@@ -37,6 +39,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 
   if(type == (int)SENOSR_TELEMETRY){
     Serial.println("time_request");
+    Serial.println(millis());
     handleTimeRequest((char*)mac);
     handleSensorMessage((uint8_t *)mac, (uint8_t *)incomingData, len, type);
   }
@@ -163,12 +166,9 @@ void handleTimeRequest(char* mac){
     memcpy(message + sizeof(int), (char*)&time_us, sizeof(int64_t));
     memcpy(message + sizeof(int) + sizeof(int64_t), (char*)&sensing_interval, sizeof(int));
     esp_err_t result = esp_now_send((uint8_t *)mac, (uint8_t *)message, (size_t)size);
-
+      Serial.println("seded");
+        Serial.println(millis());
     if(ESP_OK == result){
-      long start = millis();
-      while(!time_recieved && millis() - start < 70){
-        delay(2);
-      }
       esp_now_del_peer((uint8_t *)mac);
     }
 

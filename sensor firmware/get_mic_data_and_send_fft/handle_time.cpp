@@ -9,6 +9,7 @@
 #include <sys/time.h>
 #include "common.h"
 #include "handle_json.h"
+#include "sending.h"
 
 long previous_time_sync = 0;
 bool got_time = false;
@@ -17,27 +18,27 @@ int sensing_interval = 1;
 
 long previous_sending_sec = 0;
 
+long start_getting_time = 0;
+
+long whole_time = 0;
+
 void sync_time_and_telemetry() {
 
   got_time = false;
 
-  if (previous_time_sync == 0 || millis() - previous_time_sync > 2000) {
+  if (previous_time_sync == 0 || millis() - previous_time_sync > 4000) {
+    turn_on_wifi_for_esp_now();
+
+    whole_time = millis();
 
     telemetry_message to_send;
     to_send.message_type = SENOSR_TELEMETRY;
     to_send.battery_voltage = get_battery_voltage();
-
     uint8_t mac_address [6];
     get_gateway_mac(mac_address);
     esp_err_t result = esp_now_send(mac_address, (uint8_t *) &to_send, sizeof(telemetry_message));
 
-
-    long start = millis();
-    while (!got_time && millis() - start < 100) {
-      delay(1);
-      Serial.print("-");
-    }
-    Serial.println("ummm??");
+    start_getting_time = millis();
 
     previous_time_sync = millis() - 1000;
     if (got_time) {
@@ -45,6 +46,18 @@ void sync_time_and_telemetry() {
     }
   }
 }
+
+
+bool can_go_to_sleep_beacause_of_getting_time(){
+  if(!got_time && millis() - start_getting_time < 100){
+    return false;
+  }
+
+  return true;
+
+}
+
+
 
 void print_usec() {
   struct timeval tv_now;
@@ -89,7 +102,7 @@ long get_random_sleep_time() {
 
   if (sec_now - previous_sending_sec < 2) {
     long left = 1000000 - usec_now;
-    res = (long)random(left - 150000);
+    res = (long)random(left - 170000);
   }
   previous_sending_sec = sec_now;
   return res;
@@ -114,6 +127,7 @@ long get_remaining_sleep_time() {
 
 void handle_gateway_time(char *payload, int length) {
   got_time = true;
+  previous_time_sync = millis();
   int64_t time_us;
   memcpy(&time_us, (char*)(payload + sizeof(int)), sizeof(int64_t));
   memcpy(&sensing_interval, (char*)(payload + sizeof(int) + sizeof(int64_t)), sizeof(int));
@@ -143,9 +157,10 @@ void handle_gateway_time(char *payload, int length) {
 
   struct timeval tv = { .tv_sec = tv_sec, .tv_usec = tv_usec };
   settimeofday(&tv, NULL);
-  Serial.println("got time lol");
   Serial.println((int)tv_sec);
   Serial.println(sensing_interval);
+  Serial.println(" ---------- - - - - --  ZA CAS SMO RABILI - -- -- -- ");
+  Serial.println(millis() - whole_time);
 }
 
 

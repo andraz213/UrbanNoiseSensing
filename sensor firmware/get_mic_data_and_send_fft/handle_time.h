@@ -19,4 +19,6 @@ unsigned int get_usecs();
 int get_interval();
 
 bool is_interval_now();
+
+bool can_go_to_sleep_beacause_of_getting_time();
 #endif

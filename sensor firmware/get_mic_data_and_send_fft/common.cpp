@@ -13,13 +13,15 @@ double get_battery_voltage(){
   float R1 = 20.0;
   float R2 = 5.0;
 
-  for (int i = 0; i < 50; i++)
+  int num = 10;
+
+  for (int i = 0; i < num; i++)
   {
       sum += (double) adc1_get_voltage(ADC1_CHANNEL_0);
-      delayMicroseconds(100);
+      delayMicroseconds(1);
   }
   // calculate the voltage
-  voltage = sum / 50.0;
+  voltage = sum / (float)num;
   voltage = (voltage * 1.1) / 4096.0; //for internal 1.1v reference
   // use if added divider circuit
   voltage = voltage / (R2/(R1+R2));

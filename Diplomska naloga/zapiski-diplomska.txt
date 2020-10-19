@@ -12,7 +12,7 @@ Zasnovali smo sistem za spremljanje in analizo zvoka s pomočjo več senzorjev
 Hrup nas obkorža kamorkoli gremo. Na nas ima stalen ali preglasen hrup lahko negativne posledice, zato smo se odločili zasnovati sistem za analizo hrup, ki bo pomagal pri sprejemanju urbanističnih odločitev.
 
 - iot na splošno, kakšne probleme rešuje
-
+ 
 Iot je tehnologija, ki je v zadnjih letih postala omniprezentna v naših življenjih in omogoča napravam, da sprejemajo pametnejše odločitve in vplivajo na dogodke izven njihovega konteksta zmogljivosti.
 
 - opis našega problema, zahteve
@@ -134,10 +134,21 @@ Widget omogoča uporabo vseh agregacij, ki jih ponuja entiteta data. Uporabnik i
 # primera uporabe
 (motivacija, postavitev, rezultati, interpetacija - štirje odstavki)
 
-Na vse senzorske in zbirne enote je nameščena enaka koda. Ko se 
+Na vse senzorske in zbirne enote je nameščena enaka koda. Ko se enote prvič prižge v načinu nastavljanja, se povežejo na zaledni del in pošljejo svoj unikaten mac naslov in se tako registrirajo. Ob tem se generira naključno ime za posamezno enoto in uporabnik jo lahko nastavi za delo z enim deploymentom. 
  
 ##  kosilnica
+
+(motivacija, postavitev, rezultati, interpetacija - štirje odstavki)
+
+S tem poskisom smo želeli opazovati možnost spremljanja lokacije vira hrupa. Merilne enote smo pred košenjem postavili ob rob travnika, da se jasno vidijo oscilacije hrupa, ki ga je proizvedla kosilnica. 
+Jasno se vidi, kdaj je bila kosilnica najbližje posamezni merilni enoti.
+
 ## glasnost na faksu
+
+(motivacija, postavitev, rezultati, interpetacija - štirje odstavki)
+
+TODO
+
 #zaključek (ni podpoglavij, samo trije odstavki)
 - sklepne misli (kaj je bila naša naloga)
 - rezultat (kako smo jo uspešno rešili)

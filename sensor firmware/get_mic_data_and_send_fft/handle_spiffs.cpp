@@ -17,7 +17,6 @@ String get_config() {
   if (init_spiffs()) {
 
     File file = SPIFFS.open("/config.json", "r");
-
     if (file) {
 
       while (file.available()) {
@@ -25,7 +24,7 @@ String get_config() {
       }
     }
   }
-  Serial.println(res);
+  //Serial.println(res);
   return res;
 }
 
