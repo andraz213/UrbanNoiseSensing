@@ -59,7 +59,6 @@ const postSensor = async (req, res) => {
                     mac: mac
                 });
                 novSensor.save(novSensor).then(data => {
-                    console.log(data);
                     res.send(data);
                 });
             }
@@ -151,7 +150,6 @@ const postDataSensorSensor = async (req, res) => {
     for (let jk = 0; jk < 1; jk++) {
 
         for (let data of dataObj) {
-            console.log(data);
 
             // najdi senzor
             let sensorMac = data.mac;
@@ -163,7 +161,6 @@ const postDataSensorSensor = async (req, res) => {
                 name: 1
             }).limit(1).exec();
             let newSize = 1;
-            console.log(currentSensor);
 
             if (currentSensor != null && currentSensor.length == 1) {
                 let oneSensor = currentSensor[0];
@@ -191,7 +188,6 @@ const postDataSensorSensor = async (req, res) => {
                         //newSize = (await dataModel.aggregate([{$match: {_id: currentData._id}}, {$project: {data: {$size: '$data'}}}]))[0].data + 1;
                         newSize = currentData.size + 1;
                     }
-                    console.log(currentData);
 
 
                     let measurement = {
@@ -201,7 +197,6 @@ const postDataSensorSensor = async (req, res) => {
                         measured_at: new Date(data.timestamp * 1000),
                     };
 
-                    console.log(measurement);
 
                     if (currentData.last < measurement.measured_at) {
                         currentData.last = measurement.measured_at;
@@ -337,7 +332,7 @@ const postDataSensorWebsocket = async (JSNdata) => {
                 //newSize = (await dataModel.aggregate([{$match: {_id: currentData._id}}, {$project: {data: {$size: '$data'}}}]))[0].data + 1;
                 newSize = currentData.size + 1;
             }
-            console.log(currentData);
+
 
 
             let measurement = {
@@ -347,10 +342,7 @@ const postDataSensorWebsocket = async (JSNdata) => {
                 measured_at: new Date(data.timestamp * 1000),
                 //measured_at: Date.now()
             };
-            //console.log(Date(data.timestamp));
-            console.log(currentData.last);
-            console.log(measurement.measured_at);
-            console.log(currentData.last < measurement.measured_at);
+
 
             if (currentData.last < measurement.measured_at) {
                 currentData.last = measurement.measured_at;
@@ -393,11 +385,9 @@ const PostSensorTelemetryWebsockets = async (JSNdata) => {
 
 
     let currentSensor = await sensorModel.find({mac: sensorMac}).limit(1).exec();
-    console.log(currentSensor);
 
     if (currentSensor != null && currentSensor.length == 1) {
         let oneSensor = currentSensor[0];
-        console.log(oneSensor);
 
         await sensorModel.updateOne({_id: oneSensor._id}, {
             battery_voltage: data.battery_voltage,
@@ -415,7 +405,6 @@ const PostSensorTelemetryWebsockets = async (JSNdata) => {
                 console.log(`Could not find sensor with id: ${id}}`);
                 return res.status(404).json({'message': `Could not find sensor with id: ${id}`});
             } else {
-                console.log(sensor);
                 if (data.voltage) {
                     sensor.battery_voltage = data.voltage;
                 }
@@ -423,7 +412,6 @@ const PostSensorTelemetryWebsockets = async (JSNdata) => {
                     sensor.firmware_version = data.version;
                 }
                 sensor.last_telemetry = Date.now();
-                console.log(sensor);
 
                 await sensorModel.updateOne({_id: sensor._id}, {
                     battery_voltage: data.voltage,

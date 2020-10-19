@@ -76,7 +76,6 @@ const postGateway = (req, res) => {
             }
 
             if (gateway.length >= 1) {
-                console.log(gateway);
                 let gatewayObj = JSON.parse(JSON.stringify(gateway));
 
                 console.log(gatewayObj);
