@@ -104,7 +104,7 @@ const finishDeployment  = async (req, res) => {
 
     deployment.status = 'finished';
     deployment.finish = Date.now();
-    let numbers = JSON.parse(JSON.stringify(await dataModel.aggregate(get_n_measurements).exec()));
+    let numbers = JSON.parse(JSON.stringify(await dataModel.aggregate(get_n_measurements, {allowDiskUse: true}).exec()));
     let all_measurements = numbers[0].num;
     deployment.measurement_num = all_measurements;
     console.log(deployment);
@@ -338,7 +338,7 @@ const getDeploymentById = async (req, res) => {
             }
         }
     ];
-    let numbers = await dataModel.aggregate(number_agregation).exec();
+    let numbers = await dataModel.aggregate(number_agregation, {allowDiskUse: true}).exec();
     console.log(numbers);
     let number_agregate = [];
     for(let nnum of numbers){

@@ -58,7 +58,7 @@ const getAllDataByDeployment = async (req, res) => {
         }
     ];
 
-    dataModel.aggregate(agregat, (err, data) => {
+    dataModel.aggregate(agregat, {allowDiskUse: true}, (err, data) => {
         if (err) {
             console.log(err);
             return res.status(400).json(err);
@@ -149,7 +149,7 @@ const getLastNByDeployment = (req, res) => {
     ];
 
 
-    dataModel.aggregate(agregat, (err, data) => {
+    dataModel.aggregate(agregat, {allowDiskUse: true}, (err, data) => {
         if (err) {
             console.log(err);
             return res.status(500).json(err);
@@ -221,7 +221,7 @@ const getLastNSecondsByDeployment = async (req, res) => {
     ];
     console.log(agregat);
 
-    dataModel.aggregate(agregat, (err, data) => {
+    dataModel.aggregate(agregat, {allowDiskUse: true}, (err, data) => {
         if (err) {
             return res.status(500).json(err);
         }
@@ -272,7 +272,7 @@ const GetInterestingIntervalsManuallyDataDeployment = async (req, res) => {
         }
     ];
 
-    let num_data = await dataModel.aggregate(get_n_seconds).exec();
+    let num_data = await dataModel.aggregate(get_n_seconds, {allowDiskUse: true}).exec();
     let num = num_data[0].num;
     console.log(num);
     interval_len = Math.max(1, interval_len);
@@ -360,7 +360,7 @@ const GetInterestingIntervalsManuallyDataDeployment = async (req, res) => {
 
     ];
 
-    let interests = await dataModel.aggregate(agregat).exec();
+    let interests = await dataModel.aggregate(agregat, {allowDiskUse: true}).exec();
 
 
     let oragregat = [];
@@ -420,7 +420,7 @@ const GetInterestingIntervalsManuallyDataDeployment = async (req, res) => {
     console.log(interes_data_agregat);
 
 
-    dataModel.aggregate(interes_data_agregat, (err, data) => {
+    dataModel.aggregate(interes_data_agregat, {allowDiskUse: true}, (err, data) => {
         if (err) {
             console.log(err);
             return res.status(400).json(err);
@@ -471,7 +471,7 @@ const GetInterestingIntervalsDataDeployment = async (req, res) => {
     ];
 
 
-    let num_data = await dataModel.aggregate(get_n_seconds).exec();
+    let num_data = await dataModel.aggregate(get_n_seconds, {allowDiskUse: true}).exec();
     let num = num_data[0].num;
     console.log(num);
 
@@ -559,7 +559,7 @@ const GetInterestingIntervalsDataDeployment = async (req, res) => {
 
     ];
 
-    let interests = await dataModel.aggregate(agregat).exec();
+    let interests = await dataModel.aggregate(agregat, {allowDiskUse: true}).exec();
 
 
     let oragregat = [];
@@ -621,7 +621,7 @@ const GetInterestingIntervalsDataDeployment = async (req, res) => {
     console.log(interes_data_agregat);
 
 
-    dataModel.aggregate(interes_data_agregat, (err, data) => {
+    dataModel.aggregate(interes_data_agregat, {allowDiskUse: true}, (err, data) => {
         if (err) {
             console.log(err);
             return res.status(400).json(err);
@@ -687,7 +687,7 @@ const GetAcerageOverAllSensors = async (req, res) => {
     ];
 
 
-    dataModel.aggregate(agregat, (err, data) => {
+    dataModel.aggregate(agregat, {allowDiskUse: true}, (err, data) => {
         if (err) {
             return res.status(400).json(err);
         }
