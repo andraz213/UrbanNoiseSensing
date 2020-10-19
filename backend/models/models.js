@@ -4,7 +4,7 @@ const measurementSchema = new mongoose.Schema({
     frequencyRange: Number,
     fftValues: [Number],
     decibels: Number,
-    measured_at: { type : Date, default: Date.now },
+    measured_at: { type : Date, default: Date.now, index: true},
 });
 
 const dataSchema = new mongoose.Schema({
@@ -53,7 +53,7 @@ const dataDeploymentSchema = new mongoose.Schema({
 
 
 const deploymentSchema = new mongoose.Schema({
-    name: {type: String, required: true},
+    name: {type: String, required: true, index: true},
     description: String,
     sensors: [dataDeploymentSchema],
     gateways: [dataDeploymentSchema],
