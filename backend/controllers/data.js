@@ -681,7 +681,7 @@ const GetAcerageOverAllSensors = async (req, res) => {
         }, {
             '$bucketAuto': {
                 'groupBy': '$timestamp',
-                'buckets': 1000,
+                'buckets': 333,
                 'output': {
                     'average': {
                         '$avg': '$average'
