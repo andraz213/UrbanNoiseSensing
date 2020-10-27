@@ -1,0 +1,121 @@
+1. Uvod 
+
+- iot na splošno, kakšne probleme rešuje
+- opis našega problema, zahteve
+- obstoječe rešitve (tri)
+
+* fotografije obstoječih merilnih enot
+* tabela primerjav med sistemi
+
+- delo v nalogi
+
+
+2. Tehnologije 
+
+(vsaka črtica tri odstavki, dodaj kakšno sliko, pazi na licence slik, vse mora biti v slovenščini, lahko tudi zrišeš kakšno shemo)
+
+
+2.1 Mikrokontrolerji
+
+* fotografija mojega mikrokontrolerja z  vrisanim pinoutom
+* tabela specifikacij ESP32
+
+2.2 Merjenje hrupa 
+(senzorji)
+
+* fotografija mojega senzorja
+* fotografija ali drugačen grafični prikaz MEMS mikrofona
+* tabela specifikacij
+
+2.3 Povezljivost
+
+* tabela specifikacij različnih možnosti za povezovanje med katerimi sem izbiral
+* grafičen prikaz dosega izbrane tehnologije
+
+2.4 Programska oprema za IOT
+
+* tabela prednosti in slabosti razisskani opcij
+
+2.5 Strežniški del
+
+
+3. rešitev
+
+3.1 Uporabniške zahteve 
+(detaljne zahteve, lahko jih spišeš po sklopih)
+
+
+
+
+3.2 Arhitektura
+
+* shema celotne arhitekture
+* shema posameznih delov z oblikami sporočil ki se prenašajo med deli
+
+
+3.3 Merilna enota
+
+* konceptualna shema merilne enote
+* električna shema merilne enote
+* diagram poteka obeh načinov delovanja
+* fotografija enote
+* fotografija materiala za vse merilne enote
+
+
+3.4 Zbirna enota
+
+* konceptualna shema zbirne enote
+* električna shema zbirne enote
+* diagram poteka kot prikaz delovanja
+* fotografija enote
+* fotografija materiala za vse zbirne enote
+
+
+
+3.5 Strežnik (konfigurator, API)
+
+* shema podatkov v podatkovni bazi
+
+3.6 Poraba energije 
+(nevem točno kje naj bi to bilo, amapak zaenkrat je tu)
+
+* posnetek zaslona grafa porabe energije
+* tabela z meritvami povprečne porabe energije pri različnih intervalih merjenja
+* koda kjer z dinamičnim nastavljanjem frekvence procesorjaa v merilni enoti in spanjem med merjenji dosežem nizko porabo
+
+
+3.6 Podatkovna analitika
+
+* posnetek zaslona widgeta
+* posnetek zaslona primera workflowa
+
+
+4. Uporabniška navodila
+
+* posnetki zaslona frontenda pri nastavljanju
+* fotografije zaslonov na merilnih in zbirnih enotah ob različnih fazah nastavljanja
+
+
+5. primera uporabe
+(motivacija, postavitev, rezultati, interpetacija - štirje odstavki)
+
+5.1 Kosilnica
+
+* posnetek zemljevida z lokacijami merilnih enot (in vrisano potjo košenja - mogoče če bom pri volji)
+* posnetek zaslona workflowa v Orange
+* posnetki zaslona grafov in prikazov na zemlejvidu
+* tabela s povprečnimi in mejnimi vrednosti senzorjev 
+
+5.2 Glasnost na faksu
+
+* posnetek zaslona zemljevida z lokacijami merilnih enot
+* posnetek zaslona workflowa v Orange
+* zglajen graf po meritvah
+* spiralogram za prikaz periodnega ponavljanja vzorcev v glasnosti
+
+
+6. zaključek (ni podpoglavij, samo trije odstavki)
+
+- sklepne misli (kaj je bila naša naloga)
+- rezultat (kako smo jo uspešno rešili)
+- kaj še ostane (če bi imel čas in denar, kaj bi še lahko naredil iz tega, urbanisti, ...
