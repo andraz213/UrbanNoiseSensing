@@ -12,16 +12,13 @@
 
 2. Tehnologije 
 
-(vsaka črtica tri odstavki, dodaj kakšno sliko, pazi na licence slik, vse mora biti v slovenščini, lahko tudi zrišeš kakšno shemo)
-
 
 2.1 Mikrokontrolerji
 
 * fotografija mojega mikrokontrolerja z  vrisanim pinoutom
 * tabela specifikacij ESP32
 
-2.2 Merjenje hrupa 
-(senzorji)
+2.2 Merjenje hrupa
 
 * fotografija mojega senzorja
 * fotografija ali drugačen grafični prikaz MEMS mikrofona
@@ -42,9 +39,6 @@
 3. rešitev
 
 3.1 Uporabniške zahteve 
-(detaljne zahteve, lahko jih spišeš po sklopih)
-
-
 
 
 3.2 Arhitektura
