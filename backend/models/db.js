@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 require('./models');
 
-const dbURI = 'mongodb+srv://express_api:e2p0eB9bCSdvJhyY@cluster0.ooaot.mongodb.net/noisesensing?retryWrites=true&w=majority';
+// const dbURI = 'mongodb+srv://express_api:e2p0eB9bCSdvJhyY@cluster0.ooaot.mongodb.net/noisesensing?retryWrites=true&w=majority';
+
+const dbURI = 'mongodb+srv://127.0.0.1:27017';
+
+
 mongoose.connect(dbURI, {
     useNewUrlParser: true,
     useCreateIndex: true,
