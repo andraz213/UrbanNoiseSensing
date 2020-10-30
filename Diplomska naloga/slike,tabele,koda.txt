@@ -52,6 +52,7 @@
 * konceptualna shema merilne enote
 * električna shema merilne enote
 * diagram poteka obeh načinov delovanja
+* koda poti podatkov od mikrofona do dodajanja v vrsto za pošiljanje
 * fotografija enote
 * fotografija materiala za vse merilne enote
 

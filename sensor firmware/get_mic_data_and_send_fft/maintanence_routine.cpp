@@ -45,7 +45,7 @@ void do_maintanence() {
 
 long previous_got_data = -30000;
 void connect_and_get_data() {
-  if (millis() - previous_got_data > 60000) {
+  if (millis() - previous_got_data > 15000) {
     print_text(String("Connecting to:"), String(ssid), String(""), String(""));
     connect_wifi(ssid, password);
     print_text(String("Connected!"), String("Getting sensor config"), String(""), String(""));
@@ -86,7 +86,7 @@ void do_sensing_for_test() {
 
 long previous_send_telemetry = -120000;
 void connect_and_send_telemetry() {
-  if (millis() - previous_send_telemetry > 120000) {
+  if (millis() - previous_send_telemetry > 12000) {
     print_text(String("Connecting to:"), String(ssid), String(""), String(""));
     connect_wifi(ssid, password);
     print_text(String("Connected!"), String("Sending telemetry data"), String(""), String(""));

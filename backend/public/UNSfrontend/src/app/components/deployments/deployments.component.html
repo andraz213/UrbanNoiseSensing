@@ -39,9 +39,7 @@
             <div class="col-8">
               <p>{{deployment.description}}</p>
             </div>
-            <div class="col-5">
-              <small>tags</small>
-            </div>
+
             <div class="col-4">
 
             </div>
@@ -57,17 +55,11 @@
         <a (click)="navigateToReview(deployment._id)">
           <div class="deployment-div mb-4">
             <div class="row m-3">
-              <div class="col-8">
+              <div class="col-12">
                 <h4>{{deployment.name}}</h4>
               </div>
-              <div class="col-8">
+              <div class="col-12">
                 <p>{{deployment.description}}</p>
-              </div>
-              <div class="col-5">
-                <small>tags</small>
-              </div>
-              <div class="col-4">
-
               </div>
             </div>
           </div>
@@ -83,17 +75,15 @@
         <a (click)="navigateToEdit(deployment._id)">
           <div class="deployment-div mb-4">
             <div class="row m-3">
-              <div class="col-8">
+              <div class="col-12">
                 <h4>{{deployment.name}}</h4>
               </div>
-              <div class="col-8">
+              <div class="col-12">
                 <p>{{deployment.description}}</p>
               </div>
-              <div class="col-5">
-                <small>tags</small>
-              </div>
-              <div class="col-4">
-
+              <div class="col-12">
+                  <small>Number of measurements:</small>
+                  <p>{{deployment.measurement_num}}</p>
               </div>
             </div>
           </div>

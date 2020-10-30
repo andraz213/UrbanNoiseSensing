@@ -77,8 +77,6 @@ unsigned int get_secs() {
 
 bool is_interval_now(){
   unsigned int secs = get_secs();
-  Serial.println("ostanek pri deljenju casa:");
-  Serial.println(secs % get_interval());
   if(secs % get_interval() == 0){
     return true;
   }
@@ -158,9 +156,6 @@ void handle_gateway_time(char *payload, int length) {
   struct timeval tv = { .tv_sec = tv_sec, .tv_usec = tv_usec };
   settimeofday(&tv, NULL);
   Serial.println((int)tv_sec);
-  Serial.println(sensing_interval);
-  Serial.println(" ---------- - - - - --  ZA CAS SMO RABILI - -- -- -- ");
-  Serial.println(millis() - whole_time);
 }
 
 

@@ -19,7 +19,7 @@
 
                 <div *ngIf="sensori.sensor.latest_measurement">
                   <small>Latest decibels: </small>
-                  <p class="sensor-spec">{{sensori.sensor.latest_measurement.decibels}}</p>
+                  <p class="sensor-spec">{{sensori.sensor.latest_measurement.decibels | number : '.2-2'}}</p>
                 </div>
 
                 <div *ngIf="sensori.measurements">
@@ -29,12 +29,12 @@
 
                 <div *ngIf="sensori.sensor.last_telemetry">
                   <small>Last telemetry: </small>
-                  <p class="sensor-spec">{{sensori.sensor.last_telemetry}}</p>
+                  <p class="sensor-spec">{{sensori.sensor.last_telemetry | date:'short'}}</p>
                 </div>
 
                 <div *ngIf="sensori.sensor.battery_voltage">
                   <small>Battery voltage: </small>
-                  <p class="sensor-spec">{{sensori.sensor.battery_voltage}} V</p>
+                  <p class="sensor-spec">{{sensori.sensor.battery_voltage | number : '.2-2'}} V</p>
                 </div>
 
                 <div *ngIf="sensori.sensor.firmware_version">

@@ -11,7 +11,7 @@
           <div class="col-12">
             <div *ngIf="sensori.battery_voltage">
             <small>Battery voltage: </small>
-            <p class="sensor-spec">{{sensori.battery_voltage}} V</p>
+            <p class="sensor-spec">{{sensori.battery_voltage | number : '.2-2'}} V</p>
             </div>
 
             <div *ngIf="sensori.firmware_version">
