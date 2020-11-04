@@ -22,7 +22,7 @@
 
 # fotografija mojega senzorja
 # fotografija ali drugačen grafični prikaz MEMS mikrofona
-* tabela specifikacij
+# tabela specifikacij
 
 2.3 Povezljivost
 

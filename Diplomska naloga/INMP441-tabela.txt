@@ -1,0 +1,14 @@
+\begin{table}[]
+\begin{tabular}{ll}
+Ime                                        & INMP441        \\
+Proizvajalec                               & InvenSense     \\
+Protokol                                   & 24bit I2S      \\
+Razpon frekvence vzorčenja                 & 7.8kHz - 50kHz \\
+Frekvenčni razpon                          & 60Hz - 15kHz   \\
+Napajalna napetsot                         & 3.3V           \\
+Poraba elektrike                           &                \\
+\multicolumn{1}{r}{Aktivno stanje}         & 2.2mA          \\
+\multicolumn{1}{r}{Stanje pripravljenosti} & 0.8mA          \\
+\multicolumn{1}{r}{Spanje}                 & 0.0045mA      
+\end{tabular}
+\end{table}
