@@ -16,7 +16,7 @@
 2.1 Mikrokontrolerji
 
 # fotografija mojega mikrokontrolerja z  vrisanim pinoutom
-* tabela specifikacij ESP32
+# tabela specifikacij ESP32
 
 2.2 Merjenje hrupa
 
@@ -61,7 +61,7 @@
 
 # konceptualna shema zbirne enote
 * električna shema zbirne enote
-* diagram poteka kot prikaz delovanja
+# diagram poteka kot prikaz delovanja
 * fotografija enote
 # fotografija materiala za vse zbirne enote
 

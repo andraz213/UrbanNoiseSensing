@@ -1,0 +1,17 @@
+\begin{table}[]
+\begin{tabular}{ll}
+Ime                                 & ESP32                                                 \\
+Proizvajalec                        & Espressif Systems                                     \\
+Procesor                            & Tensilica Xtensa LX6 dvojederni + koprocesor          \\
+SRAM                                & 512 KiB                                               \\
+Možnosti povezovanja                & Wi-Fi 802.11 b/g/n, v4.2 BT + BLE                     \\
+Največja moč oddajanja              & 20 dB                                                 \\
+Periferne naprave                   & UART, I2C, I2S, SPI, CAN, SD, Ethernet, ADC, DAC, PWM \\
+Napajalna napetsot                  & 3.3V                                                  \\
+Poraba elektrike                    &                                                       \\
+\multicolumn{1}{r}{@240MHz}         & 55mA                                                  \\
+\multicolumn{1}{r}{@20MHz}          & 20mA                                                  \\
+\multicolumn{1}{r}{Light sleep}     & 0.8mA                                                 \\
+\multicolumn{1}{r}{Največja poraba} & 350mA                                                
+\end{tabular}
+\end{table}
