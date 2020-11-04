@@ -15,13 +15,13 @@
 
 2.1 Mikrokontrolerji
 
-* fotografija mojega mikrokontrolerja z  vrisanim pinoutom
+# fotografija mojega mikrokontrolerja z  vrisanim pinoutom
 * tabela specifikacij ESP32
 
 2.2 Merjenje hrupa
 
-* fotografija mojega senzorja
-* fotografija ali drugačen grafični prikaz MEMS mikrofona
+# fotografija mojega senzorja
+# fotografija ali drugačen grafični prikaz MEMS mikrofona
 * tabela specifikacij
 
 2.3 Povezljivost
@@ -43,27 +43,27 @@
 
 3.2 Arhitektura
 
-* shema celotne arhitekture
+# shema celotne arhitekture
 * shema posameznih delov z oblikami sporočil ki se prenašajo med deli
 
 
 3.3 Merilna enota
 
-* konceptualna shema merilne enote
+# konceptualna shema merilne enote
 * električna shema merilne enote
-* diagram poteka obeh načinov delovanja
+# diagram poteka obeh načinov delovanja
 * koda poti podatkov od mikrofona do dodajanja v vrsto za pošiljanje
 * fotografija enote
-* fotografija materiala za vse merilne enote
+# fotografija materiala za vse merilne enote
 
 
 3.4 Zbirna enota
 
-* konceptualna shema zbirne enote
+# konceptualna shema zbirne enote
 * električna shema zbirne enote
 * diagram poteka kot prikaz delovanja
 * fotografija enote
-* fotografija materiala za vse zbirne enote
+# fotografija materiala za vse zbirne enote
 
 
 
