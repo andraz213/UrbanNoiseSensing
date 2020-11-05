@@ -74,15 +74,15 @@
 3.6 Poraba energije 
 (nevem točno kje naj bi to bilo, amapak zaenkrat je tu)
 
-* posnetek zaslona grafa porabe energije
-* tabela z meritvami povprečne porabe energije pri različnih intervalih merjenja
+# posnetek zaslona grafa porabe energije
+# tabela z meritvami povprečne porabe energije pri različnih intervalih merjenja
 * koda kjer z dinamičnim nastavljanjem frekvence procesorjaa v merilni enoti in spanjem med merjenji dosežem nizko porabo
 
 
 3.6 Podatkovna analitika
 
 * posnetek zaslona widgeta
-* posnetek zaslona primera workflowa
+# posnetek zaslona primera workflowa
 
 
 4. Uporabniška navodila
@@ -96,10 +96,10 @@
 
 5.1 Kosilnica
 
-* posnetek zemljevida z lokacijami merilnih enot (in vrisano potjo košenja - mogoče če bom pri volji)
-* posnetek zaslona workflowa v Orange
-* posnetki zaslona grafov in prikazov na zemlejvidu
-* tabela s povprečnimi in mejnimi vrednosti senzorjev 
+# posnetek zemljevida z lokacijami merilnih enot (in vrisano potjo košenja - mogoče če bom pri volji)
+# posnetek zaslona workflowa v Orange
+# posnetki zaslona grafov in prikazov na zemlejvidu
+# tabela s povprečnimi in mejnimi vrednosti senzorjev 
 
 5.2 Glasnost na faksu
 
