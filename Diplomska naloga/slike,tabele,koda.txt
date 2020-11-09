@@ -52,7 +52,7 @@
 # konceptualna shema merilne enote
 * električna shema merilne enote
 # diagram poteka obeh načinov delovanja
-* koda poti podatkov od mikrofona do dodajanja v vrsto za pošiljanje
+# koda poti podatkov od mikrofona do dodajanja v vrsto za pošiljanje
 * fotografija enote
 # fotografija materiala za vse merilne enote
 
@@ -76,7 +76,7 @@
 
 # posnetek zaslona grafa porabe energije
 # tabela z meritvami povprečne porabe energije pri različnih intervalih merjenja
-* koda kjer z dinamičnim nastavljanjem frekvence procesorjaa v merilni enoti in spanjem med merjenji dosežem nizko porabo
+# koda kjer z dinamičnim nastavljanjem frekvence procesorjaa v merilni enoti in spanjem med merjenji dosežem nizko porabo
 
 
 3.6 Podatkovna analitika
