@@ -115,19 +115,23 @@ void sending_and_telemetry(){
 
 
 void sensing_and_data_preparation(){
+  // print current microseconds for debugging
   print_usec();
+  // turn on display for debbuging
   if(!digitalRead(27)){
     oled_on();
     draw_rect();
   }
+
   // set cpu frequency to 20mhz to lower the consumption
   setCpuFrequencyMhz(20);
-  // get the sensor data
-  sensing_start = get_secs();
 
+  // get noise data
+  sensing_start = get_secs();
   get_samples((int*)&samples_pub);
+
   oled_off();
-  Serial.println((unsigned long) sensing_start);
+
   // set cpu frequency to 240mhz for processing
   setCpuFrequencyMhz(240);
   // process the data
@@ -137,5 +141,4 @@ void sensing_and_data_preparation(){
 
   // put data into a sending queue
   add_to_sending_queue((double*) &fft_downsampled, decibels, sensing_start);
-
 }
