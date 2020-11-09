@@ -27,7 +27,7 @@
 2.3 Povezljivost
 
 # tabela specifikacij različnih možnosti za povezovanje med katerimi sem izbiral
-* grafičen prikaz dosega izbrane tehnologije
+# grafičen prikaz dosega izbrane tehnologije
 
 2.4 Programska oprema za IOT
 
