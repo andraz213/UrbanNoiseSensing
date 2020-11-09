@@ -41,11 +41,7 @@ void do_sensing() {
   sync_time_and_telemetry();
   esp_wifi_stop();
 
-
-
-
   // while true loop
-  int nummber_of_iteeer = 0;
   while (true) {
     int st = 0;
     while(get_usecs() > 900000){
@@ -56,36 +52,31 @@ void do_sensing() {
       sensing_and_data_preparation();
     }
 
-
     // sleep for a random amount of time to prevent signal congestion
     setCpuFrequencyMhz(20);
     int random_sleep = (int)get_random_sleep_time();
-
 
     if (random_sleep > 0) {
       esp_sleep_enable_timer_wakeup(random_sleep);
       esp_light_sleep_start();
     }
 
+    // set cpu frequency to 80mhz for sending
+    setCpuFrequencyMhz(80);
 
+    // send data and telemetry
     sending_and_telemetry();
 
 
-
-    // enter light sleep
     setCpuFrequencyMhz(10);
-
     long left = 0;
-
     left = get_remaining_sleep_time();
 
+    // enter light sleep
     if (left > 0) {
       esp_sleep_enable_timer_wakeup(left);
       esp_light_sleep_start();
     }
-
-
-    // every few minutes send telemetry and synchronise time
   }
 }
 
@@ -107,9 +98,6 @@ void printout_config(){
 
 
 void sending_and_telemetry(){
-
-  // set cpu frequency to 80mhz for sending
-  setCpuFrequencyMhz(80);
 
   // do the sending
   send_data();
