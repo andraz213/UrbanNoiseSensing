@@ -50,7 +50,7 @@
 3.3 Merilna enota
 
 # konceptualna shema merilne enote
-* električna shema merilne enote
+# električna shema merilne enote
 # diagram poteka obeh načinov delovanja
 # koda poti podatkov od mikrofona do dodajanja v vrsto za pošiljanje
 * fotografija enote
@@ -60,7 +60,7 @@
 3.4 Zbirna enota
 
 # konceptualna shema zbirne enote
-* električna shema zbirne enote
+# električna shema zbirne enote
 # diagram poteka kot prikaz delovanja
 * fotografija enote
 # fotografija materiala za vse zbirne enote
