@@ -381,12 +381,33 @@ const deleteDeployment = async (req, res) => {
     try {
         let deployment = await deploymentModel.findById(id).exec();
         let res = "";
-        if(await updateGateways(deployment, res) === 0) {
-            if (await updateSensors(deployment, res) === 0){
-                await dataModel.deleteMany({deployment: id}).exec();
-                await deploymentModel.deleteMany({_id: id}).exec();
+
+        // posodobi senzorje
+        for(let sn of deployment.sensors){
+            try {
+                await sensorModel.updateOne({_id: sn.sensor_id}, {
+                    current_deployment: null,
+                    current_location: [],
+                    last_data: null
+                });
+            } catch (e){
+                return res.status(400).json(err);
             }
         }
+
+        // posodobi gatewaye
+        for(let gw of deployment.gateways){
+            try {
+                await gatewayModel.updateOne({_id: gw.sensor_id}, {current_deployment: null, current_location: [], wifi_credentials: []});
+            } catch (e) {
+                return res.status(400).json(err);
+            }
+        }
+
+        
+                await dataModel.deleteMany({deployment: id}).exec();
+                await deploymentModel.deleteMany({_id: id}).exec();
+
     }
     catch (err){
         return res.status(400).json(err);
