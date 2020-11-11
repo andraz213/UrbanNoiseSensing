@@ -98,7 +98,9 @@ const postTelemetryGateway = (req, res) => {
 
 const updateGateway = (req, res) => {
     let id = req.params.gateway_id;
+    console.log(req.body);
     gatewayModel.updateOne({_id: id}, req.body).then(res => {
+        console.log("UPDATED");
         return res.status(200).json();
     })
         .catch(err => {
