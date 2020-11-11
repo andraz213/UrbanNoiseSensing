@@ -96,10 +96,21 @@ Posts gateway telemetry to the server
 const postTelemetryGateway = (req, res) => {
 }
 
+const updateGateway = (req, res) => {
+    let id = req.params.gateway_id;
+    gatewayModel.updateOne({_id: id}, req.body).then(res => {
+        return res.status(200).json();
+    })
+        .catch(err => {
+            return res.status(400).json(err);
+        });
+}
+
 
 module.exports = {
     getAllGateway,
     getAllByIdGateway,
     postGateway,
-    postTelemetryGateway
+    postTelemetryGateway,
+    updateGateway
 };

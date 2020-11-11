@@ -74,6 +74,7 @@ router.post('/gateway', gatewayController.postGateway);
 
 router.post('/gateway/telemetry/:gateway_id', gatewayController.postTelemetryGateway);
 
+router.put('gateway/:gateway_id', gatewayController.updateGateway);
 
 /*
 GET /api/sensor
