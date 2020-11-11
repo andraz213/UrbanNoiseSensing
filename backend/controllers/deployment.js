@@ -404,9 +404,11 @@ const deleteDeployment = async (req, res) => {
             }
         }
 
-        
+
                 await dataModel.deleteMany({deployment: id}).exec();
                 await deploymentModel.deleteMany({_id: id}).exec();
+
+                res.status(200).json();
 
     }
     catch (err){
