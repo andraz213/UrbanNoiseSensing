@@ -376,6 +376,21 @@ const getIntervalByDeployment = async (req, res) => {
 }
 
 
+const deleteDeployment = async (req, res) => {
+    let id = await req.params.deployment_id;
+    try {
+
+        await dataModel.deleteMany({deployment: id}).exec();
+        await deploymentModel.deleteMany({_id: id}).exec();
+
+    }
+    catch (err){
+        return res.status(400).json(err);
+    }
+
+
+}
+
 
 
 module.exports = {
@@ -386,5 +401,6 @@ module.exports = {
     deployDeployment,
     finishDeployment,
     updateDeploymentInterval,
-    getIntervalByDeployment
+    getIntervalByDeployment,
+    deleteDeployment
 };

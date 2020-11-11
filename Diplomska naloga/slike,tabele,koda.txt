@@ -44,7 +44,6 @@
 3.2 Arhitektura
 
 # shema celotne arhitekture
-* shema posameznih delov z oblikami sporočil ki se prenašajo med deli
 
 
 3.3 Merilna enota

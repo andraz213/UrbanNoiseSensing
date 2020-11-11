@@ -31,6 +31,8 @@ router.get('/deployment/:deployment_id', deploymentController.getDeploymentById)
 
 router.get('/deployment/interval/:deployment_id', deploymentController.getIntervalByDeployment);
 
+router.delete('/deployment/:deployment_id', deploymentController.deleteDeployment);
+
 
 
 /*
