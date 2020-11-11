@@ -379,10 +379,14 @@ const getIntervalByDeployment = async (req, res) => {
 const deleteDeployment = async (req, res) => {
     let id = await req.params.deployment_id;
     try {
-
-        await dataModel.deleteMany({deployment: id}).exec();
-        await deploymentModel.deleteMany({_id: id}).exec();
-
+        let deployment = await deploymentModel.findById(id).exec();
+        let res = "";
+        if(await updateGateways(deployment, res) === 0) {
+            if (await updateSensors(deployment, res) === 0){
+                await dataModel.deleteMany({deployment: id}).exec();
+                await deploymentModel.deleteMany({_id: id}).exec();
+            }
+        }
     }
     catch (err){
         return res.status(400).json(err);
