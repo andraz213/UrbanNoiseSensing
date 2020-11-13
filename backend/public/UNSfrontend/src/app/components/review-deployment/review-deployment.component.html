@@ -60,7 +60,7 @@
 </ul>
 </div>
 
-
+<div *ngIf="deployment">
 <div *ngIf="openTab == 'sensors'">
   <app-deployment-sensor [deployment]="deployment" [id]="id"></app-deployment-sensor>
 </div>
@@ -72,5 +72,6 @@
 
 <div *ngIf="openTab == 'overview'">
   <app-deployment-overview [deployment]="deployment" [id]="id"></app-deployment-overview>
+</div>
 </div>
 

@@ -34,6 +34,8 @@ export class EditDeploymentComponent implements OnInit {
   private id: string;
   modalRef: BsModalRef;
 
+  public wifis = {"ssid": "", "password": ""};
+
   public wifiCredentials: { ssid: string, password: string}[];
 
   ngOnInit() {
@@ -136,6 +138,11 @@ export class EditDeploymentComponent implements OnInit {
       }
     }
 
+    let jsn_wifi = {wifi_credentials: []};
+
+    jsn_wifi["wifi_credentials"] = [this.wifis["ssid"], this.wifis["password"]];
+    console.log(JSON.stringify((jsn_wifi)));
+
     for(let gw of this.gateways){
       if(gw.chosen == true){
         let data_dep = new DataDeployment();
@@ -144,6 +151,7 @@ export class EditDeploymentComponent implements OnInit {
         data_dep.mac = gw.gateway.mac;
         this.deployment.gateways.push(data_dep);
       }
+      this.gatewayService.updateGateway(gw.gateway._id, JSON.stringify(jsn_wifi));
     }
 
     this.deploymentService.updateDeployment(this.deployment._id, this.deployment).then(res => {

@@ -14,7 +14,7 @@ bool post_telemetry(const char* serverName, String version, double bat_voltage) 
   uint8_t mac[6];
   esp_wifi_get_mac(WIFI_IF_STA, mac);
   String url = String(serverName) + String("/api/sensor/telemetry/");
-  String body = "[{\"mac\":[" + String(mac[0]) + "," + String(mac[1]) + "," + String(mac[2]) + "," + String(mac[3]) + "," + String(mac[4]) + "," + String(mac[5]) + "], \"voltage\":" + String(bat_voltage) + "}]";
+  String body = "[{\"mac\":[" + String(mac[0]) + "," + String(mac[1]) + "," + String(mac[2]) + "," + String(mac[3]) + "," + String(mac[4]) + "," + String(mac[5]) + "], \"battery_voltage\":" + String(bat_voltage) + "}]";
   Serial.println(url);
   HTTPClient http;
   http.begin(url);

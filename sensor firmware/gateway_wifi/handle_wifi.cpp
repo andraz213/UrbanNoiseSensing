@@ -45,6 +45,8 @@ using namespace websockets;
 WebsocketsClient client;
 HTTPClient httpClient;
 
+uint8_t latest_rssi = 0;
+
 
 /*
 void init_wifi() {
@@ -82,7 +84,7 @@ void init_wifi() {
 
 }*/
 
-
+/*
 void init_wifi() {
   if (WiFi.status() != WL_CONNECTED) {
     //wifiMulti.cleanAPlist();
@@ -106,6 +108,68 @@ void init_wifi() {
   }
 
 
+}
+*/
+
+
+// s skeniranjem pa tkko no
+
+void init_wifi() {
+  if (WiFi.status() != WL_CONNECTED) {
+    print_text(String("Scanning for"), String("WiFi networks"), "", "");
+    WiFi.mode(WIFI_STA);
+    int a = esp_wifi_set_protocol( WIFI_IF_STA, WIFI_PROTOCOL_11B | WIFI_PROTOCOL_11G | WIFI_PROTOCOL_11N );
+
+    int n = WiFi.scanNetworks();
+
+    for(int i = 0; i<n; i++){
+      String current = WiFi.SSID(i);
+      if(current.equals(ssid)){
+        print_text(String("Connecting to "), String(current), "", "");
+        delay(10);
+        WiFi.begin(String(ssid).c_str(), String(password).c_str());
+        if(handle_connecting(current)){
+          return;
+        }
+
+      }
+
+      if(current.equals(ssid2)){
+        print_text(String("Connecting to "), String(current), "", "");
+        delay(10);
+        WiFi.begin(String(ssid2).c_str(), String(password2).c_str());
+        if(handle_connecting(current)){
+          return;
+        }
+      }
+    }
+  }
+}
+
+
+
+
+bool handle_connecting(String current){
+
+  long start_wifi_connect = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - start_wifi_connect < 20000) {
+    delay(250);
+  }
+
+  if(WiFi.status() != WL_CONNECTED){
+    print_text(String("Failed!"), String(current), "", "");
+    delay(1000);
+  }else{
+
+    init_time();
+
+    print_text(String("Success!"), String(current), "", "");
+
+    delay(1000);
+    return true;
+
+  }
+  return false;
 }
 
 
@@ -142,9 +206,10 @@ client.onMessage([&](WebsocketsMessage message){
       Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
       prev_ram = millis();
     }
-    init_wifi();
-
-    get_wifi_config();
+    //init_wifi();
+  if(WiFi.status() == WL_CONNECTED){
+    latest_rssi = WiFi.RSSI();
+  get_wifi_config();
 
   vTaskDelay(10);
   prepare_jsn_data();
@@ -173,6 +238,9 @@ client.onMessage([&](WebsocketsMessage message){
   }
   //delay(5);
   get_measurement_interval_config();
+}
+
+  vTaskDelay(10);
 
 
   }
@@ -485,4 +553,8 @@ void get_measurement_interval_config(){
       http.end();
     }
   }
+}
+
+uint8_t get_rssi(){
+  return latest_rssi;
 }

@@ -2,6 +2,7 @@
 #include "handle_oled.h"
 #include "handle_wifi.h"
 #include "handle_serial.h"
+#include "handle_json.h"
 
 long last_wifi = 0;
 
@@ -58,7 +59,8 @@ void loop() {
   int rtt_num = get_sent_in_last_second();
   if(millis() - prev_display > 333){
     prev_display = millis();
-    print_text(String("Previous second:"), String(rtt_num), String("Average RTT: "), String(rtt_avg));
+    String name = get_config_name();
+    print_text(name, String("Previous second: " + String(rtt_num)), String(String("Alive ") + String((int(millis()/1000))) + String("s")), String(String("Signal strength: ") + String((int)get_rssi()-255)));
     delay(10);
   }
 

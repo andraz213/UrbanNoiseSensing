@@ -17,5 +17,7 @@ int get_sent_in_last_second();
 void prepare_jsn_data();
 void send_telemetry();
 void get_measurement_interval_config();
+bool handle_connecting(String current);
+uint8_t get_rssi();
 
 #endif

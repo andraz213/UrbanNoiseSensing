@@ -32,12 +32,12 @@ export class GatewayService {
       .catch(this.obdelajNapako);
   }
 
-  public updateGateway(id: string, body: string): Promise<Gateway[]>{
-    const url = `${this.apiUrl}/sensor/` + id;
+  public updateGateway(id: string, body: string): Promise<any>{
+    const url = `${this.apiUrl}/gateway/` + id;
     return this.http
       .put(url, body)
       .toPromise()
-      .then(answer => answer as Gateway[])
+      .then(answer => answer as any)
       .catch(this.obdelajNapako);
   }
 

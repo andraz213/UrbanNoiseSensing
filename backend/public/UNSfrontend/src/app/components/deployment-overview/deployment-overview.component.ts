@@ -19,15 +19,42 @@ export class DeploymentOverviewComponent implements OnInit {
   @Input() deployment: Deployment;
   modalRef: BsModalRef;
 
+  public depDTO: Deployment;
+
 
 
 
   ngOnInit() {
+    this.depDTO = this.deployment;
+    console.log(this.depDTO.measurement_interval);
 
   }
 
+  public saveChangesForm(bad_interval: TemplateRef<any>, updated_interval: TemplateRef<any>) {
+    if(this.depDTO.measurement_interval < 1){
+      this.modalRef = this.modalService.show(bad_interval, {class: 'modal-sm'});
+    }else {
+      this.deploymentService.updateDeploymentInterval(this.id, this.depDTO.measurement_interval).then(res => {
+        console.log(res);
+        this.deployment = res;
+        this.modalRef = this.modalService.show(updated_interval, {class: 'modal-sm'});
+      });
+    }
+
+  }
+
+  public deleteDeployment(){
+    this.deploymentService.deleteDeployment(this.deployment._id).then(res =>{
+      this.decline();
+      console.log(res);
+      this.router.navigateByUrl(`deployments`);
+
+    });
+    this.decline();
+    this.router.navigateByUrl(`deployments`);
 
 
+  }
 
   public finishDeployment(){
     this.deploymentService.finishDeployment(this.deployment._id).then((data) =>{

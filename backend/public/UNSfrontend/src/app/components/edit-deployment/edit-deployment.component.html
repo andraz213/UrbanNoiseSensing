@@ -104,27 +104,23 @@
       </div>
 
       <p>Gateway WiFi credentials</p>
-      <small>Gateway will connect to wifi with the best signal.</small>
-      <br>
-      <button type="button" class="btn btn-outline-primary" (click)="addWifiCredentials()">+</button>
-      <div class="row">
-        <div *ngFor="let cred of wifiCredentials">
-          <div class="row wifi-div ml-3 mt-3">
-            <div class="col-12">
-              <small>ssid</small>
-              <p class="wifi-spec">placeholder{{cred.ssid}}</p>
-            </div>
-            <div class="col-12">
-              <small>pass</small>
-              <p class="wifi-spec">placeholder{{cred.password}}</p>
-            </div>
-            <div class="ml-2 mb-2">
-              <button type="button" class="btn btn-outline-danger" (click)="addWifiCredentials()">-</button>
-            </div>
+
+        <form (submit)="saveChangesForm()">
+
+          <div class="form-group">
+            <label for="ssid">WiFi SSID</label>
+            <input [(ngModel)]="wifis.ssid" name="name" type="text" class="form-control" id="ssid"
+                   placeholder="Enter WiFi SSID">
           </div>
 
-        </div>
-      </div>
+
+          <div class="form-group">
+            <label for="deploymentDescription">WiFi password</label>
+            <input [(ngModel)]="wifis.password" name="deploymentDescription" type="textarea" class="form-control"
+                   id="password" placeholder="Enter WiFi password">
+            </div>
+        </form>
+
 
       <div *ngIf="gateways.length == 0">
         <p>No free gateways currently availale.</p>

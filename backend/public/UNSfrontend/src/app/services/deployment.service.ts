@@ -70,6 +70,27 @@ export class DeploymentService {
   }
 
 
+  public updateDeploymentInterval(id: string, interval:number): Promise<Deployment>{
+    const url = `${this.apiUrl}/deployment/interval/` + id + '/' + interval;
+    return this.http
+      .get(url)
+      .toPromise()
+      .then(answer => answer as Deployment)
+      .catch(this.obdelajNapako);
+  }
+
+
+  public deleteDeployment(id:string): Promise<any>{
+    const url = `${this.apiUrl}/deployment/` + id;
+    return this.http
+      .delete(url)
+      .toPromise()
+      .then(answer => answer as any)
+      .catch(this.obdelajNapako);
+  }
+
+
+
   private obdelajNapako(napaka: any): Promise<any> {
     console.error('Error ', napaka.error.sporočilo || napaka.error.errmsg || napaka);
     return Promise.reject(napaka.error.sporočilo || napaka.error.errmsg || napaka);

@@ -13,4 +13,5 @@ export class Deployment{
     finish: Date;
     measurement_num: number;
     tags: [string];
+    measurement_interval: number;
 }

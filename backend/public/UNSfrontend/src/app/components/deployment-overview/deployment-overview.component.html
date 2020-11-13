@@ -13,7 +13,20 @@
 </div>
 
 
+<div class="deployment-div m-3">
+  <div class="m-4">
+    <h4>Sensing interval</h4>
 
+    <form (submit)="saveChangesForm(bad_interval, updated_interval)">
+      <div class="form-group">
+        <label for="measurementInterval">Measurement interval</label>
+        <input [(ngModel)]="depDTO.measurement_interval" name="measurement_interval" type="number" class="form-control" id="measurementInterval"
+               placeholder="Enter deployment name">
+      </div>
+      <button type="submit" class="btn btn-primary mr-4">Save Changes</button>
+    </form>
+  </div>
+</div>
 
 
 
@@ -24,10 +37,39 @@
   </div>
 </div>
 
+<div class="deployment-div m-3">
+  <div class="m-4">
+    <h4>Delete deployment and all data</h4>
+    <button type="button" (click)="openModal(deletion)" class="btn btn-outline-danger m-2">DELETE DEPLOYMENT</button>
+  </div>
+</div>
+
 <ng-template #confirm>
   <div class="modal-body text-center bg-custom">
-    <p>You are about to deploy this deployment.</p>
+    <p>You are about to finish this deployment.</p>
     <button type="button" class="btn btn-outline-primary m-1 " (click)="finishDeployment()">Finish</button>
     <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Not yet</button>
+  </div>
+</ng-template>
+
+<ng-template #deletion>
+  <div class="modal-body text-center bg-custom">
+    <p>You are about to delete this deployment.</p>
+    <button type="button" class="btn btn-outline-primary m-1 " (click)="deleteDeployment()">DELETE</button>
+    <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Not yet</button>
+  </div>
+</ng-template>
+
+<ng-template #bad_interval>
+  <div class="modal-body text-center bg-custom">
+    <p>Sensing interval must be greater or equal to 1s.</p>
+    <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Close</button>
+  </div>
+</ng-template>
+
+<ng-template #updated_interval>
+  <div class="modal-body text-center bg-custom">
+    <p>Sensing interval was updated.</p>
+    <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Close</button>
   </div>
 </ng-template>
