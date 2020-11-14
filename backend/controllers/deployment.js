@@ -385,7 +385,7 @@ const deleteDeployment = async (req, res) => {
         // posodobi senzorje
         for(let sn of deployment.sensors){
             try {
-                await sensorModel.updateOne({_id: sn.sensor_id}, {
+                await sensorModel.updateOne({_id: sn.sensor_id, current_deployment: id}, {
                     current_deployment: null,
                     current_location: [],
                     last_data: null
@@ -398,7 +398,7 @@ const deleteDeployment = async (req, res) => {
         // posodobi gatewaye
         for(let gw of deployment.gateways){
             try {
-                await gatewayModel.updateOne({_id: gw.sensor_id}, {current_deployment: null, current_location: [], wifi_credentials: []});
+                await gatewayModel.updateOne({_id: gw.sensor_id, current_deployment: id}, {current_deployment: null, current_location: [], wifi_credentials: []});
             } catch (e) {
                 return res.status(400).json(err);
             }

@@ -1,1 +1,17 @@
-<p>sensor-map works!</p>
+<div *ngIf="sensors" class="my-3">
+  <agm-map
+    [latitude]="longitude"
+    [longitude]="latitude"
+    [zoom]="15"
+    [mapTypeId]='mapType'
+  >
+    <agm-marker
+      *ngFor="let sn of sensors"
+      [latitude]="sn.sensor.location[0]"
+      [longitude]="sn.sensor.location[1]"
+      [opacity]="sn.alpha"
+      [markerDraggable]="false"
+    >
+    </agm-marker>
+  </agm-map>
+</div>

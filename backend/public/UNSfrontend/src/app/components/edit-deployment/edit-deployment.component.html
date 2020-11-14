@@ -134,6 +134,8 @@
     </div>
   </div>
 
+<app-delete-deployment [deployment]="deployment" [id]="id"></app-delete-deployment>
+
   <ng-template #not_ok>
     <div class="modal-body text-center bg-custom">
       <div *ngFor="let err of errorMessages">

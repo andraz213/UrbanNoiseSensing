@@ -9,6 +9,7 @@ import {GatewaysComponent} from "../app/components/gateways/gateways.component";
 import {CreateDeploymentComponent} from "./components/create-deployment/create-deployment.component";
 import {EditDeploymentComponent} from "./components/edit-deployment/edit-deployment.component";
 import {ReviewDeploymentComponent} from "./components/review-deployment/review-deployment.component";
+import {FinishedDeploymentComponent} from "./components/finished-deployment/finished-deployment.component";
 
 
 const routes: Routes = [
@@ -39,6 +40,10 @@ const routes: Routes = [
       {
         path: 'reviewdeployment/:id',
         component: ReviewDeploymentComponent
+      },
+      {
+        path: 'finisheddeployment/:id',
+        component: FinishedDeploymentComponent
       }
 
     ]

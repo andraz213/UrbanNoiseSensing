@@ -43,18 +43,7 @@ export class DeploymentOverviewComponent implements OnInit {
 
   }
 
-  public deleteDeployment(){
-    this.deploymentService.deleteDeployment(this.deployment._id).then(res =>{
-      this.decline();
-      console.log(res);
-      this.router.navigateByUrl(`deployments`);
 
-    });
-    this.decline();
-    this.router.navigateByUrl(`deployments`);
-
-
-  }
 
   public finishDeployment(){
     this.deploymentService.finishDeployment(this.deployment._id).then((data) =>{

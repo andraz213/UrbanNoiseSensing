@@ -28,7 +28,7 @@
   </div>
 </div>
 
-
+<app-delete-deployment [deployment]="deployment" [id]="id"></app-delete-deployment>
 
 <div class="deployment-div m-3">
   <div class="m-4">
@@ -37,12 +37,7 @@
   </div>
 </div>
 
-<div class="deployment-div m-3">
-  <div class="m-4">
-    <h4>Delete deployment and all data</h4>
-    <button type="button" (click)="openModal(deletion)" class="btn btn-outline-danger m-2">DELETE DEPLOYMENT</button>
-  </div>
-</div>
+
 
 <ng-template #confirm>
   <div class="modal-body text-center bg-custom">
@@ -52,13 +47,7 @@
   </div>
 </ng-template>
 
-<ng-template #deletion>
-  <div class="modal-body text-center bg-custom">
-    <p>You are about to delete this deployment.</p>
-    <button type="button" class="btn btn-outline-primary m-1 " (click)="deleteDeployment()">DELETE</button>
-    <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Not yet</button>
-  </div>
-</ng-template>
+
 
 <ng-template #bad_interval>
   <div class="modal-body text-center bg-custom">

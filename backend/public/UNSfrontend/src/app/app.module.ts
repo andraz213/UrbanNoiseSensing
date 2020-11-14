@@ -24,6 +24,10 @@ import { DeploymentGatewayComponent } from './components/deployment-gateway/depl
 import { DeploymentDataComponent } from './components/deployment-data/deployment-data.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { AverageChartComponent } from './components/average-chart/average-chart.component';
+import { DeleteDeploymentComponent } from './components/delete-deployment/delete-deployment.component';
+import { FinishedDeploymentComponent } from './components/finished-deployment/finished-deployment.component';
+import { DeploymentStatisticsComponent } from './components/deployment-statistics/deployment-statistics.component';
+import { SenosrMapComponent } from './components/senosr-map/senosr-map.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +45,11 @@ import { AverageChartComponent } from './components/average-chart/average-chart.
     DeploymentSensorComponent,
     DeploymentGatewayComponent,
     DeploymentDataComponent,
-    AverageChartComponent
+    AverageChartComponent,
+    DeleteDeploymentComponent,
+    FinishedDeploymentComponent,
+    DeploymentStatisticsComponent,
+    SenosrMapComponent
   ],
   imports: [
     BrowserModule,

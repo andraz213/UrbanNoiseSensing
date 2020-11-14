@@ -1,0 +1,35 @@
+
+
+
+
+
+<div *ngIf="deployment">
+  <h2 class="mt-5 ml-5 mb-3">{{deployment.name}}</h2>
+  <p class="ml-5 mb-5">{{deployment.description}}</p>
+
+</div>
+
+
+<div *ngIf="deployment">
+<app-sensor-map [deployment]="deployment" [id]="id"></app-sensor-map>
+</div>
+
+
+
+<div class="row">
+  <div class="col-12">
+
+    <div class="deployment-div m-3 pr-5">
+      <app-average-chart [id]="id"></app-average-chart>
+    </div>
+
+  </div>
+
+</div>
+
+
+
+
+
+
+<app-delete-deployment [deployment]="deployment" [id]="id"></app-delete-deployment>

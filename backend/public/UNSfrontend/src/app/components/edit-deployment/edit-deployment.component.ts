@@ -31,7 +31,7 @@ export class EditDeploymentComponent implements OnInit {
   public sensors: { sensor: Sensor, chosen: boolean, latitude: number, longitude: number, alpha: number }[];
   public gateways: { gateway: Gateway, chosen: boolean,}[];
   public deployment: Deployment;
-  private id: string;
+  public id: string;
   modalRef: BsModalRef;
 
   public wifis = {"ssid": "", "password": ""};
