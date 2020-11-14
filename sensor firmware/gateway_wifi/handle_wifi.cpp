@@ -49,7 +49,7 @@ uint8_t latest_rssi = 0;
 
 
 /*
-void init_wifi() {
+  void init_wifi() {
   if (WiFi.status() != WL_CONNECTED) {
     print_text(String("Connecting to "), String(ssid), "", "");
     Serial.println("wifi");
@@ -67,25 +67,25 @@ void init_wifi() {
         /*esp_wifi_disconnect();
         esp_wifi_stop();
         esp_wifi_deinit();*/
-        /*
-        WiFi.disconnect(true);
-        print_text(String("Failed!"), String(ssid), "", "");
-    } else {
-      init_time();
+/*
+  WiFi.disconnect(true);
+  print_text(String("Failed!"), String(ssid), "", "");
+  } else {
+  init_time();
 
-      print_text(String("Success!"), String(ssid), "", "");
-    }
-
-
-
-    delay(1000);
+  print_text(String("Success!"), String(ssid), "", "");
   }
 
 
-}*/
+
+  delay(1000);
+  }
+
+
+  }*/
 
 /*
-void init_wifi() {
+  void init_wifi() {
   if (WiFi.status() != WL_CONNECTED) {
     //wifiMulti.cleanAPlist();
     wifiMulti.addAP(ssid, password);
@@ -108,7 +108,7 @@ void init_wifi() {
   }
 
 
-}
+  }
 */
 
 
@@ -123,27 +123,27 @@ void init_wifi() {
     int n = WiFi.scanNetworks();
     Serial.println(n);
 
-    for(int i = 0; i<n; i++){
+    for (int i = 0; i < n; i++) {
       String current = WiFi.SSID(i);
       Serial.println(current);
 
       String password_got = check_wifi_credentials(current);
       Serial.println(current);
-      if(password_got.length() > 0){
+      if (password_got.length() > 0) {
         print_text(String("Connecting to "), String(current), "", "");
         delay(10);
         WiFi.begin(String(current).c_str(), String(password_got).c_str());
-        if(handle_connecting(current)){
+        if (handle_connecting(current)) {
           return;
         }
       }
 
 
-      if(current.equals(ssid)){
+      if (current.equals(ssid)) {
         print_text(String("Connecting to "), String(current), "", "");
         delay(10);
         WiFi.begin(String(ssid).c_str(), String(password).c_str());
-        if(handle_connecting(current)){
+        if (handle_connecting(current)) {
           return;
         }
 
@@ -151,11 +151,11 @@ void init_wifi() {
 
 
 
-      if(current.equals(ssid2)){
+      if (current.equals(ssid2)) {
         print_text(String("Connecting to "), String(current), "", "");
         delay(10);
         WiFi.begin(String(ssid2).c_str(), String(password2).c_str());
-        if(handle_connecting(current)){
+        if (handle_connecting(current)) {
           return;
         }
       }
@@ -171,17 +171,17 @@ void init_wifi() {
 
 
 
-bool handle_connecting(String current){
+bool handle_connecting(String current) {
 
   long start_wifi_connect = millis();
   while (WiFi.status() != WL_CONNECTED && millis() - start_wifi_connect < 20000) {
     delay(250);
   }
 
-  if(WiFi.status() != WL_CONNECTED){
+  if (WiFi.status() != WL_CONNECTED) {
     print_text(String("Failed!"), String(current), "", "");
     delay(1000);
-  }else{
+  } else {
 
     init_time();
 
@@ -199,7 +199,7 @@ bool handle_connecting(String current){
 
 void TaskWifi( void *pvParameters ) {
 
-  while(WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED) {
     vTaskDelay(10);
   }
   get_wifi_config();
@@ -207,68 +207,68 @@ void TaskWifi( void *pvParameters ) {
   // bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
   bool connected = httpClient.begin(serverName);
 
-  if(connected) {
+  if (connected) {
     Serial.println("Connected!");
     //client.send("Hello Server");
   } else {
     Serial.println("Not Connected!");
   }
 
-// run callback when messages are received
-client.onMessage([&](WebsocketsMessage message){
+  // run callback when messages are received
+  client.onMessage([&](WebsocketsMessage message) {
     got_reply = true;
-});
+  });
 
 
   for (;;) {
     Serial.println("-----------------------taskWifi");
 
-    if(heap_caps_get_free_size(MALLOC_CAP_8BIT) < 50000 &&
+    if (heap_caps_get_free_size(MALLOC_CAP_8BIT) < 50000 &&
         jsn_body.equals("") &&
         jsn_telemetry.equals("") &&
-        get_first() == 0){
-          //ESP.restart();
+        get_first() == 0) {
+      //ESP.restart();
 
-            Serial.println("FAKKKKKKKK");
+      Serial.println("FAKKKKKKKK");
 
-        }
+    }
 
     //init_wifi();
-  if(WiFi.status() == WL_CONNECTED){
+    if (WiFi.status() == WL_CONNECTED) {
 
-  latest_rssi = WiFi.RSSI();
-  get_wifi_config();
-  vTaskDelay(10);
-  prepare_jsn_data();
-  if(!jsn_body){
-    jsn_body = "";
-  }
-  if(!jsn_telemetry){
-    jsn_telemetry = "";
-  }
+      latest_rssi = WiFi.RSSI();
+      get_wifi_config();
+      vTaskDelay(10);
+      prepare_jsn_data();
+      if (!jsn_body) {
+        jsn_body = "";
+      }
+      if (!jsn_telemetry) {
+        jsn_telemetry = "";
+      }
 
 
-  if(jsn_body && jsn_body.length() != 0 && WiFi.status() == WL_CONNECTED){
-    send_data();
-    data_tries++;
-    if(data_tries > 10){
-      jsn_body = "";
+      if (jsn_body && jsn_body.length() != 0 && WiFi.status() == WL_CONNECTED) {
+        send_data();
+        data_tries++;
+        if (data_tries > 10) {
+          jsn_body = "";
+        }
+      }
+
+      if (jsn_telemetry && jsn_telemetry.length() != 0 && WiFi.status() == WL_CONNECTED) {
+        send_telemetry();
+        telemetry_tries++;
+        if (telemetry_tries > 10) {
+          jsn_telemetry = "";
+        }
+      }
+
+      //delay(5);
+      get_measurement_interval_config();
     }
-  }
 
-  if(jsn_telemetry && jsn_telemetry.length() != 0 && WiFi.status() == WL_CONNECTED){
-    send_telemetry();
-    telemetry_tries++;
-    if(telemetry_tries > 10){
-      jsn_telemetry = "";
-    }
-  }
-
-  //delay(5);
-  get_measurement_interval_config();
-}
-
-  vTaskDelay(10);
+    vTaskDelay(10);
 
 
   }
@@ -281,16 +281,16 @@ client.onMessage([&](WebsocketsMessage message){
 
 long prev_config = 0;
 
-void get_wifi_config(){
+void get_wifi_config() {
 
-  if(millis() - prev_config < 10000){
+  if (millis() - prev_config < 10000) {
     return;
   }
   prev_config = millis();
 
   uint8_t mac [6];
 
-  if(get_espnow_mac(mac)){
+  if (get_espnow_mac(mac)) {
     String body = "{\"mac\":[" + String(mac[0]) + "," + String(mac[1]) + "," + String(mac[2]) + "," + String(mac[3]) + "," + String(mac[4]) + "," + String(mac[5]) + "]}";
 
     String url = String(serverName) + String("/api/gateway/");
@@ -311,19 +311,19 @@ void get_wifi_config(){
     http.end();
     add_rtt(millis() - start);
     /*
-    if (httpResponseCode == 200) {
+      if (httpResponseCode == 200) {
       return true;
-    }
-    return false;
+      }
+      return false;
 
-  }*/
+      }*/
+  }
 }
-}
 
 
 
 
-void send_data(){
+void send_data() {
   long start = millis();
   String url = serverName;
   url += String("/api/sensor/data");
@@ -337,138 +337,138 @@ void send_data(){
   http.end();
   add_rtt(millis() - start);
 
-  if(httpResponseCode == 200){
+  if (httpResponseCode == 200) {
     jsn_body = "";
   }
 
   got_reply = true;
 
 
-          long RTT = millis() - sent;
-          Serial.print("               RTT time for http: ");
-          Serial.println(RTT);
-          average_RTT[average_RTT_index][0] = millis();
-          average_RTT[average_RTT_index][1] = RTT;
-          average_RTT_index ++;
-          average_RTT_index %= 50;
+  long RTT = millis() - sent;
+  Serial.print("               RTT time for http: ");
+  Serial.println(RTT);
+  average_RTT[average_RTT_index][0] = millis();
+  average_RTT[average_RTT_index][1] = RTT;
+  average_RTT_index ++;
+  average_RTT_index %= 50;
 
-    }
-
-
-
-    void send_telemetry(){
-      long start = millis();
-      String url = serverName;
-      url += String("/api/sensor/telemetry");
-      Serial.println(url);
-      HTTPClient http;
-      http.begin(url);
-      http.addHeader("Content-Type", "application/json");
-      got_reply = false;
-      long sent = millis();
-      int httpResponseCode = http.POST(jsn_telemetry);
-      http.end();
-      add_rtt(millis() - start);
-
-      if(httpResponseCode == 200){
-        jsn_telemetry = "";
-      }
-
-      got_reply = true;
-
-
-              long RTT = millis() - sent;
-              Serial.print("               RTT time for http: ");
-              Serial.println(RTT);
-              average_RTT[average_RTT_index][0] = millis();
-              average_RTT[average_RTT_index][1] = RTT;
-              average_RTT_index ++;
-              average_RTT_index %= 50;
-
-        }
+}
 
 
 
-void send_data_websocket(){
+void send_telemetry() {
+  long start = millis();
+  String url = serverName;
+  url += String("/api/sensor/telemetry");
+  Serial.println(url);
+  HTTPClient http;
+  http.begin(url);
+  http.addHeader("Content-Type", "application/json");
+  got_reply = false;
+  long sent = millis();
+  int httpResponseCode = http.POST(jsn_telemetry);
+  http.end();
+  add_rtt(millis() - start);
+
+  if (httpResponseCode == 200) {
+    jsn_telemetry = "";
+  }
+
+  got_reply = true;
+
+
+  long RTT = millis() - sent;
+  Serial.print("               RTT time for http: ");
+  Serial.println(RTT);
+  average_RTT[average_RTT_index][0] = millis();
+  average_RTT[average_RTT_index][1] = RTT;
+  average_RTT_index ++;
+  average_RTT_index %= 50;
+
+}
+
+
+
+void send_data_websocket() {
 
   StaticJsonDocument<500> doc;
   message_queue * message = get_first();
 
-  if((long)message != 0){
-    if(message -> type == (int)SENSOR_READING){
-        doc["type"] = "SENSOR_READING";
-        JsonArray mac = doc.createNestedArray("mac");
-        for(int i = 0; i<6; i++){
-          mac.add(message->mac[i]);
+  if ((long)message != 0) {
+    if (message -> type == (int)SENSOR_READING) {
+      doc["type"] = "SENSOR_READING";
+      JsonArray mac = doc.createNestedArray("mac");
+      for (int i = 0; i < 6; i++) {
+        mac.add(message->mac[i]);
+      }
+      sending_list * data = (sending_list *)message->message;
+      doc["fft_range"] = data->fft_range;
+      doc["decibels"] = data->decibels;
+      doc["timestamp"] = data->timestamp;
+      JsonArray fft_values = doc.createNestedArray("fft_values");
+      for (int i = 0; i < 16; i++) {
+        fft_values.add(data->fft_values[i]);
+      }
+
+      String jsn;
+      serializeJson(doc, jsn);
+      got_reply = false;
+      client.send(jsn);
+      long sent = millis();
+      while (got_reply != true && millis() - sent < 1) {
+        if (client.available()) {
+          client.poll();
         }
-        sending_list * data = (sending_list *)message->message;
-        doc["fft_range"] = data->fft_range;
-        doc["decibels"] = data->decibels;
-        doc["timestamp"] = data->timestamp;
-        JsonArray fft_values = doc.createNestedArray("fft_values");
-        for(int i = 0; i<16; i++){
-          fft_values.add(data->fft_values[i]);
-        }
+      }
 
-        String jsn;
-        serializeJson(doc, jsn);
-        got_reply = false;
-        client.send(jsn);
-        long sent = millis();
-        while(got_reply != true && millis() - sent < 1){
-          if(client.available()) {
-            client.poll();
-          }
-        }
+      got_reply = true;
 
-        got_reply = true;
-
-        if(got_reply == true){
-          long RTT = millis() - sent;
-          Serial.print("               RTT time for websockets: ");
-          Serial.println(RTT);
-          average_RTT[average_RTT_index][0] = millis();
-          average_RTT[average_RTT_index][1] = RTT;
-          average_RTT_index ++;
-          average_RTT_index %= 50;
+      if (got_reply == true) {
+        long RTT = millis() - sent;
+        Serial.print("               RTT time for websockets: ");
+        Serial.println(RTT);
+        average_RTT[average_RTT_index][0] = millis();
+        average_RTT[average_RTT_index][1] = RTT;
+        average_RTT_index ++;
+        average_RTT_index %= 50;
 
 
 
-          remove_first();
-        }
+        remove_first();
+      }
 
     }
 
-    if(message -> type == (int)SENOSR_TELEMETRY){
-        doc["type"] = "SENOSR_TELEMETRY";
+    if (message -> type == (int)SENOSR_TELEMETRY) {
+      doc["type"] = "SENOSR_TELEMETRY";
 
 
-        JsonArray mac = doc.createNestedArray("mac");
-        for(int i = 0; i<6; i++){
-          mac.add(message->mac[i]);
-        }
-        telemetry_message * data = (telemetry_message *)message->message;
-        doc["battery_voltage"] = data->battery_voltage;
-        String jsn;
-        serializeJson(doc, jsn);
-        client.send(jsn);
-        remove_first();
+      JsonArray mac = doc.createNestedArray("mac");
+      for (int i = 0; i < 6; i++) {
+        mac.add(message->mac[i]);
+      }
+      telemetry_message * data = (telemetry_message *)message->message;
+      doc["battery_voltage"] = data->battery_voltage;
+      String jsn;
+      serializeJson(doc, jsn);
+      client.send(jsn);
+      remove_first();
     }
   }
 }
 
 
-int get_RTT_average(){
+int get_RTT_average() {
 
   long average_RTT_num = 0;
   int num = 0;
-  for(int i = 0; i<50; i++){
-    if(millis() - average_RTT[i][1] <= 2000){
+  for (int i = 0; i < 50; i++) {
+    if (millis() - average_RTT[i][1] <= 2000) {
       average_RTT_num += average_RTT[i][0];
       num ++;
     }
   }
-  if(num == 0){
+  if (num == 0) {
     return 0;
   }
   average_RTT_num /= num;
@@ -476,11 +476,11 @@ int get_RTT_average(){
 }
 
 
-int get_sent_in_last_second(){
+int get_sent_in_last_second() {
 
   int num = 0;
-  for(int i = 0; i<50; i++){
-    if(millis() - average_RTT[i][0] <= 1000){
+  for (int i = 0; i < 50; i++) {
+    if (millis() - average_RTT[i][0] <= 1000) {
       num ++;
     }
   }
@@ -488,8 +488,8 @@ int get_sent_in_last_second(){
 }
 
 
-void prepare_jsn_data(){
-  if(jsn_body.length() > 10 || jsn_telemetry.length() > 10){
+void prepare_jsn_data() {
+  if (jsn_body.length() > 10 || jsn_telemetry.length() > 10) {
     return;
   }
 
@@ -499,12 +499,12 @@ void prepare_jsn_data(){
   DynamicJsonDocument tele_doc(5000);
   message_queue * message = get_first();
 
-  while(it < 32 && itele < 10 && message != (message_queue*)0){
-    if(message -> type != (int)SENOSR_TELEMETRY){
+  while (it < 32 && itele < 10 && message != (message_queue*)0) {
+    if (message -> type != (int)SENOSR_TELEMETRY) {
       JsonObject measurement = doc.createNestedObject();
 
       JsonArray mac = measurement.createNestedArray("mac");
-      for(int i = 0; i<6; i++){
+      for (int i = 0; i < 6; i++) {
         mac.add(message->mac[i]);
       }
       sending_list * data = (sending_list *)message->message;
@@ -512,7 +512,7 @@ void prepare_jsn_data(){
       measurement["decibels"] = data->decibels;
       measurement["timestamp"] = data->timestamp;
       JsonArray fft_values = measurement.createNestedArray("fft_values");
-      for(int i = 0; i<16; i++){
+      for (int i = 0; i < 16; i++) {
         fft_values.add(data->fft_values[i]);
       }
 
@@ -520,38 +520,38 @@ void prepare_jsn_data(){
     }
 
 
-    if(message -> type == (int)SENOSR_TELEMETRY){
+    if (message -> type == (int)SENOSR_TELEMETRY) {
       JsonObject telemetry = tele_doc.createNestedObject();
 
       JsonArray mac = telemetry.createNestedArray("mac");
-      for(int i = 0; i<6; i++){
+      for (int i = 0; i < 6; i++) {
         mac.add(message->mac[i]);
       }
       telemetry_message * data = (telemetry_message *)message->message;
       telemetry["battery_voltage"] = data->battery_voltage;
       itele++;
     }
-      remove_first();
-      message = get_first();
+    remove_first();
+    message = get_first();
 
   }
-  if(it != 0){
+  if (it != 0) {
     String jj;
     serializeJson(doc, jj);
     jsn_body = jj;
   }
 
-  if(itele != 0){
+  if (itele != 0) {
     String jt;
     serializeJson(tele_doc, jt);
     jsn_telemetry = jt;
   }
 
-  if(it == 0){
+  if (it == 0) {
     jsn_body = "";
   }
 
-  if(itele == 0){
+  if (itele == 0) {
     jsn_telemetry = "";
   }
 
@@ -562,11 +562,11 @@ void prepare_jsn_data(){
 
 
 long previous_interval_config = 0;
-void get_measurement_interval_config(){
-  if(millis() - previous_interval_config > 1000){
+void get_measurement_interval_config() {
+  if (millis() - previous_interval_config > 1000) {
     String deployment_id = get_current_deployment();
 
-    if(deployment_id.length() > 5 && WiFi.status() == WL_CONNECTED){
+    if (deployment_id.length() > 5 && WiFi.status() == WL_CONNECTED) {
       long start = millis();
       String url = String(serverName) + String("/api/deployment/interval/") + deployment_id;
       Serial.println(url);
@@ -576,7 +576,7 @@ void get_measurement_interval_config(){
       int httpResponseCode = http.GET();
       Serial.println(httpResponseCode);
       previous_interval_config = millis() - 500;
-      if(httpResponseCode == 200){
+      if (httpResponseCode == 200) {
         previous_interval_config = millis();
         String result = http.getString();
         int interval = parse_interval_config(result);
@@ -590,11 +590,11 @@ void get_measurement_interval_config(){
   }
 }
 
-uint8_t get_rssi(){
+uint8_t get_rssi() {
   return latest_rssi;
 }
 
-void add_rtt(long len){
+void add_rtt(long len) {
   average_RTT[average_RTT_index][0] = len;
   average_RTT[average_RTT_index][1] = millis();
   average_RTT_index += 1;

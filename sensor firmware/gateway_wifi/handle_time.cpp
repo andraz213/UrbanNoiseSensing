@@ -10,7 +10,7 @@ bool inited_time = false;
 
 
 void init_time() {
-  if(!inited_time){
+  if (!inited_time) {
     sntp_setoperatingmode(SNTP_OPMODE_POLL);
     sntp_setservername(0, "europe.pool.ntp.org");
     //sntp_set_sync_interval(60000);
@@ -37,11 +37,11 @@ int64_t get_us_time() {
 
 int measurement_interval = 1;
 
-int get_measurement_interval(){
+int get_measurement_interval() {
   return measurement_interval;
 }
 
-void set_measurement_interval(int interval){
+void set_measurement_interval(int interval) {
   measurement_interval = interval;
 }
 

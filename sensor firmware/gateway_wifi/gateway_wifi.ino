@@ -34,7 +34,7 @@ void setup() {
     ,  NULL
     ,  1  // Priority
     ,  NULL,
-       1);
+    1);
 
 
   // task two
@@ -45,27 +45,27 @@ void setup() {
     ,  NULL
     ,  1  // Priority
     ,  NULL,
-       1);
+    1);
 
   // task one
-    xTaskCreatePinnedToCore(
+  xTaskCreatePinnedToCore(
     TaskWifi
     ,  "TaskWifi"
     ,  32000  // Stack size
     ,  NULL
     ,  1  // Priority
     ,  NULL,
-       1);
+    1);
 
 
-    xTaskCreatePinnedToCore(
-      TaskPrintHeap
-      ,  "TaskPrintHeap"
-      ,  2000  // Stack size
-      ,  NULL
-      ,  1  // Priority
-      ,  NULL,
-         1);
+  xTaskCreatePinnedToCore(
+    TaskPrintHeap
+    ,  "TaskPrintHeap"
+    ,  2000  // Stack size
+    ,  NULL
+    ,  1  // Priority
+    ,  NULL,
+    1);
 
 }
 long prev_display = 0;
@@ -86,17 +86,17 @@ void TaskOled( void *pvParameters ) {
 
   Serial.println("Oled Task");
 
-  for(;;){
+  for (;;) {
     Serial.println("-----------------------taskOled");
-      int rtt_avg = get_RTT_average();
-      String name = get_config_name();
-      print_text(name, String("Averge RTT: " + String(rtt_avg)), String(String("Alive ") + String((int(millis()/1000))) + String("s")), String(String("Signal strength: ") + String((int)get_rssi()-255)));
-      for(int i = 0; i<10; i++){
-        delayMicroseconds(1000);
-      }
-      //delay(10);
-      //Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
-      vTaskDelay(90);
+    int rtt_avg = get_RTT_average();
+    String name = get_config_name();
+    print_text(name, String("Averge RTT: " + String(rtt_avg)), String(String("Alive ") + String((int(millis() / 1000))) + String("s")), String(String("Signal strength: ") + String((int)get_rssi() - 255)));
+    for (int i = 0; i < 10; i++) {
+      delayMicroseconds(1000);
+    }
+    //delay(10);
+    //Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
+    vTaskDelay(90);
 
 
 
@@ -104,9 +104,9 @@ void TaskOled( void *pvParameters ) {
 }
 
 void TaskPrintHeap( void *pvParameters ) {
-Serial.println("heap Task");
-  for(;;){
-    if(heap_caps_get_free_size(MALLOC_CAP_8BIT) < 80000){
+  Serial.println("heap Task");
+  for (;;) {
+    if (heap_caps_get_free_size(MALLOC_CAP_8BIT) < 80000) {
       Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
     }
     delay(100);
@@ -118,10 +118,10 @@ void TaskConnectWifi( void *pvParameters ) {
 
   Serial.println("Connect Wifi Task");
 
-  for(;;){
-      Serial.println("-----------------------taskConnectWifi");
-      init_wifi();
-      vTaskDelay(200);
+  for (;;) {
+    Serial.println("-----------------------taskConnectWifi");
+    init_wifi();
+    vTaskDelay(200);
 
 
 
