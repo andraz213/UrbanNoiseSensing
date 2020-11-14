@@ -5,8 +5,8 @@ const sensorModel = mongoose.model('sensor');
 const gatewayModel = mongoose.model('gateway');
 const deploymentModel = mongoose.model('deployment');
 
-const getAllDeployment = (req, res) => {
-    deploymentModel.find({}, (err, data) => {
+const getAllDeployment = async (req, res) => {
+    deploymentModel.find({}, async (err, data) => {
        if(err){
            return res.status(500).json(err);
        }else{
@@ -15,6 +15,9 @@ const getAllDeployment = (req, res) => {
            for(let i = 0; i<dataObj.length; i++){
                delete dataObj[i]['sensors'];
                delete dataObj[i]['gateways'];
+               if(!dataObj[i]['measurement_num'] ){
+                   dataObj[i]['measurement_num'] = await get_measurements(dataObj[i]["_id"]);
+               }
            }
            return res.status(200).json(dataObj);
        }
@@ -301,6 +304,50 @@ return -1;
 }
 
 
+const get_measurements = async (id) => {
+
+    let get_n_measurements = [
+        {
+            '$match': {
+                'deployment': mongoose.Types.ObjectId(id)
+            }
+        }, {
+            '$unwind': {
+                'path': '$data'
+            }
+        }, {
+            '$match': {
+                'data.measured_at': {
+                    '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
+                }
+            }
+        }, {
+            '$bucketAuto': {
+                'groupBy': '$data.measured_at',
+                'buckets': 1,
+                'output': {
+                    'num': {
+                        '$sum': 1
+                    }
+                }
+            }
+        }
+    ];
+    let all_measurements = 0;
+    let numberes = JSON.parse(JSON.stringify(await dataModel.aggregate(get_n_measurements).allowDiskUse(true).exec()));
+    if(numberes != null){
+        if(numberes[0] != null && numberes[0].num){
+            all_measurements = numberes[0].num;
+        }
+    }
+
+    return all_measurements;
+
+}
+
+
+
+
 const getDeploymentById = async (req, res) => {
 
     let id = await req.params.deployment_id;
@@ -340,40 +387,7 @@ const getDeploymentById = async (req, res) => {
     console.log(number_agregate);
 
 
-    let get_n_measurements = [
-        {
-            '$match': {
-                'deployment': mongoose.Types.ObjectId(id)
-            }
-        }, {
-            '$unwind': {
-                'path': '$data'
-            }
-        }, {
-            '$match': {
-                'data.measured_at': {
-                    '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
-                }
-            }
-        }, {
-            '$bucketAuto': {
-                'groupBy': '$data.measured_at',
-                'buckets': 1,
-                'output': {
-                    'num': {
-                        '$sum': 1
-                    }
-                }
-            }
-        }
-    ];
-    let all_measurements = 0;
-    let numberes = JSON.parse(JSON.stringify(await dataModel.aggregate(get_n_measurements).allowDiskUse(true).exec()));
-    if(numberes != null){
-        if(numberes[0] != null && numberes[0].num){
-            all_measurements = numberes[0].num;
-        }
-    }
+
 
     deploymentModel.findById(id, async (error, deployment) => {
         if (error) {
@@ -387,7 +401,6 @@ const getDeploymentById = async (req, res) => {
 
             deploymentObj.numbers = numbers;
             deploymentObj.number_agregate = number_agregate;
-            deploymentObj.measurement_num = all_measurements;
 
             return res.status(200).json(deploymentObj);
         }
