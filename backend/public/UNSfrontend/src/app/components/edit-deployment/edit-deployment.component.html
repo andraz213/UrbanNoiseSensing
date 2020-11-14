@@ -26,7 +26,7 @@
     <small>To place a sensor: <br>1. Click on the map to place a marker <br> 2. Click on the marker to remove it <br> 3.
       Click on senor name to show its position</small>
     <div class="m-3">
-      <p>Free senosrs</p>
+      <p>Free sensors</p>
       <div class="row">
         <div *ngFor="let sn of sensors">
           <div class="col-1" *ngIf="sn.chosen == false">
@@ -38,7 +38,7 @@
     </div>
 
     <div class="m-3">
-      <p>Placed senosrs</p>
+      <p>Placed sensors</p>
       <div class="row">
         <div *ngFor="let sn of sensors">
           <div class="col-1" *ngIf="sn.chosen == true">

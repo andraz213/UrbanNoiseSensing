@@ -1,39 +1,55 @@
-
-
+<div *ngIf="deployment">
+  <h2 class="mt-5 ml-5 mb-5">{{deployment.name}}</h2>
+</div>
 
 <div class="m-2">
-<div class="deployment-div m-3">
+  <div class="deployment-div m-3">
 
-<div *ngIf="deployment">
-  <h2 class="mt-5 ml-5 mb-3">{{deployment.name}}</h2>
-  <p class="ml-5 mb-5">{{deployment.description}}</p>
-  <small class="ml-5 mb-5">Number of measurements:</small>
-  <p class="ml-5 mb-5">{{deployment.measurement_num}}</p>
-</div>
+    <div *ngIf="deployment">
+
+      <div class="mb-4">
+        <div class="row m-3">
+
+          <div class="col-12">
+
+            <div *ngIf="deployment.description">
+              <small>Description: </small>
+              <p class="sensor-spec">{{deployment.description}}</p>
+            </div>
+
+            <div *ngIf="deployment.measurement_num">
+              <small>Number of measurements: </small>
+              <p class="sensor-spec">{{deployment.measurement_num}}</p>
+            </div>
 
 
-<div *ngIf="deployment" class="m-3">
-<app-sensor-map [deployment]="deployment" [id]="id"></app-sensor-map>
-</div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-12">
+
+          <div class="deployment-div m-3 pr-5">
+            <app-average-chart [id]="id"></app-average-chart>
+          </div>
+
+        </div>
+
+      </div>
+      <div *ngIf="deployment" class="m-3">
+        <app-sensor-map [deployment]="deployment" [id]="id"></app-sensor-map>
+      </div>
 
 
 
-<div class="row">
-  <div class="col-12">
 
-    <div class="deployment-div m-3 pr-5">
-      <app-average-chart [id]="id"></app-average-chart>
+      <app-delete-deployment [deployment]="deployment" [id]="id"></app-delete-deployment>
     </div>
 
+
+
   </div>
-
-</div>
-
-
-
-
-
-
-<app-delete-deployment [deployment]="deployment" [id]="id"></app-delete-deployment>
-</div>
 </div>
