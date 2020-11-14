@@ -24,13 +24,13 @@ void setup() {
     ,  NULL
     ,  1  // Priority
     ,  NULL
-    ,  1);
+    ,  0);
 
 
   xTaskCreatePinnedToCore(
     TaskOled
     ,  "OledTask"
-    ,  2000  // Stack size
+    ,  6000  // Stack size
     ,  NULL
     ,  1  // Priority
     ,  NULL,
@@ -38,31 +38,34 @@ void setup() {
 
 
   // task two
-  xTaskCreate(
+  xTaskCreatePinnedToCore(
     TaskSerial
     ,  "TaskSerial"
     ,  32000  // Stack size
     ,  NULL
     ,  1  // Priority
-    ,  NULL);
+    ,  NULL,
+       1);
 
   // task one
-  xTaskCreate(
+    xTaskCreatePinnedToCore(
     TaskWifi
     ,  "TaskWifi"
     ,  32000  // Stack size
     ,  NULL
     ,  1  // Priority
-    ,  NULL);
+    ,  NULL,
+       1);
 
 
-    xTaskCreate(
+    xTaskCreatePinnedToCore(
       TaskPrintHeap
       ,  "TaskPrintHeap"
       ,  2000  // Stack size
       ,  NULL
       ,  1  // Priority
-      ,  NULL);
+      ,  NULL,
+         1);
 
 }
 long prev_display = 0;
@@ -88,7 +91,10 @@ void TaskOled( void *pvParameters ) {
       int rtt_avg = get_RTT_average();
       String name = get_config_name();
       print_text(name, String("Averge RTT: " + String(rtt_avg)), String(String("Alive ") + String((int(millis()/1000))) + String("s")), String(String("Signal strength: ") + String((int)get_rssi()-255)));
-      delay(10);
+      for(int i = 0; i<10; i++){
+        delayMicroseconds(1000);
+      }
+      //delay(10);
       //Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
       vTaskDelay(90);
 
@@ -98,12 +104,12 @@ void TaskOled( void *pvParameters ) {
 }
 
 void TaskPrintHeap( void *pvParameters ) {
-
+Serial.println("heap Task");
   for(;;){
     if(heap_caps_get_free_size(MALLOC_CAP_8BIT) < 80000){
       Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
     }
-    delay(1);
+    delay(100);
   }
 }
 
@@ -115,7 +121,7 @@ void TaskConnectWifi( void *pvParameters ) {
   for(;;){
       Serial.println("-----------------------taskConnectWifi");
       init_wifi();
-      vTaskDelay(30);
+      vTaskDelay(200);
 
 
 

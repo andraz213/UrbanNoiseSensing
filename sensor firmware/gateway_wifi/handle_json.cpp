@@ -64,10 +64,11 @@ int parse_interval_config(String json){
 
 
 String check_wifi_credentials(String current){
-
+  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
   DynamicJsonDocument doc(5000);
   String json = get_config();
   Serial.println(json);
+  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
     if(json.length() > 0){
       deserializeJson(doc, json);
       if(doc.size() > 0){
@@ -91,7 +92,7 @@ String check_wifi_credentials(String current){
           }
         }
     }
-
+    Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
     return String("");
 }
 

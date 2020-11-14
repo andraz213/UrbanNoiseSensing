@@ -19,8 +19,9 @@ String get_config() {
     File file = SPIFFS.open("/config.json", "r");
 
     if (file) {
-
-      while (file.available()) {
+      int size = 0;
+      while (file.available() && size < 1200) {
+        size++;
         res += String((char)file.read());
       }
     }

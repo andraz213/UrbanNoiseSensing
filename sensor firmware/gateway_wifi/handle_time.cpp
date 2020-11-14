@@ -6,6 +6,9 @@
 
 bool inited_time = false;
 
+
+
+
 void init_time() {
   if(!inited_time){
     sntp_setoperatingmode(SNTP_OPMODE_POLL);

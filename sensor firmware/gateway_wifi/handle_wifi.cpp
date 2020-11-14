@@ -121,12 +121,14 @@ void init_wifi() {
     int a = esp_wifi_set_protocol( WIFI_IF_STA, WIFI_PROTOCOL_11B | WIFI_PROTOCOL_11G | WIFI_PROTOCOL_11N );
 
     int n = WiFi.scanNetworks();
+    Serial.println(n);
 
     for(int i = 0; i<n; i++){
       String current = WiFi.SSID(i);
+      Serial.println(current);
 
       String password_got = check_wifi_credentials(current);
-
+      Serial.println(current);
       if(password_got.length() > 0){
         print_text(String("Connecting to "), String(current), "", "");
         delay(10);
@@ -135,6 +137,7 @@ void init_wifi() {
           return;
         }
       }
+
 
       if(current.equals(ssid)){
         print_text(String("Connecting to "), String(current), "", "");
@@ -156,6 +159,8 @@ void init_wifi() {
           return;
         }
       }
+
+
 
 
 
@@ -199,7 +204,6 @@ void TaskWifi( void *pvParameters ) {
   }
   get_wifi_config();
 
-
   // bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
   bool connected = httpClient.begin(serverName);
 
@@ -232,7 +236,7 @@ client.onMessage([&](WebsocketsMessage message){
     //init_wifi();
   if(WiFi.status() == WL_CONNECTED){
 
-    latest_rssi = WiFi.RSSI();
+  latest_rssi = WiFi.RSSI();
   get_wifi_config();
   vTaskDelay(10);
   prepare_jsn_data();
@@ -275,7 +279,7 @@ client.onMessage([&](WebsocketsMessage message){
 
 
 
-long prev_config = -10000;
+long prev_config = 0;
 
 void get_wifi_config(){
 

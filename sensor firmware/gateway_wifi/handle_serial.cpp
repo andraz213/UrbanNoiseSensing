@@ -53,12 +53,10 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
   int datalen = length - sizeof(int) - 6;
   char * mac =  (char*)heap_caps_malloc(sizeof(char) * 6, MALLOC_CAP_8BIT);
   char * data = (char*)heap_caps_malloc(sizeof(char) * datalen, MALLOC_CAP_8BIT);
-  Serial.println(data);
   while(data == 0){
     Serial.println("asdfadsfsdfasdfsffasfasfsafasdfasffdsafafa");
     data = (char*)heap_caps_malloc(sizeof(char) * datalen, MALLOC_CAP_8BIT);
     Serial.println(data);
-    data = 0;
     vTaskDelay(1);
   }
 
@@ -135,7 +133,7 @@ void TaskSerial( void *pvParameters ) {
     Serial.println("-----------------------taskSerial");
 
     //bus.receive(50000);
-    if(heap_caps_get_free_size(MALLOC_CAP_8BIT) > 1000){
+    if(heap_caps_get_free_size(MALLOC_CAP_8BIT) > 50000){
       bus.receive(20000);
       vTaskDelay(1);
       if (bus.update() > 0) {
@@ -149,7 +147,7 @@ void TaskSerial( void *pvParameters ) {
 
     // update_gateway_time();
 
-    vTaskDelay(1);
+    vTaskDelay(10);
   }
 }
 
