@@ -124,6 +124,18 @@ void init_wifi() {
 
     for(int i = 0; i<n; i++){
       String current = WiFi.SSID(i);
+
+      String password_got = check_wifi_credentials(current);
+
+      if(password_got.length() > 0){
+        print_text(String("Connecting to "), String(current), "", "");
+        delay(10);
+        WiFi.begin(String(current).c_str(), String(password_got).c_str());
+        if(handle_connecting(current)){
+          return;
+        }
+      }
+
       if(current.equals(ssid)){
         print_text(String("Connecting to "), String(current), "", "");
         delay(10);
@@ -134,6 +146,8 @@ void init_wifi() {
 
       }
 
+
+
       if(current.equals(ssid2)){
         print_text(String("Connecting to "), String(current), "", "");
         delay(10);
@@ -142,6 +156,9 @@ void init_wifi() {
           return;
         }
       }
+
+
+
     }
   }
 }
@@ -199,27 +216,33 @@ client.onMessage([&](WebsocketsMessage message){
 });
 
 
-  long prev_ram = 0;
-
   for (;;) {
-    if(millis() - prev_ram > 1000){
-      Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
-      prev_ram = millis();
-    }
+    Serial.println("-----------------------taskWifi");
+
+    if(heap_caps_get_free_size(MALLOC_CAP_8BIT) < 50000 &&
+        jsn_body.equals("") &&
+        jsn_telemetry.equals("") &&
+        get_first() == 0){
+          //ESP.restart();
+
+            Serial.println("FAKKKKKKKK");
+
+        }
+
     //init_wifi();
   if(WiFi.status() == WL_CONNECTED){
+
     latest_rssi = WiFi.RSSI();
   get_wifi_config();
-
   vTaskDelay(10);
   prepare_jsn_data();
-  //Serial.println(jsn_body);
   if(!jsn_body){
     jsn_body = "";
   }
   if(!jsn_telemetry){
     jsn_telemetry = "";
   }
+
 
   if(jsn_body && jsn_body.length() != 0 && WiFi.status() == WL_CONNECTED){
     send_data();
@@ -236,6 +259,7 @@ client.onMessage([&](WebsocketsMessage message){
       jsn_telemetry = "";
     }
   }
+
   //delay(5);
   get_measurement_interval_config();
 }
@@ -244,6 +268,7 @@ client.onMessage([&](WebsocketsMessage message){
 
 
   }
+
 }
 
 
@@ -266,7 +291,7 @@ void get_wifi_config(){
 
     String url = String(serverName) + String("/api/gateway/");
     Serial.println(url);
-
+    long start = millis();
     http.begin(url);
     http.addHeader("Content-Type", "application/json");
     int httpResponseCode = http.POST(body);
@@ -280,6 +305,7 @@ void get_wifi_config(){
 
 
     http.end();
+    add_rtt(millis() - start);
     /*
     if (httpResponseCode == 200) {
       return true;
@@ -294,7 +320,7 @@ void get_wifi_config(){
 
 
 void send_data(){
-
+  long start = millis();
   String url = serverName;
   url += String("/api/sensor/data");
   Serial.println(url);
@@ -305,6 +331,7 @@ void send_data(){
   long sent = millis();
   int httpResponseCode = http.POST(jsn_body);
   http.end();
+  add_rtt(millis() - start);
 
   if(httpResponseCode == 200){
     jsn_body = "";
@@ -326,7 +353,7 @@ void send_data(){
 
 
     void send_telemetry(){
-
+      long start = millis();
       String url = serverName;
       url += String("/api/sensor/telemetry");
       Serial.println(url);
@@ -337,6 +364,7 @@ void send_data(){
       long sent = millis();
       int httpResponseCode = http.POST(jsn_telemetry);
       http.end();
+      add_rtt(millis() - start);
 
       if(httpResponseCode == 200){
         jsn_telemetry = "";
@@ -431,8 +459,8 @@ int get_RTT_average(){
   long average_RTT_num = 0;
   int num = 0;
   for(int i = 0; i<50; i++){
-    if(millis() - average_RTT[i][0] <= 1000){
-      average_RTT_num += average_RTT[i][1];
+    if(millis() - average_RTT[i][1] <= 2000){
+      average_RTT_num += average_RTT[i][0];
       num ++;
     }
   }
@@ -535,6 +563,7 @@ void get_measurement_interval_config(){
     String deployment_id = get_current_deployment();
 
     if(deployment_id.length() > 5 && WiFi.status() == WL_CONNECTED){
+      long start = millis();
       String url = String(serverName) + String("/api/deployment/interval/") + deployment_id;
       Serial.println(url);
       //HTTPClient http;
@@ -551,10 +580,19 @@ void get_measurement_interval_config(){
       }
 
       http.end();
+      add_rtt(millis() - start);
+
     }
   }
 }
 
 uint8_t get_rssi(){
   return latest_rssi;
+}
+
+void add_rtt(long len){
+  average_RTT[average_RTT_index][0] = len;
+  average_RTT[average_RTT_index][1] = millis();
+  average_RTT_index += 1;
+  average_RTT_index %= 50;
 }

@@ -17,51 +17,107 @@ void setup() {
 
   // init two tasks
 
-
-
-  init_wifi();
-
-
-
-  // task two
   xTaskCreatePinnedToCore(
-    TaskSerial
-    ,  "TaskSerial"
-    ,  32000  // Stack size
+    TaskConnectWifi
+    ,  "TaskConnectWifi"
+    ,  12000  // Stack size
     ,  NULL
     ,  1  // Priority
     ,  NULL
     ,  1);
 
-  // task one
+
   xTaskCreatePinnedToCore(
+    TaskOled
+    ,  "OledTask"
+    ,  2000  // Stack size
+    ,  NULL
+    ,  1  // Priority
+    ,  NULL,
+       1);
+
+
+  // task two
+  xTaskCreate(
+    TaskSerial
+    ,  "TaskSerial"
+    ,  32000  // Stack size
+    ,  NULL
+    ,  1  // Priority
+    ,  NULL);
+
+  // task one
+  xTaskCreate(
     TaskWifi
     ,  "TaskWifi"
     ,  32000  // Stack size
     ,  NULL
     ,  1  // Priority
-    ,  NULL
-    ,  0);
+    ,  NULL);
 
 
+    xTaskCreate(
+      TaskPrintHeap
+      ,  "TaskPrintHeap"
+      ,  2000  // Stack size
+      ,  NULL
+      ,  1  // Priority
+      ,  NULL);
 
 }
 long prev_display = 0;
 
+long rammm = 0;
+
 void loop() {
-  // put your main code here, to run repeatedly:
-  if(millis() - last_wifi >  5000){
-    init_wifi();
-    last_wifi = millis();
-  }
 
-  int rtt_avg = get_RTT_average();
-  int rtt_num = get_sent_in_last_second();
-  if(millis() - prev_display > 333){
-    prev_display = millis();
-    String name = get_config_name();
-    print_text(name, String("Previous second: " + String(rtt_num)), String(String("Alive ") + String((int(millis()/1000))) + String("s")), String(String("Signal strength: ") + String((int)get_rssi()-255)));
-    delay(10);
-  }
+  vTaskDelay(30000);
 
+}
+
+
+
+
+
+void TaskOled( void *pvParameters ) {
+
+  Serial.println("Oled Task");
+
+  for(;;){
+    Serial.println("-----------------------taskOled");
+      int rtt_avg = get_RTT_average();
+      String name = get_config_name();
+      print_text(name, String("Averge RTT: " + String(rtt_avg)), String(String("Alive ") + String((int(millis()/1000))) + String("s")), String(String("Signal strength: ") + String((int)get_rssi()-255)));
+      delay(10);
+      //Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
+      vTaskDelay(90);
+
+
+
+  }
+}
+
+void TaskPrintHeap( void *pvParameters ) {
+
+  for(;;){
+    if(heap_caps_get_free_size(MALLOC_CAP_8BIT) < 80000){
+      Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
+    }
+    delay(1);
+  }
+}
+
+
+void TaskConnectWifi( void *pvParameters ) {
+
+  Serial.println("Connect Wifi Task");
+
+  for(;;){
+      Serial.println("-----------------------taskConnectWifi");
+      init_wifi();
+      vTaskDelay(30);
+
+
+
+  }
 }

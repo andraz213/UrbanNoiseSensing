@@ -62,35 +62,39 @@ int parse_interval_config(String json){
 }
 
 
-void get_wifi_credentials(WiFiMulti wifiMulti){
+
+String check_wifi_credentials(String current){
 
   DynamicJsonDocument doc(5000);
   String json = get_config();
+  Serial.println(json);
     if(json.length() > 0){
       deserializeJson(doc, json);
       if(doc.size() > 0){
-        if(!doc["wifi_credentials"].isNull()){
-          JsonArray wifi_credentials = doc["wifi_credentials"];
+        JsonObject root = doc[0];
+        if(!root["wifi_credentials"].isNull()){
+          Serial.println("BRUW");
+          JsonArray wifi_credentials = root["wifi_credentials"];
           int len = wifi_credentials.size();
           Serial.println("BRUW");
           Serial.println(len);
-          if(len > 0){
-            for(int i = 0; i<len; i++){
-              if(wifi_credentials[i].size() == 2){
-                if(!wifi_credentials[i][0].isNull() && !wifi_credentials[i][1].isNull()){
-                  const char* ssid = wifi_credentials[i][0];
-                  const char* password = wifi_credentials[i][1];
-                  Serial.println(ssid);
-                  Serial.println(password);
-                  wifiMulti.addAP(ssid, password);
-                }
+          if(len == 2){
+              const char* ssid = wifi_credentials[0];
+              const char* password = wifi_credentials[1];
+              Serial.println(ssid);
+              Serial.println(password);
+              if(String(ssid).equals(current)){
+                return String(password);
               }
+
             }
           }
         }
-      }
     }
+
+    return String("");
 }
+
 
 
 

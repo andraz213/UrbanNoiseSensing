@@ -42,19 +42,26 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
      overwritten when a new message is dispatched */
   int type = 0;
   memcpy(&type, (char*)payload, sizeof(int));
-
+  Serial.println("GOT PJON MESSAGE");
+  Serial.println(type);
   if (type == (int) TIME_REQUEST) {
     handle_time_request(payload);
+    Serial.println("TIME");
     return;
   }
 
   int datalen = length - sizeof(int) - 6;
   char * mac =  (char*)heap_caps_malloc(sizeof(char) * 6, MALLOC_CAP_8BIT);
   char * data = (char*)heap_caps_malloc(sizeof(char) * datalen, MALLOC_CAP_8BIT);
-
+  Serial.println(data);
   while(data == 0){
+    Serial.println("asdfadsfsdfasdfsffasfasfsafasdfasffdsafafa");
     data = (char*)heap_caps_malloc(sizeof(char) * datalen, MALLOC_CAP_8BIT);
+    Serial.println(data);
+    data = 0;
+    vTaskDelay(1);
   }
+
   memcpy(mac, (char*)payload + sizeof(int), sizeof(char) * 6);
   memcpy(data, (char*)payload + sizeof(int) + 6, sizeof(char) * datalen);
   if (type == (int) SENSOR_READING) {
@@ -125,12 +132,12 @@ void TaskSerial( void *pvParameters ) {
   init_pjon();
 
   for (;;) {
-
-
+    Serial.println("-----------------------taskSerial");
 
     //bus.receive(50000);
-    if(heap_caps_get_free_size(MALLOC_CAP_8BIT) > 51000){
+    if(heap_caps_get_free_size(MALLOC_CAP_8BIT) > 1000){
       bus.receive(20000);
+      vTaskDelay(1);
       if (bus.update() > 0) {
         Serial.println("to be sent");
         Serial.println(bus.update());
@@ -204,12 +211,16 @@ void handle_time_request(uint8_t *payload){
   memcpy(time_req, payload, sizeof(gateway_time_request));
   set_espnow_mac(time_req->mac);
   free(time_req);
+  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
 
   if (millis() - previous_time_update > 1000) {
     previous_time_update = millis();
+    Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
 
     int64_t time_us = get_us_time();
+    Serial.println((long)time_us);
     if (time_us != -1) {
+      Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
 
       int interval = get_measurement_interval();
 
@@ -221,15 +232,21 @@ void handle_time_request(uint8_t *payload){
       memcpy(message + sizeof(int) + sizeof(int64_t), (char*)&interval, sizeof(int));
       uint16_t result = bus.reply(message, size);
       free(message);
+      Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
     }
   }
+  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
   long start_time = micros();
   int num = 0;
   bus.receive(20);
+  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
   while (bus.update() > 0) {
     bus.receive(500);
     num++;
+    Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
+    Serial.println(num);
   }
+  Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
   long end = micros();
-  bus.receive(500);
+  bus.receive(5000);
 }

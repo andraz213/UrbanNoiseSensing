@@ -19,5 +19,6 @@ void send_telemetry();
 void get_measurement_interval_config();
 bool handle_connecting(String current);
 uint8_t get_rssi();
+void add_rtt(long len);
 
 #endif

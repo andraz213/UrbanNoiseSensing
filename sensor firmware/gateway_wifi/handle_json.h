@@ -15,7 +15,7 @@ String get_current_deployment();
 
 int parse_interval_config(String json);
 
-void get_wifi_credentials(WiFiMulti wifiMulti);
+String check_wifi_credentials(String current);
 
 
 #endif
