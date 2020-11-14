@@ -1,55 +1,73 @@
 <div *ngIf="deployment">
-  <h2 class="mt-5 ml-5 mb-5">{{deployment.name}}</h2>
+  <h2 class="mt-5 ml-5 mb-3">{{deployment.name}}</h2>
 </div>
 
-<div class="m-2">
-  <div class="deployment-div m-3">
+<div class="mt-3 ml-5 mb-2" *ngIf="deployment.description">
+  <small>Description: </small>
+  <p>{{deployment.description}}</p>
+</div>
+<div class="m-2 mt-5">
+  <div class="deployment-div">
+    <div *ngIf="deployment" class="m-3 mb-3 ml-0 pl-0 ">
+      <app-sensor-map [deployment]="deployment" [id]="id"></app-sensor-map>
+    </div>
+  </div>
+</div>
+
+<div class="m-2 mt-4">
+  <div class="deployment-div">
+
 
     <div *ngIf="deployment">
 
-      <div class="mb-4">
-        <div class="row m-3">
+      <div>
+        <div class="row">
 
-          <div class="col-12">
+          <div class="col-12 m-3">
 
-            <div *ngIf="deployment.description">
-              <small>Description: </small>
-              <p class="sensor-spec">{{deployment.description}}</p>
+            <div class="row mt-3 mr-3">
+
+              <div *ngFor="let num of deployment.number_agregate" class="col-xl-3 col-lg-6 col-sm-6 m-0">
+
+                <div class="sensor-div mb-4">
+                  <div class="row m-3">
+                    <div class="col-12">
+                      <h4>{{num.name}}</h4>
+                    </div>
+                    <div class="col-12">
+
+                      <div *ngIf="num.num">
+                        <small>Number of measurements: </small>
+                        <p class="sensor-spec">{{num.num}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
             </div>
 
-            <div *ngIf="deployment.measurement_num">
-              <small>Number of measurements: </small>
-              <p class="sensor-spec">{{deployment.measurement_num}}</p>
+
+            <div class="row mr-2">
+              <div class="col-12 mr-4">
+
+                <div class="deployment-div pr-5 mr-2">
+                  <app-average-chart [id]="id"></app-average-chart>
+                </div>
+
+              </div>
+
             </div>
 
 
           </div>
 
-        </div>
-      </div>
-
-
-      <div class="row">
-        <div class="col-12">
-
-          <div class="deployment-div m-3 pr-5">
-            <app-average-chart [id]="id"></app-average-chart>
-          </div>
 
         </div>
-
       </div>
-      <div *ngIf="deployment" class="m-3">
-        <app-sensor-map [deployment]="deployment" [id]="id"></app-sensor-map>
-      </div>
-
-
-
-
-      <app-delete-deployment [deployment]="deployment" [id]="id"></app-delete-deployment>
     </div>
-
-
+  </div>
+  <div class="mt-3">
+    <app-delete-deployment [deployment]="deployment" [id]="id"></app-delete-deployment>
 
   </div>
-</div>

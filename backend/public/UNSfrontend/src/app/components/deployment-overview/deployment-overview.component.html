@@ -28,13 +28,15 @@
   </div>
 </div>
 
-<app-delete-deployment [deployment]="deployment" [id]="id"></app-delete-deployment>
-
-<div class="deployment-div m-3">
+<div class="deployment-div m-3 mt-4">
   <div class="m-4">
     <h4>NOTE: Once the deployment is ended, it cannot be redeployed back!!!</h4>
     <button type="button" (click)="openModal(confirm)" class="btn btn-outline-danger m-2">FINISH SENSING</button>
   </div>
+</div>
+
+<div class="m-3 mt-4">
+  <app-delete-deployment [deployment]="deployment" [id]="id"></app-delete-deployment>
 </div>
 
 

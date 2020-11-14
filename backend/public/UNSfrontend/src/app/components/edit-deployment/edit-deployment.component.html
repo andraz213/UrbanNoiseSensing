@@ -133,9 +133,9 @@
       <button type="button" (click)="openModal(not_ok, ok)" class="btn btn-outline-danger">DEPLOY</button>
     </div>
   </div>
-
+<div class="m-3 mt-0">
 <app-delete-deployment [deployment]="deployment" [id]="id"></app-delete-deployment>
-
+</div>
   <ng-template #not_ok>
     <div class="modal-body text-center bg-custom">
       <div *ngFor="let err of errorMessages">
