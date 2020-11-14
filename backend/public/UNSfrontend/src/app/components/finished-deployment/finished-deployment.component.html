@@ -1,16 +1,18 @@
 
 
 
-
+<div class="m-2">
+<div class="deployment-div m-3">
 
 <div *ngIf="deployment">
   <h2 class="mt-5 ml-5 mb-3">{{deployment.name}}</h2>
   <p class="ml-5 mb-5">{{deployment.description}}</p>
-
+  <small class="ml-5 mb-5">Number of measurements:</small>
+  <p class="ml-5 mb-5">{{deployment.measurement_num}}</p>
 </div>
 
 
-<div *ngIf="deployment">
+<div *ngIf="deployment" class="m-3">
 <app-sensor-map [deployment]="deployment" [id]="id"></app-sensor-map>
 </div>
 
@@ -33,3 +35,5 @@
 
 
 <app-delete-deployment [deployment]="deployment" [id]="id"></app-delete-deployment>
+</div>
+</div>
