@@ -389,8 +389,9 @@ const getDeploymentById = async (req, res) => {
 
     for(let numm of number_agregate){
         let sens = await sensorModel.findById(numm.sensor).limit(1).exec();
-        if(sens[0].name) {
-            numm.name = sens[0].name;
+        console.log(sens);
+        if(sens.name) {
+            numm.name = sens.name;
         }
 
 
