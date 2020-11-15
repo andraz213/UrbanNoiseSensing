@@ -2870,7 +2870,13 @@
       /* harmony import */
 
 
-      var _angular_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+      var _services_deployment_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+      /*! ../../services/deployment.service */
+      "F3Vm");
+      /* harmony import */
+
+
+      var _angular_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
       /*! @angular/common */
       "ofXK");
 
@@ -2948,18 +2954,6 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](5, "small");
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](6, "Location: ");
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](7, "p", 8);
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](8);
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
-
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         }
 
@@ -2968,7 +2962,31 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](sensori_r1.current_deployment);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](sensori_r1.deployment_name);
+        }
+      }
+
+      function SensorsComponent_div_3_div_10_Template(rf, ctx) {
+        if (rf & 1) {
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div");
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "small");
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](2, "Location: ");
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](3, "p", 8);
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](4);
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        }
+
+        if (rf & 2) {
+          var sensori_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]().$implicit;
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
 
@@ -3000,7 +3018,9 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](8, SensorsComponent_div_3_div_8_Template, 5, 1, "div", 7);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](9, SensorsComponent_div_3_div_9_Template, 9, 3, "div", 7);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](9, SensorsComponent_div_3_div_9_Template, 5, 1, "div", 7);
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](10, SensorsComponent_div_3_div_10_Template, 5, 2, "div", 7);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
@@ -3028,15 +3048,20 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", sensori_r1.current_deployment);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", sensori_r1.deployment_name);
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", sensori_r1.current_location);
         }
       }
 
       var SensorsComponent = /*#__PURE__*/function () {
-        function SensorsComponent(sensorService) {
+        function SensorsComponent(sensorService, deploymentService) {
           _classCallCheck(this, SensorsComponent);
 
           this.sensorService = sensorService;
+          this.deploymentService = deploymentService;
         }
 
         _createClass(SensorsComponent, [{
@@ -3054,6 +3079,50 @@
             this.sensorService.getSensors().then(function (result) {
               console.log(result);
               _this9.sensors = result;
+
+              _this9.getDeployments();
+            });
+          }
+        }, {
+          key: "getDeployments",
+          value: function getDeployments() {
+            var _this10 = this;
+
+            this.deploymentService.getDeployments().then(function (result) {
+              var _iterator13 = _createForOfIteratorHelper(result),
+                  _step13;
+
+              try {
+                for (_iterator13.s(); !(_step13 = _iterator13.n()).done;) {
+                  var dep = _step13.value;
+
+                  var _iterator14 = _createForOfIteratorHelper(_this10.sensors),
+                      _step14;
+
+                  try {
+                    for (_iterator14.s(); !(_step14 = _iterator14.n()).done;) {
+                      var sn = _step14.value;
+
+                      if (sn.current_deployment != null) {
+                        if (sn.current_deployment == dep._id) {
+                          // @ts-ignore
+                          sn.deployment_name = dep.name;
+                        }
+                      }
+                    }
+                  } catch (err) {
+                    _iterator14.e(err);
+                  } finally {
+                    _iterator14.f();
+                  }
+                }
+              } catch (err) {
+                _iterator13.e(err);
+              } finally {
+                _iterator13.f();
+              }
+
+              console.log(_this10.sensors);
             });
           }
         }]);
@@ -3062,7 +3131,7 @@
       }();
 
       SensorsComponent.ɵfac = function SensorsComponent_Factory(t) {
-        return new (t || SensorsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_sensor_service__WEBPACK_IMPORTED_MODULE_1__["SensorService"]));
+        return new (t || SensorsComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_sensor_service__WEBPACK_IMPORTED_MODULE_1__["SensorService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_deployment_service__WEBPACK_IMPORTED_MODULE_2__["DeploymentService"]));
       };
 
       SensorsComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({
@@ -3081,7 +3150,7 @@
 
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](2, "div", 1);
 
-            _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](3, SensorsComponent_div_3_Template, 10, 4, "div", 2);
+            _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](3, SensorsComponent_div_3_Template, 11, 5, "div", 2);
 
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
           }
@@ -3092,8 +3161,8 @@
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", ctx.sensors);
           }
         },
-        directives: [_angular_common__WEBPACK_IMPORTED_MODULE_2__["NgForOf"], _angular_common__WEBPACK_IMPORTED_MODULE_2__["NgIf"]],
-        pipes: [_angular_common__WEBPACK_IMPORTED_MODULE_2__["DecimalPipe"]],
+        directives: [_angular_common__WEBPACK_IMPORTED_MODULE_3__["NgForOf"], _angular_common__WEBPACK_IMPORTED_MODULE_3__["NgIf"]],
+        pipes: [_angular_common__WEBPACK_IMPORTED_MODULE_3__["DecimalPipe"]],
         styles: [".sensor-div[_ngcontent-%COMP%]{\r\n  border: #bbbbff;\r\n  border-radius: 0.4em;\r\n  border-style: solid;\r\n  border-width: 0.001em;\r\n}\r\n\r\n.sensor-spec[_ngcontent-%COMP%]{\r\n  border-radius: 5px;\r\n  background: #ddeeff;\r\n  padding: 0.251em;\r\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNlbnNvcnMvc2Vuc29ycy5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0UsZUFBZTtFQUNmLG9CQUFvQjtFQUNwQixtQkFBbUI7RUFDbkIscUJBQXFCO0FBQ3ZCOztBQUVBO0VBQ0Usa0JBQWtCO0VBQ2xCLG1CQUFtQjtFQUNuQixnQkFBZ0I7QUFDbEIiLCJmaWxlIjoic2Vuc29ycy9zZW5zb3JzLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuc2Vuc29yLWRpdntcclxuICBib3JkZXI6ICNiYmJiZmY7XHJcbiAgYm9yZGVyLXJhZGl1czogMC40ZW07XHJcbiAgYm9yZGVyLXN0eWxlOiBzb2xpZDtcclxuICBib3JkZXItd2lkdGg6IDAuMDAxZW07XHJcbn1cclxuXHJcbi5zZW5zb3Itc3BlY3tcclxuICBib3JkZXItcmFkaXVzOiA1cHg7XHJcbiAgYmFja2dyb3VuZDogI2RkZWVmZjtcclxuICBwYWRkaW5nOiAwLjI1MWVtO1xyXG59XHJcblxyXG4iXX0= */"]
       });
       /*@__PURE__*/
@@ -3109,6 +3178,8 @@
         }], function () {
           return [{
             type: _services_sensor_service__WEBPACK_IMPORTED_MODULE_1__["SensorService"]
+          }, {
+            type: _services_deployment_service__WEBPACK_IMPORTED_MODULE_2__["DeploymentService"]
           }];
         }, null);
       })();
@@ -3381,7 +3452,7 @@
         }, {
           key: "getAverages",
           value: function getAverages() {
-            var _this10 = this;
+            var _this11 = this;
 
             this.dataservice.getAverageDeployment(this.id).then(function (data) {
               var temp_data = {};
@@ -3389,25 +3460,25 @@
               temp_data["series"] = [];
               var ticks = [];
 
-              var _iterator13 = _createForOfIteratorHelper(data),
-                  _step13;
+              var _iterator15 = _createForOfIteratorHelper(data),
+                  _step15;
 
               try {
-                for (_iterator13.s(); !(_step13 = _iterator13.n()).done;) {
-                  var dd = _step13.value;
+                for (_iterator15.s(); !(_step15 = _iterator15.n()).done;) {
+                  var dd = _step15.value;
                   var one = {};
                   one["name"] = new Date(dd.time).toLocaleTimeString();
                   one["value"] = dd.average;
                   temp_data["series"].push(one);
                 }
               } catch (err) {
-                _iterator13.e(err);
+                _iterator15.e(err);
               } finally {
-                _iterator13.f();
+                _iterator15.f();
               }
 
-              _this10.average_data = [temp_data];
-              console.log(_this10.average_data);
+              _this11.average_data = [temp_data];
+              console.log(_this11.average_data);
             });
           }
         }, {
@@ -3917,21 +3988,21 @@
         }, {
           key: "findnumber",
           value: function findnumber(id) {
-            var _iterator14 = _createForOfIteratorHelper(this.deployment.number_agregate),
-                _step14;
+            var _iterator16 = _createForOfIteratorHelper(this.deployment.number_agregate),
+                _step16;
 
             try {
-              for (_iterator14.s(); !(_step14 = _iterator14.n()).done;) {
-                var sn = _step14.value;
+              for (_iterator16.s(); !(_step16 = _iterator16.n()).done;) {
+                var sn = _step16.value;
 
                 if (sn.sensor == id) {
                   return sn.num;
                 }
               }
             } catch (err) {
-              _iterator14.e(err);
+              _iterator16.e(err);
             } finally {
-              _iterator14.f();
+              _iterator16.f();
             }
 
             return 0;
@@ -3939,41 +4010,41 @@
         }, {
           key: "getSensors",
           value: function getSensors() {
-            var _this11 = this;
+            var _this12 = this;
 
             this.sensors = [];
 
-            var _iterator15 = _createForOfIteratorHelper(this.deployment.sensors),
-                _step15;
+            var _iterator17 = _createForOfIteratorHelper(this.deployment.sensors),
+                _step17;
 
             try {
               var _loop = function _loop() {
-                var sen = _step15.value;
+                var sen = _step17.value;
 
-                _this11.sensorService.getOneSensor(sen.sensor_id).then(function (reses) {
+                _this12.sensorService.getOneSensor(sen.sensor_id).then(function (reses) {
                   console.log(reses);
                   var res = reses[0];
 
-                  _this11.sensors.push({
+                  _this12.sensors.push({
                     sensor: res,
                     alpha: 0.4,
-                    measurements: _this11.findnumber(sen.sensor_id)
+                    measurements: _this12.findnumber(sen.sensor_id)
                   });
 
-                  _this11.longitude += res.current_location[0] / _this11.deployment.sensors.length; // @ts-ignore
+                  _this12.longitude += res.current_location[0] / _this12.deployment.sensors.length; // @ts-ignore
 
-                  _this11.latitude += res.current_location[1] / _this11.deployment.sensors.length;
+                  _this12.latitude += res.current_location[1] / _this12.deployment.sensors.length;
                   console.log(res);
                 });
               };
 
-              for (_iterator15.s(); !(_step15 = _iterator15.n()).done;) {
+              for (_iterator17.s(); !(_step17 = _iterator17.n()).done;) {
                 _loop();
               }
             } catch (err) {
-              _iterator15.e(err);
+              _iterator17.e(err);
             } finally {
-              _iterator15.f();
+              _iterator17.f();
             }
 
             console.log(this.deployment);
@@ -3986,12 +4057,12 @@
           value: function showLocation(id) {
             console.log(this.sensors);
 
-            var _iterator16 = _createForOfIteratorHelper(this.sensors),
-                _step16;
+            var _iterator18 = _createForOfIteratorHelper(this.sensors),
+                _step18;
 
             try {
-              for (_iterator16.s(); !(_step16 = _iterator16.n()).done;) {
-                var sn = _step16.value;
+              for (_iterator18.s(); !(_step18 = _iterator18.n()).done;) {
+                var sn = _step18.value;
                 sn.alpha = 0.4;
 
                 if (sn.sensor._id == id) {
@@ -3999,9 +4070,9 @@
                 }
               }
             } catch (err) {
-              _iterator16.e(err);
+              _iterator18.e(err);
             } finally {
-              _iterator16.f();
+              _iterator18.f();
             }
           }
         }]);
@@ -4586,7 +4657,7 @@
         }, {
           key: "saveChangesForm",
           value: function saveChangesForm(bad_interval, updated_interval) {
-            var _this12 = this;
+            var _this13 = this;
 
             if (this.depDTO.measurement_interval < 1) {
               this.modalRef = this.modalService.show(bad_interval, {
@@ -4595,8 +4666,8 @@
             } else {
               this.deploymentService.updateDeploymentInterval(this.id, this.depDTO.measurement_interval).then(function (res) {
                 console.log(res);
-                _this12.deployment = res;
-                _this12.modalRef = _this12.modalService.show(updated_interval, {
+                _this13.deployment = res;
+                _this13.modalRef = _this13.modalService.show(updated_interval, {
                   "class": 'modal-sm'
                 });
               });
@@ -4605,14 +4676,14 @@
         }, {
           key: "finishDeployment",
           value: function finishDeployment() {
-            var _this13 = this;
+            var _this14 = this;
 
             this.deploymentService.finishDeployment(this.deployment._id).then(function (data) {
               console.log(data);
 
-              _this13.modalRef.hide();
+              _this14.modalRef.hide();
 
-              _this13.navigateBack();
+              _this14.navigateBack();
             });
           }
         }, {
@@ -5278,10 +5349,10 @@
         }, {
           key: "getDeployments",
           value: function getDeployments() {
-            var _this14 = this;
+            var _this15 = this;
 
             this.deploymentService.getDeployments().then(function (result) {
-              _this14.deployments = result;
+              _this15.deployments = result;
               console.log(result);
             });
           }
@@ -5293,18 +5364,18 @@
         }, {
           key: "createDeployment",
           value: function createDeployment() {
-            var _this15 = this;
+            var _this16 = this;
 
             console.log("creating");
             console.log(this.newdep.name);
             this.deploymentService.createDeployment(this.newdep).then(function (result) {
               console.log(result);
-              _this15.newdep.name = '';
-              _this15.creating = false;
+              _this16.newdep.name = '';
+              _this16.creating = false;
 
-              _this15.deployments.unshift(result);
+              _this16.deployments.unshift(result);
 
-              _this15.navigateToEdit(result._id);
+              _this16.navigateToEdit(result._id);
             });
           }
         }, {
@@ -5549,12 +5620,12 @@
           value: function getSensors() {
             this.sensors = [];
 
-            var _iterator17 = _createForOfIteratorHelper(this.deployment.sensors),
-                _step17;
+            var _iterator19 = _createForOfIteratorHelper(this.deployment.sensors),
+                _step19;
 
             try {
-              for (_iterator17.s(); !(_step17 = _iterator17.n()).done;) {
-                var sen = _step17.value;
+              for (_iterator19.s(); !(_step19 = _iterator19.n()).done;) {
+                var sen = _step19.value;
                 this.sensors.push({
                   sensor: sen,
                   alpha: 0.4
@@ -5565,9 +5636,9 @@
                 console.log(sen);
               }
             } catch (err) {
-              _iterator17.e(err);
+              _iterator19.e(err);
             } finally {
-              _iterator17.f();
+              _iterator19.f();
             }
 
             ;
@@ -5581,12 +5652,12 @@
           value: function showLocation(id) {
             console.log(this.sensors);
 
-            var _iterator18 = _createForOfIteratorHelper(this.sensors),
-                _step18;
+            var _iterator20 = _createForOfIteratorHelper(this.sensors),
+                _step20;
 
             try {
-              for (_iterator18.s(); !(_step18 = _iterator18.n()).done;) {
-                var sn = _step18.value;
+              for (_iterator20.s(); !(_step20 = _iterator20.n()).done;) {
+                var sn = _step20.value;
                 sn.alpha = 0.4;
 
                 if (sn.sensor._id == id) {
@@ -5594,9 +5665,9 @@
                 }
               }
             } catch (err) {
-              _iterator18.e(err);
+              _iterator20.e(err);
             } finally {
-              _iterator18.f();
+              _iterator20.f();
             }
           }
         }]);
@@ -6340,26 +6411,26 @@
         }, {
           key: "getGateways",
           value: function getGateways() {
-            var _this16 = this;
+            var _this17 = this;
 
             this.gateways = [];
 
-            var _iterator19 = _createForOfIteratorHelper(this.deployment.gateways),
-                _step19;
+            var _iterator21 = _createForOfIteratorHelper(this.deployment.gateways),
+                _step21;
 
             try {
-              for (_iterator19.s(); !(_step19 = _iterator19.n()).done;) {
-                var gw = _step19.value;
+              for (_iterator21.s(); !(_step21 = _iterator21.n()).done;) {
+                var gw = _step21.value;
                 this.gatewayService.getOneGateway(gw.sensor_id).then(function (res) {
-                  _this16.gateways.push(res);
+                  _this17.gateways.push(res);
 
                   console.log(res);
                 });
               }
             } catch (err) {
-              _iterator19.e(err);
+              _iterator21.e(err);
             } finally {
-              _iterator19.f();
+              _iterator21.f();
             }
           }
         }]);
@@ -6991,34 +7062,34 @@
         }, {
           key: "getGateways",
           value: function getGateways() {
-            var _this17 = this;
+            var _this18 = this;
 
             this.gatewayService.getGateways().then(function (result) {
               console.log(result);
-              _this17.gateways = result;
+              _this18.gateways = result;
 
-              _this17.getDeployments();
+              _this18.getDeployments();
             });
           }
         }, {
           key: "getDeployments",
           value: function getDeployments() {
-            var _this18 = this;
+            var _this19 = this;
 
             this.deploymentService.getDeployments().then(function (result) {
-              var _iterator20 = _createForOfIteratorHelper(result),
-                  _step20;
+              var _iterator22 = _createForOfIteratorHelper(result),
+                  _step22;
 
               try {
-                for (_iterator20.s(); !(_step20 = _iterator20.n()).done;) {
-                  var dep = _step20.value;
+                for (_iterator22.s(); !(_step22 = _iterator22.n()).done;) {
+                  var dep = _step22.value;
 
-                  var _iterator21 = _createForOfIteratorHelper(_this18.gateways),
-                      _step21;
+                  var _iterator23 = _createForOfIteratorHelper(_this19.gateways),
+                      _step23;
 
                   try {
-                    for (_iterator21.s(); !(_step21 = _iterator21.n()).done;) {
-                      var gw = _step21.value;
+                    for (_iterator23.s(); !(_step23 = _iterator23.n()).done;) {
+                      var gw = _step23.value;
 
                       if (gw.current_deployment != null) {
                         if (gw.current_deployment == dep._id) {
@@ -7028,18 +7099,18 @@
                       }
                     }
                   } catch (err) {
-                    _iterator21.e(err);
+                    _iterator23.e(err);
                   } finally {
-                    _iterator21.f();
+                    _iterator23.f();
                   }
                 }
               } catch (err) {
-                _iterator20.e(err);
+                _iterator22.e(err);
               } finally {
-                _iterator20.f();
+                _iterator22.f();
               }
 
-              console.log(_this18.gateways);
+              console.log(_this19.gateways);
             });
           }
         }]);

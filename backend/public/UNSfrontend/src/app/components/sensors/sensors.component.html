@@ -19,9 +19,11 @@
               <p class="sensor-spec">{{sensori.firmware_version}} V</p>
             </div>
 
-            <div *ngIf="sensori.current_deployment">
+            <div *ngIf="sensori.deployment_name">
             <small>Deployment: </small>
-            <p class="sensor-spec">{{sensori.current_deployment}}</p>
+            <p class="sensor-spec">{{sensori.deployment_name}}</p>
+            </div>
+              <div *ngIf="sensori.current_location">
             <small>Location: </small>
             <p class="sensor-spec">{{sensori.current_location[0].toFixed(3)}}, {{sensori.current_location[1].toFixed(3)}}</p>
             </div>
