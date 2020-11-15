@@ -32,7 +32,7 @@ export class GatewayService {
       .catch(this.obdelajNapako);
   }
 
-  public updateGateway(id: string, body: string): Promise<any>{
+  public updateGateway(id: string, body: any): Promise<any>{
     const url = `${this.apiUrl}/gateway/` + id;
     return this.http
       .put(url, body)

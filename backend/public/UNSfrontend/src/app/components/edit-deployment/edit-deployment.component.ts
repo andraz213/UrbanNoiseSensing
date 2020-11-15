@@ -151,7 +151,7 @@ export class EditDeploymentComponent implements OnInit {
         data_dep.mac = gw.gateway.mac;
         this.deployment.gateways.push(data_dep);
       }
-      this.gatewayService.updateGateway(gw.gateway._id, JSON.stringify(jsn_wifi));
+      // this.gatewayService.updateGateway(gw.gateway._id, JSON.stringify(jsn_wifi));
     }
 
     this.deploymentService.updateDeployment(this.deployment._id, this.deployment).then(res => {
@@ -159,6 +159,12 @@ export class EditDeploymentComponent implements OnInit {
       this.getDeployment();
 
       this.deploymentService.deployDeployment(this.deployment._id).then((data) =>{
+
+        for(let gw of this.gateways){
+          if(gw.chosen == true) {
+            this.gatewayService.updateGateway(gw.gateway._id, jsn_wifi);
+          }
+        }
 
         console.log(data);
         this.modalRef.hide();

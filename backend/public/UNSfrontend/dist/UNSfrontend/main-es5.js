@@ -1462,9 +1462,8 @@
                   _data_dep.location = [0, 0];
                   _data_dep.mac = gw.gateway.mac;
                   this.deployment.gateways.push(_data_dep);
-                }
+                } // this.gatewayService.updateGateway(gw.gateway._id, JSON.stringify(jsn_wifi));
 
-                this.gatewayService.updateGateway(gw.gateway._id, JSON.stringify(jsn_wifi));
               }
             } catch (err) {
               _iterator6.e(err);
@@ -1478,6 +1477,23 @@
               _this4.getDeployment();
 
               _this4.deploymentService.deployDeployment(_this4.deployment._id).then(function (data) {
+                var _iterator7 = _createForOfIteratorHelper(_this4.gateways),
+                    _step7;
+
+                try {
+                  for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
+                    var gw = _step7.value;
+
+                    if (gw.chosen == true) {
+                      _this4.gatewayService.updateGateway(gw.gateway._id, jsn_wifi);
+                    }
+                  }
+                } catch (err) {
+                  _iterator7.e(err);
+                } finally {
+                  _iterator7.f();
+                }
+
                 console.log(data);
 
                 _this4.modalRef.hide();
@@ -1495,21 +1511,21 @@
         }, {
           key: "addGatewayToDeploy",
           value: function addGatewayToDeploy(id) {
-            var _iterator7 = _createForOfIteratorHelper(this.gateways),
-                _step7;
+            var _iterator8 = _createForOfIteratorHelper(this.gateways),
+                _step8;
 
             try {
-              for (_iterator7.s(); !(_step7 = _iterator7.n()).done;) {
-                var gw = _step7.value;
+              for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
+                var gw = _step8.value;
 
                 if (gw.gateway._id == id) {
                   gw.chosen = !gw.chosen;
                 }
               }
             } catch (err) {
-              _iterator7.e(err);
+              _iterator8.e(err);
             } finally {
-              _iterator7.f();
+              _iterator8.f();
             }
           }
         }, {
@@ -1559,12 +1575,12 @@
           value: function showLocation(id) {
             console.log(this.sensors);
 
-            var _iterator8 = _createForOfIteratorHelper(this.sensors),
-                _step8;
+            var _iterator9 = _createForOfIteratorHelper(this.sensors),
+                _step9;
 
             try {
-              for (_iterator8.s(); !(_step8 = _iterator8.n()).done;) {
-                var sn = _step8.value;
+              for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
+                var sn = _step9.value;
 
                 if (sn.chosen) {
                   sn.alpha = 0.4;
@@ -1575,20 +1591,20 @@
                 }
               }
             } catch (err) {
-              _iterator8.e(err);
+              _iterator9.e(err);
             } finally {
-              _iterator8.f();
+              _iterator9.f();
             }
           }
         }, {
           key: "addMarker",
           value: function addMarker(lat, lng) {
-            var _iterator9 = _createForOfIteratorHelper(this.sensors),
-                _step9;
+            var _iterator10 = _createForOfIteratorHelper(this.sensors),
+                _step10;
 
             try {
-              for (_iterator9.s(); !(_step9 = _iterator9.n()).done;) {
-                var sn = _step9.value;
+              for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
+                var sn = _step10.value;
 
                 if (sn.chosen == false) {
                   sn.chosen = true;
@@ -1600,9 +1616,9 @@
               } //this.markers.push({ lat, lng, alpha: 0.4 });
 
             } catch (err) {
-              _iterator9.e(err);
+              _iterator10.e(err);
             } finally {
-              _iterator9.f();
+              _iterator10.f();
             }
           }
         }, {
@@ -1624,30 +1640,6 @@
           value: function removeSensor(event) {
             console.log(event);
 
-            var _iterator10 = _createForOfIteratorHelper(this.sensors),
-                _step10;
-
-            try {
-              for (_iterator10.s(); !(_step10 = _iterator10.n()).done;) {
-                var sn = _step10.value;
-
-                if (sn.longitude == event.longitude && sn.latitude == event.latitude) {
-                  sn.chosen = false;
-                  sn.alpha = 0;
-                  return;
-                }
-              }
-            } catch (err) {
-              _iterator10.e(err);
-            } finally {
-              _iterator10.f();
-            }
-          }
-        }, {
-          key: "selectMarker",
-          value: function selectMarker(event) {
-            console.log(event);
-
             var _iterator11 = _createForOfIteratorHelper(this.sensors),
                 _step11;
 
@@ -1655,7 +1647,7 @@
               for (_iterator11.s(); !(_step11 = _iterator11.n()).done;) {
                 var sn = _step11.value;
 
-                if (sn.longitude == event.longitude && sn.latitude == event.latitude && sn.chosen == true) {
+                if (sn.longitude == event.longitude && sn.latitude == event.latitude) {
                   sn.chosen = false;
                   sn.alpha = 0;
                   return;
@@ -1665,6 +1657,30 @@
               _iterator11.e(err);
             } finally {
               _iterator11.f();
+            }
+          }
+        }, {
+          key: "selectMarker",
+          value: function selectMarker(event) {
+            console.log(event);
+
+            var _iterator12 = _createForOfIteratorHelper(this.sensors),
+                _step12;
+
+            try {
+              for (_iterator12.s(); !(_step12 = _iterator12.n()).done;) {
+                var sn = _step12.value;
+
+                if (sn.longitude == event.longitude && sn.latitude == event.latitude && sn.chosen == true) {
+                  sn.chosen = false;
+                  sn.alpha = 0;
+                  return;
+                }
+              }
+            } catch (err) {
+              _iterator12.e(err);
+            } finally {
+              _iterator12.f();
             }
           }
         }]);
@@ -3373,21 +3389,21 @@
               temp_data["series"] = [];
               var ticks = [];
 
-              var _iterator12 = _createForOfIteratorHelper(data),
-                  _step12;
+              var _iterator13 = _createForOfIteratorHelper(data),
+                  _step13;
 
               try {
-                for (_iterator12.s(); !(_step12 = _iterator12.n()).done;) {
-                  var dd = _step12.value;
+                for (_iterator13.s(); !(_step13 = _iterator13.n()).done;) {
+                  var dd = _step13.value;
                   var one = {};
                   one["name"] = new Date(dd.time).toLocaleTimeString();
                   one["value"] = dd.average;
                   temp_data["series"].push(one);
                 }
               } catch (err) {
-                _iterator12.e(err);
+                _iterator13.e(err);
               } finally {
-                _iterator12.f();
+                _iterator13.f();
               }
 
               _this10.average_data = [temp_data];
@@ -3901,21 +3917,21 @@
         }, {
           key: "findnumber",
           value: function findnumber(id) {
-            var _iterator13 = _createForOfIteratorHelper(this.deployment.number_agregate),
-                _step13;
+            var _iterator14 = _createForOfIteratorHelper(this.deployment.number_agregate),
+                _step14;
 
             try {
-              for (_iterator13.s(); !(_step13 = _iterator13.n()).done;) {
-                var sn = _step13.value;
+              for (_iterator14.s(); !(_step14 = _iterator14.n()).done;) {
+                var sn = _step14.value;
 
                 if (sn.sensor == id) {
                   return sn.num;
                 }
               }
             } catch (err) {
-              _iterator13.e(err);
+              _iterator14.e(err);
             } finally {
-              _iterator13.f();
+              _iterator14.f();
             }
 
             return 0;
@@ -3927,12 +3943,12 @@
 
             this.sensors = [];
 
-            var _iterator14 = _createForOfIteratorHelper(this.deployment.sensors),
-                _step14;
+            var _iterator15 = _createForOfIteratorHelper(this.deployment.sensors),
+                _step15;
 
             try {
               var _loop = function _loop() {
-                var sen = _step14.value;
+                var sen = _step15.value;
 
                 _this11.sensorService.getOneSensor(sen.sensor_id).then(function (reses) {
                   console.log(reses);
@@ -3951,13 +3967,13 @@
                 });
               };
 
-              for (_iterator14.s(); !(_step14 = _iterator14.n()).done;) {
+              for (_iterator15.s(); !(_step15 = _iterator15.n()).done;) {
                 _loop();
               }
             } catch (err) {
-              _iterator14.e(err);
+              _iterator15.e(err);
             } finally {
-              _iterator14.f();
+              _iterator15.f();
             }
 
             console.log(this.deployment);
@@ -3970,12 +3986,12 @@
           value: function showLocation(id) {
             console.log(this.sensors);
 
-            var _iterator15 = _createForOfIteratorHelper(this.sensors),
-                _step15;
+            var _iterator16 = _createForOfIteratorHelper(this.sensors),
+                _step16;
 
             try {
-              for (_iterator15.s(); !(_step15 = _iterator15.n()).done;) {
-                var sn = _step15.value;
+              for (_iterator16.s(); !(_step16 = _iterator16.n()).done;) {
+                var sn = _step16.value;
                 sn.alpha = 0.4;
 
                 if (sn.sensor._id == id) {
@@ -3983,9 +3999,9 @@
                 }
               }
             } catch (err) {
-              _iterator15.e(err);
+              _iterator16.e(err);
             } finally {
-              _iterator15.f();
+              _iterator16.f();
             }
           }
         }]);
@@ -5533,12 +5549,12 @@
           value: function getSensors() {
             this.sensors = [];
 
-            var _iterator16 = _createForOfIteratorHelper(this.deployment.sensors),
-                _step16;
+            var _iterator17 = _createForOfIteratorHelper(this.deployment.sensors),
+                _step17;
 
             try {
-              for (_iterator16.s(); !(_step16 = _iterator16.n()).done;) {
-                var sen = _step16.value;
+              for (_iterator17.s(); !(_step17 = _iterator17.n()).done;) {
+                var sen = _step17.value;
                 this.sensors.push({
                   sensor: sen,
                   alpha: 0.4
@@ -5549,9 +5565,9 @@
                 console.log(sen);
               }
             } catch (err) {
-              _iterator16.e(err);
+              _iterator17.e(err);
             } finally {
-              _iterator16.f();
+              _iterator17.f();
             }
 
             ;
@@ -5565,12 +5581,12 @@
           value: function showLocation(id) {
             console.log(this.sensors);
 
-            var _iterator17 = _createForOfIteratorHelper(this.sensors),
-                _step17;
+            var _iterator18 = _createForOfIteratorHelper(this.sensors),
+                _step18;
 
             try {
-              for (_iterator17.s(); !(_step17 = _iterator17.n()).done;) {
-                var sn = _step17.value;
+              for (_iterator18.s(); !(_step18 = _iterator18.n()).done;) {
+                var sn = _step18.value;
                 sn.alpha = 0.4;
 
                 if (sn.sensor._id == id) {
@@ -5578,9 +5594,9 @@
                 }
               }
             } catch (err) {
-              _iterator17.e(err);
+              _iterator18.e(err);
             } finally {
-              _iterator17.f();
+              _iterator18.f();
             }
           }
         }]);
@@ -6113,16 +6129,16 @@
         }
 
         if (rf & 2) {
-          var num_r6 = ctx.$implicit;
-          var i_r7 = ctx.index;
+          var num_r7 = ctx.$implicit;
+          var i_r8 = ctx.index;
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](num_r6.toString(16));
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](num_r7.toString(16));
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", i_r7 < 5);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", i_r8 < 5);
         }
       }
 
@@ -6151,6 +6167,34 @@
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](gw_r3.last_telemetry);
+        }
+      }
+
+      function DeploymentGatewayComponent_div_0_div_4_div_4_div_12_Template(rf, ctx) {
+        if (rf & 1) {
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div");
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "small");
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](2, "Wifi SSID: ");
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](3, "p", 10);
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](4);
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        }
+
+        if (rf & 2) {
+          var gw_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]().$implicit;
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](gw_r3.wifi_credentials[0]);
         }
       }
 
@@ -6188,6 +6232,8 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](11, DeploymentGatewayComponent_div_0_div_4_div_4_div_11_Template, 5, 1, "div", 3);
 
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](12, DeploymentGatewayComponent_div_0_div_4_div_4_div_12_Template, 5, 1, "div", 3);
+
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
@@ -6211,6 +6257,10 @@
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", gw_r3.last_telemetry);
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", gw_r3.wifi_credentials);
         }
       }
 
@@ -6226,7 +6276,7 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](3, "div", 4);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](4, DeploymentGatewayComponent_div_0_div_4_div_4_Template, 12, 3, "div", 5);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](4, DeploymentGatewayComponent_div_0_div_4_div_4_Template, 13, 4, "div", 5);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
@@ -6294,20 +6344,22 @@
 
             this.gateways = [];
 
-            var _iterator18 = _createForOfIteratorHelper(this.deployment.gateways),
-                _step18;
+            var _iterator19 = _createForOfIteratorHelper(this.deployment.gateways),
+                _step19;
 
             try {
-              for (_iterator18.s(); !(_step18 = _iterator18.n()).done;) {
-                var gw = _step18.value;
+              for (_iterator19.s(); !(_step19 = _iterator19.n()).done;) {
+                var gw = _step19.value;
                 this.gatewayService.getOneGateway(gw.sensor_id).then(function (res) {
                   _this16.gateways.push(res);
+
+                  console.log(res);
                 });
               }
             } catch (err) {
-              _iterator18.e(err);
+              _iterator19.e(err);
             } finally {
-              _iterator18.f();
+              _iterator19.f();
             }
           }
         }]);

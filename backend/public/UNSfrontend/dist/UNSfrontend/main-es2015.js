@@ -663,12 +663,17 @@ class EditDeploymentComponent {
                 data_dep.mac = gw.gateway.mac;
                 this.deployment.gateways.push(data_dep);
             }
-            this.gatewayService.updateGateway(gw.gateway._id, JSON.stringify(jsn_wifi));
+            // this.gatewayService.updateGateway(gw.gateway._id, JSON.stringify(jsn_wifi));
         }
         this.deploymentService.updateDeployment(this.deployment._id, this.deployment).then(res => {
             console.log(res);
             this.getDeployment();
             this.deploymentService.deployDeployment(this.deployment._id).then((data) => {
+                for (let gw of this.gateways) {
+                    if (gw.chosen == true) {
+                        this.gatewayService.updateGateway(gw.gateway._id, jsn_wifi);
+                    }
+                }
                 console.log(data);
                 this.modalRef.hide();
                 this.navigateToReview(this.deployment._id);
@@ -2895,12 +2900,12 @@ function DeploymentGatewayComponent_div_0_div_4_div_4_span_10_Template(rf, ctx) 
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, DeploymentGatewayComponent_div_0_div_4_div_4_span_10_span_2_Template, 2, 0, "span", 3);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 } if (rf & 2) {
-    const num_r6 = ctx.$implicit;
-    const i_r7 = ctx.index;
+    const num_r7 = ctx.$implicit;
+    const i_r8 = ctx.index;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](num_r6.toString(16));
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](num_r7.toString(16));
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", i_r7 < 5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", i_r8 < 5);
 } }
 function DeploymentGatewayComponent_div_0_div_4_div_4_div_11_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div");
@@ -2915,6 +2920,20 @@ function DeploymentGatewayComponent_div_0_div_4_div_4_div_11_Template(rf, ctx) {
     const gw_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]().$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](gw_r3.last_telemetry);
+} }
+function DeploymentGatewayComponent_div_0_div_4_div_4_div_12_Template(rf, ctx) { if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "small");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](2, "Wifi SSID: ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](3, "p", 10);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](4);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+} if (rf & 2) {
+    const gw_r3 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]().$implicit;
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](gw_r3.wifi_credentials[0]);
 } }
 function DeploymentGatewayComponent_div_0_div_4_div_4_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 6);
@@ -2933,6 +2952,7 @@ function DeploymentGatewayComponent_div_0_div_4_div_4_Template(rf, ctx) { if (rf
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](10, DeploymentGatewayComponent_div_0_div_4_div_4_span_10_Template, 3, 2, "span", 11);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](11, DeploymentGatewayComponent_div_0_div_4_div_4_div_11_Template, 5, 1, "div", 3);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](12, DeploymentGatewayComponent_div_0_div_4_div_4_div_12_Template, 5, 1, "div", 3);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
@@ -2945,6 +2965,8 @@ function DeploymentGatewayComponent_div_0_div_4_div_4_Template(rf, ctx) { if (rf
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", gw_r3.mac);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", gw_r3.last_telemetry);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", gw_r3.wifi_credentials);
 } }
 function DeploymentGatewayComponent_div_0_div_4_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div");
@@ -2952,7 +2974,7 @@ function DeploymentGatewayComponent_div_0_div_4_Template(rf, ctx) { if (rf & 1) 
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](2, "Deployed gateways");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](3, "div", 4);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](4, DeploymentGatewayComponent_div_0_div_4_div_4_Template, 12, 3, "div", 5);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](4, DeploymentGatewayComponent_div_0_div_4_div_4_Template, 13, 4, "div", 5);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 } if (rf & 2) {
@@ -2991,6 +3013,7 @@ class DeploymentGatewayComponent {
         for (let gw of this.deployment.gateways) {
             this.gatewayService.getOneGateway(gw.sensor_id).then((res) => {
                 this.gateways.push(res);
+                console.log(res);
             });
         }
     }
