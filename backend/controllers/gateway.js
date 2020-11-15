@@ -12,11 +12,10 @@ Returns partial data about all the gateways
  */
 const getAllGateway = (req, res) => {
     gatewayModel.find({}, (err, gateways) => {
-        console.log(gateways);
+            console.log(gateways);
             if (err) {
                 return res.status(500).json(err);
-            }
-            else {
+            } else {
                 let gatewaysObj = JSON.parse(JSON.stringify(gateways));
                 for (let i = 0; i < gatewaysObj.length; ++i) {
                     delete gatewaysObj[i]['deployments'];
@@ -99,9 +98,9 @@ const postTelemetryGateway = (req, res) => {
 const updateGateway = (req, res) => {
     let id = req.params.gateway_id;
     console.log(req.body);
-    gatewayModel.updateOne({_id: id}, req.body).then(res => {
+    gatewayModel.updateOne({_id: id}, req.body).then(ress => {
         console.log("UPDATED");
-        return res.status(200).json();
+        return res.status(200).json(ress);
     })
         .catch(err => {
             return res.status(400).json(err);

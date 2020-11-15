@@ -23,6 +23,12 @@
                   <p class="sensor-spec">{{gw.last_telemetry}}</p>
                 </div>
 
+                <div *ngIf="gw.wifi_credentials">
+                  <small>Wifi SSID: </small>
+
+                  <p class="sensor-spec">{{gw.wifi_credentials[0]}}</p>
+                </div>
+
 
               </div>
 

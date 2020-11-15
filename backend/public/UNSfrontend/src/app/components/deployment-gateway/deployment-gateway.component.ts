@@ -36,6 +36,7 @@ export class DeploymentGatewayComponent implements OnInit {
     for(let gw of this.deployment.gateways){
       this.gatewayService.getOneGateway(gw.sensor_id).then((res) => {
         this.gateways.push(res);
+        console.log(res);
       });
     }
   }
