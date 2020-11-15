@@ -73,7 +73,10 @@ long prev_display = 0;
 long rammm = 0;
 
 void loop() {
-
+  vTaskDelay(10000);
+  oled_off();
+  vTaskDelay(100);
+  oled_on();
   vTaskDelay(30000);
 
 }
@@ -87,6 +90,7 @@ void TaskOled( void *pvParameters ) {
   Serial.println("Oled Task");
 
   for (;;) {
+    
     Serial.println("-----------------------taskOled");
     int rtt_avg = get_RTT_average();
     String name = get_config_name();
