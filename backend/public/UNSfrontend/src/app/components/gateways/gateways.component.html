@@ -15,14 +15,12 @@
           <div class="col-3">
             <small>MAC:  </small>
             <p class="gateway-spec"><span *ngFor="let num of gateway.mac; index as i">{{num.toString(16)}}<span *ngIf="i<5">:</span></span> </p>
-            <small>Location: </small>
-            <p class="gateway-spec">{{gateway.current_location[0].toFixed(3)}}, {{gateway.current_location[1].toFixed(3) | uppercase}}</p>
 
           </div>
           <div class="col-5">
             <div *ngIf="gateway.current_deployment">
             <small>Deployment: </small>
-            <p class="gateway-spec">{{gateway.current_deployment}}</p>
+            <p class="gateway-spec">{{gateway.deployment_name}}</p>
             </div>
           </div>
           <div class="col-4">

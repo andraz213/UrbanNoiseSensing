@@ -6803,7 +6803,13 @@
       /* harmony import */
 
 
-      var _angular_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+      var _services_deployment_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+      /*! ../../services/deployment.service */
+      "F3Vm");
+      /* harmony import */
+
+
+      var _angular_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
       /*! @angular/common */
       "ofXK");
 
@@ -6856,7 +6862,7 @@
         }
       }
 
-      function GatewaysComponent_div_5_div_1_div_17_Template(rf, ctx) {
+      function GatewaysComponent_div_5_div_1_div_12_Template(rf, ctx) {
         if (rf & 1) {
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div");
 
@@ -6880,7 +6886,7 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](gateway_r3.current_deployment);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](gateway_r3.deployment_name);
         }
       }
 
@@ -6916,29 +6922,15 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](11, "small");
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](12, "Location: ");
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](11, "div", 10);
+
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](12, GatewaysComponent_div_5_div_1_div_12_Template, 5, 1, "div", 3);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](13, "p", 9);
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](14);
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](15, "uppercase");
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](16, "div", 10);
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](17, GatewaysComponent_div_5_div_1_div_17_Template, 5, 1, "div", 3);
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](18, "div", 11);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](13, "div", 11);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
@@ -6958,11 +6950,7 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", gateway_r3.mac);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate2"]("", gateway_r3.current_location[0].toFixed(3), ", ", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind1"](15, 5, gateway_r3.current_location[1].toFixed(3)), "");
-
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", gateway_r3.current_deployment);
         }
@@ -6972,7 +6960,7 @@
         if (rf & 1) {
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div");
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, GatewaysComponent_div_5_div_1_Template, 19, 7, "div", 4);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](1, GatewaysComponent_div_5_div_1_Template, 14, 3, "div", 4);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         }
@@ -6987,10 +6975,11 @@
       }
 
       var GatewaysComponent = /*#__PURE__*/function () {
-        function GatewaysComponent(gatewayService) {
+        function GatewaysComponent(gatewayService, deploymentService) {
           _classCallCheck(this, GatewaysComponent);
 
           this.gatewayService = gatewayService;
+          this.deploymentService = deploymentService;
         }
 
         _createClass(GatewaysComponent, [{
@@ -7007,6 +6996,50 @@
             this.gatewayService.getGateways().then(function (result) {
               console.log(result);
               _this17.gateways = result;
+
+              _this17.getDeployments();
+            });
+          }
+        }, {
+          key: "getDeployments",
+          value: function getDeployments() {
+            var _this18 = this;
+
+            this.deploymentService.getDeployments().then(function (result) {
+              var _iterator20 = _createForOfIteratorHelper(result),
+                  _step20;
+
+              try {
+                for (_iterator20.s(); !(_step20 = _iterator20.n()).done;) {
+                  var dep = _step20.value;
+
+                  var _iterator21 = _createForOfIteratorHelper(_this18.gateways),
+                      _step21;
+
+                  try {
+                    for (_iterator21.s(); !(_step21 = _iterator21.n()).done;) {
+                      var gw = _step21.value;
+
+                      if (gw.current_deployment != null) {
+                        if (gw.current_deployment == dep._id) {
+                          // @ts-ignore
+                          gw.deployment_name = dep.name;
+                        }
+                      }
+                    }
+                  } catch (err) {
+                    _iterator21.e(err);
+                  } finally {
+                    _iterator21.f();
+                  }
+                }
+              } catch (err) {
+                _iterator20.e(err);
+              } finally {
+                _iterator20.f();
+              }
+
+              console.log(_this18.gateways);
             });
           }
         }]);
@@ -7015,7 +7048,7 @@
       }();
 
       GatewaysComponent.ɵfac = function GatewaysComponent_Factory(t) {
-        return new (t || GatewaysComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_gateway_service__WEBPACK_IMPORTED_MODULE_1__["GatewayService"]));
+        return new (t || GatewaysComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_gateway_service__WEBPACK_IMPORTED_MODULE_1__["GatewayService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_deployment_service__WEBPACK_IMPORTED_MODULE_2__["DeploymentService"]));
       };
 
       GatewaysComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({
@@ -7055,8 +7088,7 @@
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.gateways && ctx.gateways.length != 0);
           }
         },
-        directives: [_angular_common__WEBPACK_IMPORTED_MODULE_2__["NgIf"], _angular_common__WEBPACK_IMPORTED_MODULE_2__["NgForOf"]],
-        pipes: [_angular_common__WEBPACK_IMPORTED_MODULE_2__["UpperCasePipe"]],
+        directives: [_angular_common__WEBPACK_IMPORTED_MODULE_3__["NgIf"], _angular_common__WEBPACK_IMPORTED_MODULE_3__["NgForOf"]],
         styles: [".gateway-div[_ngcontent-%COMP%]{\r\n  border: #bbbbff;\r\n  border-radius: 0.4em;\r\n  border-style: solid;\r\n  border-width: 0.001em;\r\n}\r\n\r\n\r\n.gateway-spec[_ngcontent-%COMP%]{\r\n  border-radius: 5px;\r\n  background: #ddeeff;\r\n  padding: 0.251em;\r\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImdhdGV3YXlzL2dhdGV3YXlzLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxlQUFlO0VBQ2Ysb0JBQW9CO0VBQ3BCLG1CQUFtQjtFQUNuQixxQkFBcUI7QUFDdkI7OztBQUdBO0VBQ0Usa0JBQWtCO0VBQ2xCLG1CQUFtQjtFQUNuQixnQkFBZ0I7QUFDbEIiLCJmaWxlIjoiZ2F0ZXdheXMvZ2F0ZXdheXMuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5nYXRld2F5LWRpdntcclxuICBib3JkZXI6ICNiYmJiZmY7XHJcbiAgYm9yZGVyLXJhZGl1czogMC40ZW07XHJcbiAgYm9yZGVyLXN0eWxlOiBzb2xpZDtcclxuICBib3JkZXItd2lkdGg6IDAuMDAxZW07XHJcbn1cclxuXHJcblxyXG4uZ2F0ZXdheS1zcGVje1xyXG4gIGJvcmRlci1yYWRpdXM6IDVweDtcclxuICBiYWNrZ3JvdW5kOiAjZGRlZWZmO1xyXG4gIHBhZGRpbmc6IDAuMjUxZW07XHJcbn1cclxuIl19 */"]
       });
       /*@__PURE__*/
@@ -7072,6 +7104,8 @@
         }], function () {
           return [{
             type: _services_gateway_service__WEBPACK_IMPORTED_MODULE_1__["GatewayService"]
+          }, {
+            type: _services_deployment_service__WEBPACK_IMPORTED_MODULE_2__["DeploymentService"]
           }];
         }, null);
       })();
