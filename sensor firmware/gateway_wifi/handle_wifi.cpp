@@ -116,6 +116,7 @@ uint8_t latest_rssi = 0;
 
 void init_wifi() {
   if (WiFi.status() != WL_CONNECTED) {
+    oled_on();
     print_text(String("Scanning for"), String("WiFi networks"), "", "");
     WiFi.mode(WIFI_STA);
     int a = esp_wifi_set_protocol( WIFI_IF_STA, WIFI_PROTOCOL_11B | WIFI_PROTOCOL_11G | WIFI_PROTOCOL_11N );

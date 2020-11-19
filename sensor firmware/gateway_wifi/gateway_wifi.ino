@@ -13,6 +13,11 @@ void setup() {
   Serial2.begin(921600);
   Serial2.setRxBufferSize(1024);
 
+  oled_off();
+  delay(10);
+  oled_on;
+  delay(10);
+  
   setCpuFrequencyMhz(240);
 
   // init two tasks
@@ -24,7 +29,7 @@ void setup() {
     ,  NULL
     ,  1  // Priority
     ,  NULL
-    ,  0);
+    ,  1);
 
 
   xTaskCreatePinnedToCore(
@@ -55,17 +60,10 @@ void setup() {
     ,  NULL
     ,  1  // Priority
     ,  NULL,
-    1);
+    0);
 
 
-  xTaskCreatePinnedToCore(
-    TaskPrintHeap
-    ,  "TaskPrintHeap"
-    ,  2000  // Stack size
-    ,  NULL
-    ,  1  // Priority
-    ,  NULL,
-    1);
+
 
 }
 long prev_display = 0;
@@ -74,9 +72,7 @@ long rammm = 0;
 
 void loop() {
   vTaskDelay(10000);
-  oled_off();
-  vTaskDelay(100);
-  oled_on();
+
   vTaskDelay(30000);
 
 }
@@ -90,14 +86,11 @@ void TaskOled( void *pvParameters ) {
   Serial.println("Oled Task");
 
   for (;;) {
-    
+
     Serial.println("-----------------------taskOled");
     int rtt_avg = get_RTT_average();
     String name = get_config_name();
     print_text(name, String("Averge RTT: " + String(rtt_avg)), String(String("Alive ") + String((int(millis() / 1000))) + String("s")), String(String("Signal strength: ") + String((int)get_rssi() - 255)));
-    for (int i = 0; i < 10; i++) {
-      delayMicroseconds(1000);
-    }
     //delay(10);
     //Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
     vTaskDelay(90);

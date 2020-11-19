@@ -1,0 +1,48 @@
+navodila za uporabo 
+
+
+
+
+
+okvirni opis celotne zadeve od tega kako je zasnovan koncept 
+
+Sistem smo zasnoveli z uporabnikom v ospredju. Vso nastavljanje in pregled merilnih in zbirnih enot poteka preko spletnega grafičnega vmesnika zasnovanega specifično za potrebe tega projekta.
+
+Vsaka naprava ima unikatno ime, ki se uporablja za lažjo identifikacijo in je zaradi človeških imen bolj dostopna uporabniku. 
+
+Predpostavljeno je, da je na kraju nastavljanja dostopno wifi omrežje s povezavo na internet z SSID: "UNSwifi" in geslom: "uns12wifi34". Pri zaznavanju se lahko uporablja poljubno wifi omrežje. 
+
+
+
+Razlaga kako se senzor nastavlja
+
+Merilna enota je zadolžena za zbiranje podatkov o hrupu in posredovanje teh na zbirno enoto, da jih ta posreduje na strežnik. Zaradi lažjega sestavljanja merilnih enot, je na vse enote naložena ista programska koda. Ko se merilne enote povežejo na zaledje šele dobijo svoje specifične podatke. Za začetno identifikacijo smo uporabili mac naslov, saj ima vsak ESP32 čip drugačnega, tako da jih lahko uporabimo za identifikacijo. Predpostavljeno je, da je ob nastavljanju merilni enoti na voljo wifi omrežje z SSID: "UNSwifi" in geslom: "uns12wifi34". Ko se enota poveže na zaledje, se v bazi podatkov ustvari nov zapis in tej enoti se dodeli unikatno ime in id. Ime se uporablja pri identifikaciji posamezne enote ko se jo montira na lokaciji in pri identifikaciji enot. 
+
+Meerilna enota ima dva načina delovanja. Način zaznavanja in način za nastavljanje. Uporabnik lahko izbere način delovanja prede se enota prižige, saj enota ob prižiganju najprej preveri stanje na stikalu za način obratovanja.  
+
+Za spreminjanje načinov delovanja je treba enoto ugasniti in prižgati nazaj
+
+Način zaznavanja
+
+Ko je enota nastavljena v način za zaznavanje, se ob prižigu za nekaj sekund pojavijo osnovni podatki o enoti. Izpiše se ime naprave, trenutna napetost na bateriji in mac naslov gatewaya na katerega pošilja podatke. 
+Po teh prvih sekundah se ekran ugasne in prične se zaznavanje.
+
+Način za nastavljanje
+
+Ko je enota nastavljena v način za naastavljanje, se najprej poveže na wifi "UNSwifi" z geslom "uns12wifi34". Po tem pošlje svojj mac naslov na strežnik, ki doda zapis za to enoto v bazo podatkov če ta enota še ni registrirana, potem pa vrne konfiguracijske podtake, ki se zapišejo v spomin enote. To pridobivanje podatkov se periodično ponavlja, da je enota vedno opremljena z najnovejšimi podatki. Poleg tega pa enota na strežnik pošilja telemetrične podatke o napolnjenosti baterije, ki so lahko koristni, če se istočasno polni več enot. Poleg tega pa vmes teče test mikrofona. Podatki o trenutnih decibelih in spektogram zvoka so prikazani na ekranu.
+
+
+
+Zbirna enota 
+
+Zbirna enota je zadolžena za zbiranje in posredovanje podatkov z merilnih enot na strežnik. Za to potrebuje stalno povezavo na internet preko wifi omrežja. Tudi ta enota predpostavlja prisotnost "UNSwifi" omreža z geslom "uns12wifi34". Predpostavili smo, da na vseh lokacijah dostop do tega omrežja ne bo mogoč, tako da smo uporabniku s pomočjo internetnega vmesnika omogočili dodajanje še enega omrežja na katerega se lahko enota poveže. V primeru prisotnosti obeh omrežij, se bo enota samodejno povezala na tistega, ki ima močnejši signal. Ko zbirno enoto dodelimo "deploymentu" in ta "deployment" zaženemo, je treba zbirno enoto povezati na internet, da pridobi podatke o novi dostopni točki in si jih shrani v spomin. 
+Zbirna enota je opremljena z dvema ekranoma, ki prikazujeta trenutne podatke o obeh delih enote. 
+
+
+
+Deployment
+
+Ker je namen projekta omogočanje kratkotrajnih študij hrupa na majhnem območju, smo omogočili ustvarjanje zaključenih enot študij. Vsak "deployment" predstavlja posamezno študijo. Tako so podatki organizirani v smiselne zaključene enote. Vsakemu "deploymentu" lahko uporabnik določi poljubno število in lokacijo merilnih enot, eno zbirno enoto, ime te študije, opis te študije, interval zbiranja podatkov in podatke o wifi omrežju na katerega se zbirna enota lahko poveže. 
+
+
+Spletni vmesnik
