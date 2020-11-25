@@ -52,7 +52,7 @@
 # električna shema merilne enote
 # diagram poteka obeh načinov delovanja
 # koda poti podatkov od mikrofona do dodajanja v vrsto za pošiljanje
-* fotografija enote
+# fotografija enote
 # fotografija materiala za vse merilne enote
 
 
@@ -61,7 +61,7 @@
 # konceptualna shema zbirne enote
 # električna shema zbirne enote
 # diagram poteka kot prikaz delovanja
-* fotografija enote
+# fotografija enote
 # fotografija materiala za vse zbirne enote
 
 
@@ -86,8 +86,8 @@
 
 4. Uporabniška navodila
 
-* posnetki zaslona frontenda pri nastavljanju
-* fotografije zaslonov na merilnih in zbirnih enotah ob različnih fazah nastavljanja
+# posnetki zaslona frontenda pri nastavljanju
+# fotografije zaslonov na merilnih in zbirnih enotah ob različnih fazah nastavljanja
 
 
 5. primera uporabe
