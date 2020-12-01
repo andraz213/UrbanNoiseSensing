@@ -21,22 +21,14 @@ const getAllDataByDeployment = async (req, res) => {
                 'path': '$data'
             }
         }, {
-            '$unset': [
-                'data.fftValues', 'data.frequencyRange'
-            ]
-        }, {
             '$match': {
                 'data.measured_at': {
                     '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
                 }
             }
         }, {
-            '$sort': {
-                'data.measured_at': -1
-            }
-        }, {
             '$group': {
-                '_id': '$sensor',
+                '_id': '$_id',
                 'size': {
                     '$sum': 1
                 },
