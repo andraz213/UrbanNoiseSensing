@@ -5,8 +5,8 @@
 #include <HTTPClient.h>
 #include "esp_wifi.h"
 
-const char* ssid = "A1";
-const char* password = "siol2004";
+const char* ssid = "";
+const char* password = "";
 
 //Your Domain name with URL path or IP address with path
 const char* serverName = "http://noise-sensing-pre-mvp.herokuapp.com/api/measurements";
