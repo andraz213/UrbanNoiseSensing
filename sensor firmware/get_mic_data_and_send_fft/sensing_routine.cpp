@@ -118,7 +118,7 @@ void sensing_and_data_preparation(){
   // print current microseconds for debugging
   print_usec();
   // turn on display for debbuging
-  if(!digitalRead(27)){
+  if(!digitalRead(27) || millis() < 60000){
     oled_on();
     draw_rect();
   }
@@ -138,6 +138,12 @@ void sensing_and_data_preparation(){
   calculate_fft((int*)&samples_pub, (double*)&fft_downsampled, DOWNSAMPLED__FFT);
   decibels = 0.0;
   decibels = calculate_decibels((int*)&samples_pub, SAMPLES_SIZE);
+
+  if(!digitalRead(27) || millis() < 60000){
+    oled_on();
+    print_biggest_text(String(decibels));
+  }
+
 
   // put data into a sending queue
   add_to_sending_queue((double*) &fft_downsampled, decibels, sensing_start);

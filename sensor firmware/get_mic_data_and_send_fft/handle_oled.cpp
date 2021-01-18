@@ -7,6 +7,8 @@
 
 Adafruit_SSD1306 display(128, 32, &Wire, -1);
 
+int sec_on = 0;
+
 bool inited_oled = false;
 
 bool init_oled() {
@@ -30,6 +32,33 @@ void print_text(String text1, String text2, String text3, String text4) {
     display.println(text2);
     display.println(text3);
     display.println(text4);
+    display.display();
+    sec_on = 3;
+  }
+}
+
+
+void print_big_text(String text1, String text2) {
+  if (init_oled()) {
+    display.clearDisplay();
+    display.setTextSize(2);      // Normal 1:1 pixel scale
+    display.setTextColor(SSD1306_WHITE); // Draw white text
+    display.setCursor(0, 0);
+    display.println(text1);
+    display.println(text2);
+    display.display();
+    sec_on = 3;
+  }
+}
+
+
+void print_biggest_text(String text1){
+  if (init_oled() && sec_on <= 0) {
+    display.clearDisplay();
+    display.setTextSize(4);      // Normal 1:1 pixel scale
+    display.setTextColor(SSD1306_WHITE); // Draw white text
+    display.setCursor(0, 0);
+    display.println(text1);
     display.display();
   }
 }
@@ -73,7 +102,7 @@ void show_spectrogram(int size, double * values, double decibels, double max_fre
 }
 
 void draw_rect() {
-  if (init_oled()) {
+  if (init_oled() && sec_on < 1) {
     display.clearDisplay();
     display.drawRect(0, 0, 32, 32, SSD1306_WHITE);
     display.display();
@@ -89,6 +118,10 @@ void oled_on() {
 
 void oled_off() {
   if (init_oled()) {
-    display.ssd1306_command(SSD1306_DISPLAYOFF);
+    if(sec_on <= 0){
+      display.ssd1306_command(SSD1306_DISPLAYOFF);
+    } else {
+      sec_on -= 1;
+    }
   }
 }

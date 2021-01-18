@@ -10,7 +10,7 @@
 #include "sending_queue.h"
 #include "handle_time.h"
 #include "handle_json.h"
-
+#include "handle_oled.h"
 
 uint8_t mac_address [6];
 esp_now_peer_info_t peerInfo;
@@ -71,7 +71,7 @@ void send_data() {
   // Add peer
   sending_list * to_send = get_first();
 
-
+  int num_successes = 0;
   while (to_send != 0 && millis() - start < 110) {
     turn_on_wifi_for_esp_now();
 
@@ -95,10 +95,23 @@ void send_data() {
     if (sending_succeeded) {
       remove_first();
       to_send = get_first();
+      num_successes += 1;
+    } else {
+      num_successes = -10000000;
     }
 
     sending_succeeded = false;
     sended = false;
+  }
+
+  if(millis() < 60000){
+    oled_on();
+    String name = get_config_name();
+    if(num_successes > -1){
+      print_big_text(name, "Sent: " + String(num_successes));
+    } else {
+      print_big_text(name, "SEND FAIL");
+    }
   }
 
   if(to_send == 0){
