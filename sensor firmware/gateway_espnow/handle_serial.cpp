@@ -108,12 +108,15 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 long last_telemetry = 0;
 
 void send_espnow_telemetry(){
-  if(millis() - last_telemetry > 60000 || last_telemetry == 0){
+  if(millis() - last_telemetry > 1000 || last_telemetry == 0){
     last_telemetry = millis();
     espnow_telemetry_message* message = (espnow_telemetry_message*)heap_caps_malloc(sizeof(espnow_telemetry_message), MALLOC_CAP_8BIT);
     int type = (int)ESPNOW_GATEWAY_TELEMETRY;
 
     WiFi.macAddress((uint8_t*)message->mac);
+    message->running = (long)(millis() / 1000);
+    message->messages = (int) (get_meesages_last_mil(5000) / 5);
+    message->ram = (int) heap_caps_get_free_size(MALLOC_CAP_8BIT);
 
     char* to_send = (char*)heap_caps_malloc(sizeof(espnow_telemetry_message) + sizeof(int), MALLOC_CAP_8BIT);
 

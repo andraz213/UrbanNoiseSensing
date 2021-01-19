@@ -46,6 +46,7 @@ WebsocketsClient client;
 HTTPClient httpClient;
 
 uint8_t latest_rssi = 0;
+String latest_ssid = "";
 
 
 /*
@@ -238,6 +239,7 @@ void TaskWifi( void *pvParameters ) {
     if (WiFi.status() == WL_CONNECTED) {
 
       latest_rssi = WiFi.RSSI();
+      latest_ssid = WiFi.SSID();
       get_wifi_config();
       vTaskDelay(10);
       prepare_jsn_data();
@@ -593,6 +595,10 @@ void get_measurement_interval_config() {
 
 uint8_t get_rssi() {
   return latest_rssi;
+}
+
+String get_ssid(){
+  return latest_ssid;
 }
 
 void add_rtt(long len) {

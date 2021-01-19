@@ -62,6 +62,13 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 
   memcpy(mac, (char*)payload + sizeof(int), sizeof(char) * 6);
   memcpy(data, (char*)payload + sizeof(int) + 6, sizeof(char) * datalen);
+
+if (type == (int) ESPNOW_GATEWAY_TELEMETRY) {
+
+  handle_espnow_telemetry(payload);
+}
+
+
   if (type == (int) SENSOR_READING) {
     handle_sensor_reading(mac, data, datalen, type);
 
@@ -201,6 +208,22 @@ void handle_sensor_telemetry(char * mac, char * data, int datalen, int type) {
   }
 
 }
+
+
+void handle_espnow_telemetry(uint8_t *payload) {
+
+  espnow_telemetry_message * espnow_tele = (espnow_telemetry_message *)heap_caps_malloc(sizeof(espnow_telemetry_message), MALLOC_CAP_8BIT);
+  memcpy(espnow_tele, payload, sizeof(espnow_telemetry_message));
+  set_espnow_mac((uint8_t *)espnow_tele->mac);
+
+
+
+
+  free(espnow_tele);
+
+}
+
+
 
 
 void handle_time_request(uint8_t *payload) {

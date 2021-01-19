@@ -17,7 +17,7 @@ void setup() {
   delay(10);
   oled_on;
   delay(10);
-  
+
   setCpuFrequencyMhz(240);
 
   // init two tasks
@@ -90,7 +90,7 @@ void TaskOled( void *pvParameters ) {
     Serial.println("-----------------------taskOled");
     int rtt_avg = get_RTT_average();
     String name = get_config_name();
-    print_text(name, String("Averge RTT: " + String(rtt_avg)), String(String("Alive ") + String((int(millis() / 1000))) + String("s")), String(String("Signal strength: ") + String((int)get_rssi() - 255)));
+    print_text(name, String("Averge RTT: " + String(rtt_avg)), String(String("Alive ") + String((int(millis() / 1000))) + String("s")), String(String("WiFi: ")+ get_ssid() + " (" + String((int)get_rssi() - 255) + ")"));
     //delay(10);
     //Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
     vTaskDelay(90);

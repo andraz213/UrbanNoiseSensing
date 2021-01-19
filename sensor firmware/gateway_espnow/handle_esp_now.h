@@ -10,5 +10,6 @@ void init_wifi();
 void handleTimeRequest(char* mac);
 void handleSensorMessage(uint8_t * mac, uint8_t *incomingData, int len, int type);
 void set_sensing_interval(int interval);
+int get_meesages_last_mil(int mil);
 
 #endif

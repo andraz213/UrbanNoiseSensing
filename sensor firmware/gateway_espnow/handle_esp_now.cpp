@@ -15,7 +15,8 @@
 int sensing_interval = 1;
 bool time_recieved = false;
   esp_now_peer_info_t peerInfo;
-  long last_messages [100];
+  const int last_messages_num = 200;
+  long last_messages [last_messages_num];
   int last_messages_iter = 0;
 
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status){
@@ -49,7 +50,7 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
     handleSensorMessage((uint8_t *)mac, (uint8_t *)data, datalen, type);
   }
 
-  last_messages_iter %= 100;
+  last_messages_iter %= last_messages_num;
   last_messages[last_messages_iter] = millis();
   last_messages_iter++;
 }
@@ -177,6 +178,18 @@ void handleTimeRequest(char* mac){
 
 }
 
+
+int get_meesages_last_mil(int mil){
+  int res = 0;
+  for(int i = 0; i<last_messages_num; i++){
+    if(last_messages[i] <= mil){
+      res += 1;
+    }
+
+  }
+
+  return res;
+}
 
 void set_sensing_interval(int interval){
   sensing_interval = interval;

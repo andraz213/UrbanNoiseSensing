@@ -42,6 +42,9 @@ typedef struct  {
 
 typedef struct  {
   char mac[6];
+  int messages;
+  int ram;
+  long running;
 } espnow_telemetry_message;
 
 typedef struct  {
