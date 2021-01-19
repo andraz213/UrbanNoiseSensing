@@ -93,8 +93,31 @@ const postGateway = (req, res) => {
 Posts gateway telemetry to the server
  */
 const postTelemetryGateway = (req, res) => {
-	console.log(req.body);
-	return res.status(200);
+    console.log(req.body);
+
+    let id = req.params.gateway_id;
+
+    gatewayModel.findById(id, (err, gateway) => {
+        if(err){
+            console.log(err);
+            return res.status(400).json(err);
+        } else{
+            console.log(gateway);
+            if(!gateway || gateway.length == 0){
+                return res.status(204).json({'message': `Gateway ${id} dose not exist!`});
+            }
+            gateway.telemetry = req.body
+            console.log(gateway);
+            gateway.save((err, gateway_sv) => {
+                if(err){
+                    return res.status(500).json(err);
+                }else{
+                    return res.status(200).json(gateway_sv);
+                }
+            })
+
+        }
+    });
 }
 
 const updateGateway = (req, res) => {
@@ -102,6 +125,7 @@ const updateGateway = (req, res) => {
     console.log(req.body);
     gatewayModel.updateOne({_id: id}, req.body).then(ress => {
         console.log("UPDATED");
+        console.log(req.body);
         return res.status(200).json(ress);
     })
         .catch(err => {
