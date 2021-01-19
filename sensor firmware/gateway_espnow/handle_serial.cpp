@@ -110,18 +110,18 @@ long last_telemetry = 0;
 void send_espnow_telemetry(){
   if(millis() - last_telemetry > 1000 || last_telemetry == 0){
     last_telemetry = millis();
-    espnow_telemetry_message* message = (espnow_telemetry_message*)heap_caps_malloc(sizeof(espnow_telemetry_message), MALLOC_CAP_8BIT);
+    espnow_telemetry_message message; // = (espnow_telemetry_message*)heap_caps_malloc(sizeof(espnow_telemetry_message), MALLOC_CAP_8BIT);
     int type = (int)ESPNOW_GATEWAY_TELEMETRY;
 
-    WiFi.macAddress((uint8_t*)message->mac);
-    message->running = (long)(millis() / 1000);
-    message->messages = (int) (get_meesages_last_mil(5000) / 5);
-    message->ram = (int) heap_caps_get_free_size(MALLOC_CAP_8BIT);
+    WiFi.macAddress((uint8_t*)&message.mac);
+    message.running = (long)(millis() / 1000);
+    message.messages = (int) (get_meesages_last_mil(5000) / 5);
+    message.ram = (int) heap_caps_get_free_size(MALLOC_CAP_8BIT);
 
     char* to_send = (char*)heap_caps_malloc(sizeof(espnow_telemetry_message) + sizeof(int), MALLOC_CAP_8BIT);
 
     memcpy(to_send, &type, sizeof(int));
-    memcpy(to_send + sizeof(int), message, sizeof(espnow_telemetry_message));
+    memcpy(to_send + sizeof(int), &message, sizeof(espnow_telemetry_message));
     uint16_t result = 0;
     int num = 0;
     while(result != PJON_ACK && num < 10){
@@ -131,7 +131,7 @@ void send_espnow_telemetry(){
     }
     delay(60);
 
-    free(message);
+    //free(&message);
     free(to_send);
     Serial.println("sended telemetry");
   }
@@ -181,6 +181,10 @@ void TaskSerial( void *pvParameters ) {
   send_espnow_telemetry();
 
   for (;;) {
+
+    if(!get_first() && millis() > 7200000){
+      ESP.restart();
+    }
 
     if (get_first() && !bus.update()) {
       message_queue * sending = get_first();

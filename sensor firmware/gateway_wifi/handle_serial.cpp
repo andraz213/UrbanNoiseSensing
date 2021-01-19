@@ -12,6 +12,7 @@
 #include "message_queue.h"
 #include "handle_time.h"
 #include "internal_config.h"
+#include "handle_telemetry.h"
 
 PJON<ThroughSerialAsync> bus(GATEWAY_WIFI);
 
@@ -65,7 +66,7 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
 
 if (type == (int) ESPNOW_GATEWAY_TELEMETRY) {
 
-  handle_espnow_telemetry(payload);
+  handle_espnow_telemetry((char *)payload);
 }
 
 
@@ -210,16 +211,33 @@ void handle_sensor_telemetry(char * mac, char * data, int datalen, int type) {
 }
 
 
-void handle_espnow_telemetry(uint8_t *payload) {
+void handle_espnow_telemetry(char *payload) {
 
-  espnow_telemetry_message * espnow_tele = (espnow_telemetry_message *)heap_caps_malloc(sizeof(espnow_telemetry_message), MALLOC_CAP_8BIT);
-  memcpy(espnow_tele, payload, sizeof(espnow_telemetry_message));
-  set_espnow_mac((uint8_t *)espnow_tele->mac);
+  espnow_telemetry_message espnow_tele; // = (espnow_telemetry_message *)heap_caps_malloc(sizeof(espnow_telemetry_message), MALLOC_CAP_8BIT);
+  memcpy(&espnow_tele, payload + sizeof(int), sizeof(espnow_telemetry_message));
+
+  int ram = 0;
+  long alive = 0;
+  int messages = 0;
+  /*memcpy(espnow_tele->ram, &ram, sizeof(int));
+  memcpy(espnow_tele->running, &alive, sizeof(long));
+  memcpy(espnow_tele->messages, &messages, sizeof(int));*/
+    Serial.println("telelelelel");
+    Serial.println(String((char*)payload));
+    Serial.println(espnow_tele.ram);
+      Serial.println(espnow_tele.messages);
+  set_espnow_ram(espnow_tele.ram);
+  set_espnow_alive(espnow_tele.running);
+  set_espnow_messages(espnow_tele.messages);
+
+  Serial.println(get_telemetry_json());
+
+  set_espnow_mac((uint8_t *)espnow_tele.mac);
 
 
 
 
-  free(espnow_tele);
+  //free(espnow_tele);
 
 }
 

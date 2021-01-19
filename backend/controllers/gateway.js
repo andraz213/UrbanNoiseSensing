@@ -93,6 +93,8 @@ const postGateway = (req, res) => {
 Posts gateway telemetry to the server
  */
 const postTelemetryGateway = (req, res) => {
+	console.log(req.body);
+	return res.status(200);
 }
 
 const updateGateway = (req, res) => {

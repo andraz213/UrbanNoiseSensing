@@ -17,5 +17,6 @@ int parse_interval_config(String json);
 
 String check_wifi_credentials(String current);
 
+String get_gateway_id();
 
 #endif

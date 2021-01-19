@@ -25,6 +25,24 @@ String get_config_name() {
 
 
 
+String get_gateway_id() {
+  DynamicJsonDocument doc(5000);
+  String json = get_config();
+  if (json.length() > 0) {
+    deserializeJson(doc, json);
+    if (doc.size() > 0) {
+      JsonObject root = doc[0];
+      if (!root["_id"].isNull()) {
+        const char* id = root["_id"];
+        String res = String(id);
+        return res; // "Madelyn84"
+      }
+    }
+  }
+
+  return String("");
+}
+
 String get_current_deployment() {
   DynamicJsonDocument doc(5000);
   String json = get_config();

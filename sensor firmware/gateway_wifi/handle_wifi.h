@@ -21,5 +21,6 @@ bool handle_connecting(String current);
 uint8_t get_rssi();
 String get_ssid();
 void add_rtt(long len);
+bool post_telemetry();
 
 #endif

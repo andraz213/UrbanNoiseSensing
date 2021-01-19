@@ -1,4 +1,5 @@
 #include "handle_wifi.h"
+#include "handle_telemetry.h"
 #include <Arduino.h>
 #include "message_queue.h"
 #include <esp_pm.h>
@@ -221,7 +222,7 @@ void TaskWifi( void *pvParameters ) {
     got_reply = true;
   });
 
-
+  long prev_telem_gate = millis();
   for (;;) {
     Serial.println("-----------------------taskWifi");
 
@@ -241,6 +242,12 @@ void TaskWifi( void *pvParameters ) {
       latest_rssi = WiFi.RSSI();
       latest_ssid = WiFi.SSID();
       get_wifi_config();
+
+      if(prev_telem_gate + 1000 < millis()){
+        prev_telem_gate = millis();
+        post_telemetry();
+      }
+      
       vTaskDelay(10);
       prepare_jsn_data();
       if (!jsn_body) {
@@ -567,6 +574,7 @@ void prepare_jsn_data() {
 long previous_interval_config = 0;
 void get_measurement_interval_config() {
   if (millis() - previous_interval_config > 1000) {
+
     String deployment_id = get_current_deployment();
 
     if (deployment_id.length() > 5 && WiFi.status() == WL_CONNECTED) {
@@ -607,3 +615,37 @@ void add_rtt(long len) {
   average_RTT_index += 1;
   average_RTT_index %= 50;
 }
+
+
+bool post_telemetry() {
+Serial.println("send_teleel");
+  String id = get_gateway_id();
+
+  Serial.println(id);
+  Serial.println(id.length());
+  if(id.length() > 1){
+
+    uint8_t mac [6];
+
+    if (get_espnow_mac(mac)) {
+      String telemetry = get_telemetry_json();
+      String url = String(serverName) + String("/api/gateway/telemetry/") + id;
+      String body = "[{\"mac\":[" + String(mac[0]) + "," + String(mac[1]) + "," + String(mac[2]) + "," + String(mac[3]) + "," + String(mac[4]) + "," + String(mac[5]) + "], \"telemetry\":" + telemetry + "}]";
+      Serial.println(url);
+      Serial.println(body);
+      HTTPClient http;
+      http.begin(url);
+      http.addHeader("Content-Type", "application/json");
+      int httpResponseCode = http.POST(body);
+      Serial.println("telelele RESPONSE");
+      Serial.println(httpResponseCode);
+
+      if (httpResponseCode == 200) {
+        return true;
+      }
+    }
+  }
+  return false;
+
+
+};

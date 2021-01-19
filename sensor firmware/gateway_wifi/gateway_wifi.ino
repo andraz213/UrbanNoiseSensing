@@ -1,4 +1,4 @@
-
+#include "handle_telemetry.h"
 #include "handle_oled.h"
 #include "handle_wifi.h"
 #include "handle_serial.h"
@@ -92,11 +92,15 @@ void TaskOled( void *pvParameters ) {
     String name = get_config_name();
     print_text(name, String("Averge RTT: " + String(rtt_avg)), String(String("Alive ") + String((int(millis() / 1000))) + String("s")), String(String("WiFi: ")+ get_ssid() + " (" + String((int)get_rssi() - 255) + ")"));
     //delay(10);
-    //Serial.println(heap_caps_get_free_size(MALLOC_CAP_8BIT));
+    Serial.println(get_ssid());
     vTaskDelay(90);
 
-
-
+    set_wifi_RTT(rtt_avg);
+    set_wifi_ram((int) heap_caps_get_free_size(MALLOC_CAP_8BIT));
+    set_wifi_alive((long)(millis() / 1000));
+    set_wifi_ssid(get_ssid());
+    set_wifi_rssi((int)get_rssi() - 255);
+    set_wifi_messages(get_sent_in_last_second());
   }
 }
 
