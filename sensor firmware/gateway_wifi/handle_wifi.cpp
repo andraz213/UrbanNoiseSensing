@@ -16,8 +16,8 @@
 #include "internal_config.h"
 #include <ArduinoJson.h>
 #include <ArduinoWebsockets.h>
-const char* ssid = "PSP256";
-const char* password = "siol2004";
+const char* ssid = "visitors";
+const char* password = "faculty1920";
 
 
 const char* ssid2 = "UNSwifi";
@@ -243,11 +243,11 @@ void TaskWifi( void *pvParameters ) {
       latest_ssid = WiFi.SSID();
       get_wifi_config();
 
-      if(prev_telem_gate + 1000 < millis()){
+      if(prev_telem_gate + 3000 < millis()){
         prev_telem_gate = millis();
         post_telemetry();
       }
-      
+
       vTaskDelay(10);
       prepare_jsn_data();
       if (!jsn_body) {
@@ -573,7 +573,7 @@ void prepare_jsn_data() {
 
 long previous_interval_config = 0;
 void get_measurement_interval_config() {
-  if (millis() - previous_interval_config > 1000) {
+  if (millis() - previous_interval_config > 5000) {
 
     String deployment_id = get_current_deployment();
 

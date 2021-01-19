@@ -182,7 +182,7 @@ void handleTimeRequest(char* mac){
 int get_meesages_last_mil(int mil){
   int res = 0;
   for(int i = 0; i<last_messages_num; i++){
-    if(last_messages[i] <= mil){
+    if(millis() - last_messages[i] <= mil){
       res += 1;
     }
 
