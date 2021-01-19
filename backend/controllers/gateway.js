@@ -97,6 +97,11 @@ const postTelemetryGateway = (req, res) => {
 
     let id = req.params.gateway_id;
 
+    let dataObj = JSON.parse(JSON.stringify(req.body));
+
+    gatewayModel.update({_id :id },{$set : {telemetry: dataObj.telemetry}});
+    return res.status(200);
+    /*
     gatewayModel.findById(id, (err, gateway) => {
         if(err){
             console.log(err);
@@ -106,7 +111,7 @@ const postTelemetryGateway = (req, res) => {
             if(!gateway || gateway.length == 0){
                 return res.status(204).json({'message': `Gateway ${id} dose not exist!`});
             }
-            gateway.telemetry = req.body
+            gateway.telemetry = req.body;
             console.log(gateway);
             gateway.save((err, gateway_sv) => {
                 if(err){
@@ -117,7 +122,7 @@ const postTelemetryGateway = (req, res) => {
             })
 
         }
-    });
+    });*/
 }
 
 const updateGateway = (req, res) => {
