@@ -174,7 +174,7 @@ const postDataSensorSensor = async (req, res) => {
                             first: 1
                         }).exec();
                     }
-                    if (currentData == null || currentData.length == 0 || currentData.size >= 10) {
+                    if (currentData == null || currentData.length == 0 || currentData.size >= 1000) {
                         currentData = new dataModel();
                         currentData.deployment = oneSensor.current_deployment;
                         currentData.location = oneSensor.current_location;
