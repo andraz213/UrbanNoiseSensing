@@ -40,7 +40,8 @@ const gatewaySchema = new mongoose.Schema({
     wifi_credentials: [String],
     current_location: [Number],
     last_telemetry: Date,
-    firmware_version: String
+    firmware_version: String,
+    telemetry: mongoose.Mixed
 });
 
 const dataDeploymentSchema = new mongoose.Schema({
