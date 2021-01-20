@@ -15,9 +15,9 @@ const getAllDeployment = async (req, res) => {
            for(let i = 0; i<dataObj.length; i++){
                delete dataObj[i]['sensors'];
                delete dataObj[i]['gateways'];
-               if(!dataObj[i]['measurement_num'] ){
+               /*if(!dataObj[i]['measurement_num'] ){
                    dataObj[i]['measurement_num'] = await get_measurements(dataObj[i]["_id"]);
-               }
+               }*/
            }
            return res.status(200).json(dataObj);
        }
