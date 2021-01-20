@@ -29,7 +29,7 @@
 
 
 
-          <div *ngIf="gateway.telemetry" class="col-3">
+          <div *ngIf="gateway.telemetry" class="col-xl-3 col-md-6 col-lg-3 col-xs-12">
 
             <small>ESP-NOW free RAM:  </small>
             <p class="gateway-spec">{{(gateway.telemetry.espnow_ram / 1000).toFixed(0)}}kb</p>
@@ -39,7 +39,7 @@
             <p class="gateway-spec">{{gateway.telemetry.espnow_alive}}s</p>
           </div>
 
-          <div *ngIf="gateway.telemetry" class="col-3">
+          <div *ngIf="gateway.telemetry" class="col-xl-3 col-md-6 col-lg-3 col-xs-12">
 
             <small>WiFi free RAM:  </small>
             <p class="gateway-spec">{{(gateway.telemetry.wifi_ram / 1000).toFixed(0)}}kb</p>
@@ -49,9 +49,9 @@
             <p class="gateway-spec">{{gateway.telemetry.wifi_alive}}s</p>
           </div>
 
-          <div *ngIf="gateway.telemetry" class="col-3">
+          <div *ngIf="gateway.telemetry" class="col-xl-3 col-md-6 col-lg-3 col-xs-12">
 
-            <small>WiFi SSID:  </small>
+            <small>WiFi connected to:  </small>
             <p class="gateway-spec">{{gateway.telemetry.wifi_ssid}}</p>
             <small>WiFi signal strength:  </small>
             <p class="gateway-spec">{{gateway.telemetry.wifi_rssi}}dB</p>

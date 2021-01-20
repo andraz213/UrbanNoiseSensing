@@ -32,7 +32,7 @@
 
               </div>
 
-              <div *ngIf="gw.telemetry" class="col-3">
+              <div *ngIf="gw.telemetry" class="col-xl-3 col-md-6 col-lg-3 col-xs-12">
 
                 <small>ESP-NOW free RAM:  </small>
                 <p class="sensor-spec">{{(gw.telemetry.espnow_ram / 1000).toFixed(0)}}kb</p>
@@ -42,7 +42,7 @@
                 <p class="sensor-spec">{{gw.telemetry.espnow_alive}}s</p>
               </div>
 
-              <div *ngIf="gw.telemetry" class="col-3">
+              <div *ngIf="gw.telemetry" class="col-xl-3 col-md-6 col-lg-3 col-xs-12">
 
                 <small>WiFi free RAM:  </small>
                 <p class="sensor-spec">{{(gw.telemetry.wifi_ram / 1000).toFixed(0)}}kb</p>
@@ -52,9 +52,9 @@
                 <p class="sensor-spec">{{gw.telemetry.wifi_alive}}s</p>
               </div>
 
-              <div *ngIf="gw.telemetry" class="col-3">
+              <div *ngIf="gw.telemetry" class="col-xl-3 col-md-6 col-lg-3 col-xs-12">
 
-                <small>WiFi SSID:  </small>
+                <small>WiFi connected to:  </small>
                 <p class="sensor-spec">{{gw.telemetry.wifi_ssid}}</p>
                 <small>WiFi signal strength:  </small>
                 <p class="sensor-spec">{{gw.telemetry.wifi_rssi}}dB</p>
