@@ -17,15 +17,48 @@
             <p class="gateway-spec"><span *ngFor="let num of gateway.mac; index as i">{{num.toString(16)}}<span *ngIf="i<5">:</span></span> </p>
 
           </div>
-          <div class="col-5">
+          <div class="col-6">
             <div *ngIf="gateway.current_deployment">
             <small>Deployment: </small>
             <p class="gateway-spec">{{gateway.deployment_name}}</p>
             </div>
           </div>
-          <div class="col-4">
+          <div class="col-3">
 
           </div>
+
+
+
+          <div *ngIf="gateway.telemetry" class="col-3">
+
+            <small>ESP-NOW free RAM:  </small>
+            <p class="gateway-spec">{{(gateway.telemetry.espnow_ram / 1000).toFixed(0)}}kb</p>
+            <small>ESP-NOW msg last sec:  </small>
+            <p class="gateway-spec">{{gateway.telemetry.espnow_messages}}</p>
+            <small>ESP-NOW alive:  </small>
+            <p class="gateway-spec">{{gateway.telemetry.espnow_alive}}s</p>
+          </div>
+
+          <div *ngIf="gateway.telemetry" class="col-3">
+
+            <small>WiFi free RAM:  </small>
+            <p class="gateway-spec">{{(gateway.telemetry.wifi_ram / 1000).toFixed(0)}}kb</p>
+            <small>WiFi messages last secod:  </small>
+            <p class="gateway-spec">{{gateway.telemetry.wifi_messages}}</p>
+            <small>WiFi alive:  </small>
+            <p class="gateway-spec">{{gateway.telemetry.wifi_alive}}s</p>
+          </div>
+
+          <div *ngIf="gateway.telemetry" class="col-3">
+
+            <small>WiFi SSID:  </small>
+            <p class="gateway-spec">{{gateway.telemetry.wifi_ssid}}</p>
+            <small>WiFi signal strength:  </small>
+            <p class="gateway-spec">{{gateway.telemetry.wifi_rssi}}dB</p>
+            <small>WiFi server RTT:  </small>
+            <p class="gateway-spec">{{gateway.telemetry.wifi_rtt}}ms</p>
+          </div>
+
         </div>
       </div>
     </div>

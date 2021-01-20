@@ -8,5 +8,6 @@ export class Gateway {
   current_location: [number];
   last_telemetry: Date;
   firmware_version: string;
+  telemetry: any;
 
 }

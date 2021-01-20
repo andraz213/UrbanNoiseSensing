@@ -7,7 +7,7 @@
       <div class="row">
 
 
-        <div *ngFor="let gw of gateways" class="col-xl-3 col-lg-6 col-sm-12 m-0">
+        <div *ngFor="let gw of gateways" class=" m-0">
 
           <div class="sensor-div mb-4">
             <div class="row m-3">
@@ -24,13 +24,44 @@
                 </div>
 
                 <div *ngIf="gw.wifi_credentials">
-                  <small>Wifi SSID: </small>
+                  <small>WiFi SSID: </small>
 
                   <p class="sensor-spec">{{gw.wifi_credentials[0]}}</p>
                 </div>
 
 
               </div>
+
+              <div *ngIf="gw.telemetry" class="col-3">
+
+                <small>ESP-NOW free RAM:  </small>
+                <p class="sensor-spec">{{(gw.telemetry.espnow_ram / 1000).toFixed(0)}}kb</p>
+                <small>ESP-NOW msg last sec:  </small>
+                <p class="sensor-spec">{{gw.telemetry.espnow_messages}}</p>
+                <small>ESP-NOW alive:  </small>
+                <p class="sensor-spec">{{gw.telemetry.espnow_alive}}s</p>
+              </div>
+
+              <div *ngIf="gw.telemetry" class="col-3">
+
+                <small>WiFi free RAM:  </small>
+                <p class="sensor-spec">{{(gw.telemetry.wifi_ram / 1000).toFixed(0)}}kb</p>
+                <small>WiFi messages last secod:  </small>
+                <p class="sensor-spec">{{gw.telemetry.wifi_messages}}</p>
+                <small>WiFi alive:  </small>
+                <p class="sensor-spec">{{gw.telemetry.wifi_alive}}s</p>
+              </div>
+
+              <div *ngIf="gw.telemetry" class="col-3">
+
+                <small>WiFi SSID:  </small>
+                <p class="sensor-spec">{{gw.telemetry.wifi_ssid}}</p>
+                <small>WiFi signal strength:  </small>
+                <p class="sensor-spec">{{gw.telemetry.wifi_rssi}}dB</p>
+                <small>WiFi server RTT:  </small>
+                <p class="sensor-spec">{{gw.telemetry.wifi_rtt}}ms</p>
+              </div>
+
 
             </div>
           </div>

@@ -6,6 +6,10 @@ import {GatewayService} from "../../services/gateway.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BsModalService} from "ngx-bootstrap/modal";
 import {Deployment} from "../../models/deployment";
+import { interval } from 'rxjs';
+import { takeWhile } from 'rxjs/operators';
+
+
 
 @Component({
   selector: 'app-deployment-gateway',
@@ -24,21 +28,41 @@ export class DeploymentGatewayComponent implements OnInit {
   @Input() id: string;
   @Input() deployment: Deployment;
 
+  private gateways_cp: Gateway[];
   public gateways: Gateway[];
 
   ngOnInit() {
-    this.getGateways()
+
+
+    this.getGateways();
+
+    const secondsCounter = interval(1000);
+    const subscription = secondsCounter.subscribe(n =>
+      this.updateGateways());
+
   }
 
 
   private getGateways(){
-    this.gateways = [];
+    let temp_gateways = [];
     for(let gw of this.deployment.gateways){
       this.gatewayService.getOneGateway(gw.sensor_id).then((res) => {
-        this.gateways.push(res);
+        temp_gateways.push(res);
         console.log(res);
       });
     }
+    this.gateways = temp_gateways;
   }
+
+  private updateGateways(){
+
+    for(let gw of this.gateways){
+      this.gatewayService.getOneGateway(gw._id).then((res) => {
+        gw.telemetry = res.telemetry;
+
+      });
+    }
+  }
+
 
 }
