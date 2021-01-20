@@ -48,9 +48,11 @@ export class AverageChartComponent implements OnInit {
 
       for(let dd of data){
         let one = {};
-        one["name"] = (new Date(dd.time)).toLocaleTimeString();
+        one["name"] = this.formatDateXAxis(new Date(dd.time));
         one["value"] = dd.average;
         temp_data["series"].push(one);
+
+        console.log(one["name"]);
 
       }
 
@@ -83,4 +85,32 @@ export class AverageChartComponent implements OnInit {
     console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
+
+  formatDateXAxis(date: Date){
+    let res = "";
+
+    if(date.getDate() < 10){
+      res += "0";
+    }
+    res += date.getDate();
+    res += ".";
+    if(date.getMonth() < 10){
+      res += "0";
+    }
+    res += date.getMonth() +1;
+    res += ". ";
+    if(date.getHours() < 10){
+      res += "0";
+    }
+
+    res += date.getHours();
+    res += ":";
+    if(date.getMinutes() < 10){
+      res += "0";
+    }
+    res += date.getMinutes();
+
+    return res;
+
+  }
 }
