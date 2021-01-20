@@ -15,9 +15,9 @@ const getAllDeployment = async (req, res) => {
            for(let i = 0; i<dataObj.length; i++){
                delete dataObj[i]['sensors'];
                delete dataObj[i]['gateways'];
-               /*if(!dataObj[i]['measurement_num'] ){
+               if(!dataObj[i]['measurement_num'] ){
                    dataObj[i]['measurement_num'] = await get_measurements(dataObj[i]["_id"]);
-               }*/
+               }
            }
            return res.status(200).json(dataObj);
        }
@@ -306,7 +306,7 @@ return -1;
 
 const get_measurements = async (id) => {
 
-    let get_n_measurements = [
+    let number_agregation = [
         {
             '$match': {
                 'deployment': mongoose.Types.ObjectId(id)
@@ -322,23 +322,23 @@ const get_measurements = async (id) => {
                 }
             }
         }, {
-            '$bucketAuto': {
-                'groupBy': '$data.measured_at',
-                'buckets': 1,
-                'output': {
-                    'num': {
-                        '$sum': 1
-                    }
+            '$group': {
+                '_id': '$sensor',
+                'num': {
+                    '$sum': 1
                 }
             }
         }
     ];
+
     let all_measurements = 0;
-    let numberes = JSON.parse(JSON.stringify(await dataModel.aggregate(get_n_measurements).allowDiskUse(true).exec()));
+    let numberes = JSON.parse(JSON.stringify(await dataModel.aggregate(number_agregation).allowDiskUse(true).exec()));
     if(numberes != null){
-        if(numberes[0] != null && numberes[0].num){
-            all_measurements = numberes[0].num;
+        for(let numm in numberes){
+            all_measurements += numm.num
+
         }
+
     }
 
     return all_measurements;
