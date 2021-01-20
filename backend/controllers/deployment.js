@@ -335,7 +335,7 @@ const get_measurements = async (id) => {
 
 
     let all_measurements = 0;
-    let numberes = JSON.parse(JSON.stringify(await dataModel.aggregate(number_agregation).allowDiskUse(true).exec()));
+    let numberes = await dataModel.aggregate(number_agregation).allowDiskUse(true).exec();
     console.log(numberes);
     if(numberes != null){
         for(let numm in numberes){
