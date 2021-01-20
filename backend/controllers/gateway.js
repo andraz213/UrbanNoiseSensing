@@ -98,7 +98,9 @@ const postTelemetryGateway = (req, res) => {
     let id = req.params.gateway_id;
 
     let dataObj = JSON.parse(JSON.stringify(req.body));
+    console.log(dataObj.telemetry);
 
+    console.log(dataObj["telemtry"]);
     gatewayModel.update({_id :id },{$set : {telemetry: dataObj.telemetry}});
     return res.status(200);
     /*
