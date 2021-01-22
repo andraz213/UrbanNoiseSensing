@@ -55,8 +55,8 @@ const getAllDataByDeployment = async (req, res) => {
     ];
 
     let agg = dataModel.aggregate(agregat);
-    agg.options = { allowDiskUse: true };
-    agg.exec(  (err, data) => {
+    agg.options = {allowDiskUse: true};
+    agg.exec((err, data) => {
         if (err) {
             console.log(err);
             return res.status(400).json(err);
@@ -148,8 +148,8 @@ const getLastNByDeployment = (req, res) => {
 
 
     let agg = dataModel.aggregate(agregat);
-    agg.options = { allowDiskUse: true };
-    agg.exec(  (err, data) => {
+    agg.options = {allowDiskUse: true};
+    agg.exec((err, data) => {
         if (err) {
             console.log(err);
             return res.status(500).json(err);
@@ -222,8 +222,8 @@ const getLastNSecondsByDeployment = async (req, res) => {
     console.log(agregat);
 
     let agg = dataModel.aggregate(agregat);
-    agg.options = { allowDiskUse: true };
-    agg.exec(  (err, data) => {
+    agg.options = {allowDiskUse: true};
+    agg.exec((err, data) => {
         if (err) {
             return res.status(500).json(err);
         }
@@ -367,7 +367,7 @@ const GetInterestingIntervalsManuallyDataDeployment = async (req, res) => {
 
     let oragregat = [];
 
-    for(let int in interests){
+    for (let int in interests) {
 
 
         let mini = {
@@ -381,7 +381,8 @@ const GetInterestingIntervalsManuallyDataDeployment = async (req, res) => {
 
     let interes_data_agregat = [
         {
-            '$match': {'deployment': new ObjectId(dep_id)
+            '$match': {
+                'deployment': new ObjectId(dep_id)
             }
         }, {
             '$unwind': {
@@ -420,9 +421,8 @@ const GetInterestingIntervalsManuallyDataDeployment = async (req, res) => {
     ];
 
 
-
     let agg = dataModel.aggregate(interes_data_agregat);
-    agg.options = { allowDiskUse: true };
+    agg.options = {allowDiskUse: true};
     agg.exec((err, data) => {
         if (err) {
             console.log(err);
@@ -567,7 +567,7 @@ const GetInterestingIntervalsDataDeployment = async (req, res) => {
 
     let oragregat = [];
 
-    for(let int in interests){
+    for (let int in interests) {
 
 
         let mini = {
@@ -583,7 +583,8 @@ const GetInterestingIntervalsDataDeployment = async (req, res) => {
 
     let interes_data_agregat = [
         {
-            '$match': {'deployment': new ObjectId(dep_id)
+            '$match': {
+                'deployment': new ObjectId(dep_id)
             }
         }, {
             '$unwind': {
@@ -625,7 +626,7 @@ const GetInterestingIntervalsDataDeployment = async (req, res) => {
 
 
     let agg = dataModel.aggregate(interes_data_agregat);
-    agg.options = { allowDiskUse: true };
+    agg.options = {allowDiskUse: true};
     agg.exec((err, data) => {
         if (err) {
             console.log(err);
@@ -642,11 +643,15 @@ const GetAcerageOverAllSensors = async (req, res) => {
 
     let dep_id = req.params.deployment_id;
 
-    let agregat = [
+    let razlika_milisekunde = [
         {
             '$match': {
                 'deployment': new ObjectId(dep_id)
             }
+        }, {
+            '$unset': [
+                'data.fftValues', 'data._id', 'data.frequencyRange', 'location', 'first', 'last', 'deployment', 'size', '_id', 'sensor'
+            ]
         }, {
             '$unwind': {
                 'path': '$data'
@@ -659,48 +664,93 @@ const GetAcerageOverAllSensors = async (req, res) => {
             }
         }, {
             '$group': {
-                '_id': '$data.measured_at',
-                'timestamp': {
-                    '$first': '$data.measured_at'
+                '_id': null,
+                'max': {
+                    '$max': '$data.measured_at'
                 },
-                'average': {
-                    '$avg': '$data.decibels'
-                },
-                'deviation': {
-                    '$stdDevPop': '$data.decibels'
+                'min': {
+                    '$min': '$data.measured_at'
                 }
             }
         }, {
-            '$sort': {
-                'timestamp': 1
-            }
-        }, {
-            '$bucketAuto': {
-                'groupBy': '$timestamp',
-                'buckets': 333,
-                'output': {
-                    'average': {
-                        '$avg': '$average'
-                    },
-                    'time': {
-                        '$first': '$timestamp'
-                    }
+            '$set': {
+                'delta': {
+                    '$subtract': [
+                        '$max', '$min'
+                    ]
                 }
             }
         }
-
     ];
 
 
-    let agg = dataModel.aggregate(agregat);
-    agg.options = { allowDiskUse: true };
-    agg.exec( (err, data) => {
+    let agg_milis = dataModel.aggregate(razlika_milisekunde);
+    agg_milis.options = {allowDiskUse: true};
+    agg_milis.exec((err, data) => {
         if (err) {
             return res.status(400).json(err);
         }
-        return res.status(200).json(data);
-    });
 
+        console.log(data);
+        let agregat = [
+            {
+                '$match': {
+                    'deployment': new ObjectId(dep_id)
+                }
+            }, {
+                '$unwind': {
+                    'path': '$data'
+                }
+            }, {
+                '$match': {
+                    'data.measured_at': {
+                        '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
+                    }
+                }
+            }, {
+                '$group': {
+                    '_id': '$data.measured_at',
+                    'timestamp': {
+                        '$first': '$data.measured_at'
+                    },
+                    'average': {
+                        '$avg': '$data.decibels'
+                    },
+                    'deviation': {
+                        '$stdDevPop': '$data.decibels'
+                    }
+                }
+            }, {
+                '$sort': {
+                    'timestamp': 1
+                }
+            }, {
+                '$bucketAuto': {
+                    'groupBy': '$timestamp',
+                    'buckets': 333,
+                    'output': {
+                        'average': {
+                            '$avg': '$average'
+                        },
+                        'time': {
+                            '$first': '$timestamp'
+                        }
+                    }
+                }
+            }
+
+        ];
+
+
+        let agg = dataModel.aggregate(agregat);
+        agg.options = {allowDiskUse: true};
+        agg.exec((err, data) => {
+            if (err) {
+                return res.status(400).json(err);
+            }
+            return res.status(200).json(data);
+        });
+    });
 
 }
 
