@@ -749,6 +749,10 @@ const GetAcerageOverAllSensors = async (req, res) => {
                         '$sum': 1
                     }
                 }
+            }, {
+                '$sort': {
+                    'timestamp': 1
+                }
             }
         ];
 
