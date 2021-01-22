@@ -697,7 +697,7 @@ const GetAcerageOverAllSensors = async (req, res) => {
         let agregat = [
             {
                 '$match': {
-                    'deployment': new ObjectId('5f5b6b7da74e82002305bba2')
+                    'deployment': new ObjectId(dep_id)
                 }
             }, {
                 '$unset': [
