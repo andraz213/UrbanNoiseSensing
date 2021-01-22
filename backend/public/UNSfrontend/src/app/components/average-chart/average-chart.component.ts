@@ -25,7 +25,7 @@ export class AverageChartComponent implements OnInit {
   timeline: boolean = true;
 
   colorScheme = {
-    domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
+    domain: ['#5AA454', '#FFD1D1', '#CFC0BB', '#7aa3e5', '#a8385d', '#aae3f5']
   };
 
 
@@ -41,10 +41,32 @@ export class AverageChartComponent implements OnInit {
   private getAverages(){
 
     this.dataservice.getAverageDeployment(this.id).then(data =>{
+
+      let max = 0;
+      let max_dec = 0;
+      let min_dec = 20000;
+      for(let dd of data) {
+        if(dd.num > max){
+          max = dd.num;
+        }
+        if(dd.average > max_dec){
+          max_dec = dd.average;
+        }
+        if(dd.average < min_dec){
+          min_dec = dd.average;
+        }
+
+      }
+
+
       let temp_data = {};
       temp_data["name"] = "averages";
       temp_data["series"] = [];
-      let ticks = [];
+
+      let temp_data_num = {};
+      temp_data_num["name"] = "Number of measurements ( not to scale )";
+      temp_data_num["series"] = [];
+
 
       for(let dd of data){
         let one = {};
@@ -52,11 +74,18 @@ export class AverageChartComponent implements OnInit {
         one["value"] = dd.average;
         temp_data["series"].push(one);
 
+        let one_num = {};
+
+        one_num["name"] = this.formatDateXAxis(new Date(dd.time));
+        one_num["value"] = ((dd.num / max)*(max_dec- min_dec)) + min_dec;
+        temp_data_num["series"].push(one_num);
+
         console.log(one["name"]);
 
       }
 
       this.average_data = [temp_data];
+      this.average_data.push(temp_data_num);
       console.log(this.average_data);
     });
   }
