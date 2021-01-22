@@ -691,12 +691,18 @@ const GetAcerageOverAllSensors = async (req, res) => {
             return res.status(400).json(err);
         }
 
-        console.log(data);
+        let razlika = data[0].delta;
+        let interval = Math.floor(razlika / 333);
+
         let agregat = [
             {
                 '$match': {
-                    'deployment': new ObjectId(dep_id)
+                    'deployment': new ObjectId('5f5b6b7da74e82002305bba2')
                 }
+            }, {
+                '$unset': [
+                    'data.fftValues', 'data._id', 'data.frequencyRange', 'location', 'first', 'last', 'deployment', 'size', '_id', 'sensor'
+                ]
             }, {
                 '$unwind': {
                     'path': '$data'
@@ -709,36 +715,41 @@ const GetAcerageOverAllSensors = async (req, res) => {
                 }
             }, {
                 '$group': {
-                    '_id': '$data.measured_at',
+                    '_id': {
+                        '$toDate': {
+                            '$subtract': [
+                                {
+                                    '$toLong': '$data.measured_at'
+                                }, {
+                                    '$mod': [
+                                        {
+                                            '$toLong': '$data.measured_at'
+                                        }, interval
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    'timestamp_min': {
+                        '$min': '$data.measured_at'
+                    },
+                    'timestamp_max': {
+                        '$max': '$data.measured_at'
+                    },
                     'timestamp': {
-                        '$first': '$data.measured_at'
+                        '$min': '$data.measured_at'
+                    },
+                    'time': {
+                        '$min': '$data.measured_at'
                     },
                     'average': {
                         '$avg': '$data.decibels'
                     },
-                    'deviation': {
-                        '$stdDevPop': '$data.decibels'
-                    }
-                }
-            }, {
-                '$sort': {
-                    'timestamp': 1
-                }
-            }, {
-                '$bucketAuto': {
-                    'groupBy': '$timestamp',
-                    'buckets': 333,
-                    'output': {
-                        'average': {
-                            '$avg': '$average'
-                        },
-                        'time': {
-                            '$first': '$timestamp'
-                        }
+                    'num': {
+                        '$sum': 1
                     }
                 }
             }
-
         ];
 
 
