@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const JSONStream = require("JSONStream");
+const stringify = require('JSONStream').stringify
+
 const {
     ObjectId
 } = require('mongodb');
@@ -65,6 +68,100 @@ const getAllDataByDeployment = async (req, res) => {
     });
 
 }
+
+
+
+const streamAllDataByDeployment = async (req, res) => {
+    let dep_id = req.params.deployment_id;
+
+    /*
+    *  {
+            '$match': {
+                'deployment': new ObjectId(dep_id)
+            }
+        },
+    *
+    * */
+
+    let agregat = [
+        {
+            '$match': {
+                'deployment': new ObjectId(dep_id)
+            }
+        },
+       {
+            '$unwind': {
+                'path': '$data'
+            }
+        }, {
+            '$match': {
+                'data.measured_at': {
+                    '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
+                }
+            }
+        }, {
+            '$group': {
+                '_id': '$_id',
+                'size': {
+                    '$sum': 1
+                },
+                'location': {
+                    '$first': '$location'
+                },
+                'deployment': {
+                    '$first': '$deployment'
+                },
+                'sensor': {
+                    '$first': '$sensor'
+                },
+                'first': {
+                    '$min': '$data.measured_at'
+                },
+                'last': {
+                    '$max': '$data.measured_at'
+                },
+                'data': {
+                    '$push': '$data'
+                }
+            }
+        }
+    ];
+    res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+    let aggr = dataModel.aggregate(agregat);
+    aggr.options = {allowDiskUse: true};
+    aggr.cursor().exec().pipe(JSONStream.stringify()).pipe(res);
+    return;
+
+    let agg = dataModel.aggregate(agregat, { cursor: { batchSize: 0 }});
+    agg.options = {allowDiskUse: true};
+
+
+    let stream = agg.cursor();
+
+    stream.next(function(error, doc) {
+        console.log(doc);
+    });
+
+    res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+
+    let op = '{"documents":['
+    let cl = '],"count":0,"total":0}'
+    stream.pipe(stringify(op, ',', cl)).pipe(res)
+    /*
+    agg.options = {allowDiskUse: true};
+    agg.exec((err, data) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).json(err);
+        }
+        return res.status(200).json(data);
+    });*/
+
+}
+
+
+
+
 const getSpeceficDataByDeployment = (req, res) => {
 }
 
@@ -772,6 +869,7 @@ const GetAcerageOverAllSensors = async (req, res) => {
 
 module.exports = {
     getAllDataByDeployment,
+    streamAllDataByDeployment,
     getSpeceficDataByDeployment,
     getLastNByDeployment,
     getLastNSecondsByDeployment,

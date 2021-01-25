@@ -49,6 +49,8 @@ router.get('/data/deployment/average/:deployment_id', dataController.GetAcerageO
 
 router.get('/data/deployment/:deployment_id', dataController.getAllDataByDeployment);
 
+router.get('/data/stream/deployment/:deployment_id', dataController.streamAllDataByDeployment);
+
 
 router.post('/data/deployment/:deployment_id', dataController.getSpeceficDataByDeployment);
 
