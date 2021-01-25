@@ -127,10 +127,38 @@ const streamAllDataByDeployment = async (req, res) => {
         }
     ];
     res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+
+
+    var strm = dataModel.find({'deployment': new ObjectId(dep_id)}).stream();
+    console.log(dep_id);
+    strm.on('data', function (doc) {
+        res.write(JSON.stringify(doc));
+    });
+    strm.on('end', function() {
+        console.log("yolo");
+        res.end();
+    });
+    return;
+
+    /*
+    var strm = dataModel.aggregate(agregat).stream();
+    strm.on('data', function (doc) {
+        res.write(JSON.stringify(doc));
+    });
+    strm.on('end', function() {
+        res.end();
+    });*/
+
+    /*
+
     let aggr = dataModel.aggregate(agregat);
     aggr.options = {allowDiskUse: true};
-    aggr.cursor().exec().pipe(JSONStream.stringify()).pipe(res);
-    return;
+    var strm = aggr.cursor().exec().pipe(JSONStream.stringify()).pipe(res);
+    strm.on('end', function() {
+        console.log("yolo");
+        res.end();
+    });
+    return res;
 
     let agg = dataModel.aggregate(agregat, { cursor: { batchSize: 0 }});
     agg.options = {allowDiskUse: true};
@@ -147,6 +175,9 @@ const streamAllDataByDeployment = async (req, res) => {
     let op = '{"documents":['
     let cl = '],"count":0,"total":0}'
     stream.pipe(stringify(op, ',', cl)).pipe(res)
+
+    */
+
     /*
     agg.options = {allowDiskUse: true};
     agg.exec((err, data) => {
