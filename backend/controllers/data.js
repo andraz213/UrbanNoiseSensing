@@ -130,14 +130,14 @@ const streamAllDataByDeployment = async (req, res) => {
 
     var strm = dataModel.aggregate(agregat);
     strm.options = {allowDiskUse: true};
-    strm = strm.cursor({ batchSize: 100 }).exec();
+    strm = strm.cursor({ batchSize: 500 }).exec();
 
     let doc;
 
     //res.statusCode = 200;
     //res.setHeader('Content-Type', 'application/json');
     await strm.eachAsync(function (doc, i) {
-        console.log(i);
+        //console.log(i);
         res.write(JSON.stringify(doc));
         res.write(',\n');
         // use doc
