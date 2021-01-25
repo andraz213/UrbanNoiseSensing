@@ -128,8 +128,22 @@ const streamAllDataByDeployment = async (req, res) => {
     ];
     res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
 
+    var strm = dataModel.aggregate(agregat).cursor({ batchSize: 100 }).exec();
 
-    var strm = dataModel.find({'deployment': new ObjectId(dep_id)}).stream();
+    let doc;
+
+    //res.statusCode = 200;
+    //res.setHeader('Content-Type', 'application/json');
+    await strm.eachAsync(function (doc, i) {
+        console.log(i);
+        res.write(JSON.stringify(doc));
+        res.write(',\n');
+        // use doc
+    });
+    res.end();
+    return;
+
+    //var strm = dataModel.find({'deployment': new ObjectId(dep_id)}).stream();
     console.log(dep_id);
     strm.on('data', function (doc) {
         res.write(JSON.stringify(doc));
