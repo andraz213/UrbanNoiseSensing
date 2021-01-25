@@ -130,7 +130,7 @@ const streamAllDataByDeployment = async (req, res) => {
 
     let aggr = dataModel.aggregate(agregat);
     aggr.options = {allowDiskUse: true};
-    var strm = await aggr.cursor().exec().pipe(JSONStream.stringify()).pipe(res.type('json'));
+    var strm = await aggr.cursor({ batchSize: 1000 }).exec().pipe(JSONStream.stringify()).pipe(res.type('json'));
     //res.end();
     return;
     var strm = dataModel.aggregate(agregat);
