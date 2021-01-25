@@ -128,7 +128,9 @@ const streamAllDataByDeployment = async (req, res) => {
     ];
     res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
 
-    var strm = dataModel.aggregate(agregat).cursor({ batchSize: 100 }).exec();
+    var strm = dataModel.aggregate(agregat);
+    strm.options = {allowDiskUse: true};
+    strm = strm.cursor({ batchSize: 100 }).exec();
 
     let doc;
 
