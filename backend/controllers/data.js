@@ -126,8 +126,13 @@ const streamAllDataByDeployment = async (req, res) => {
             }
         }
     ];
-    res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+    //res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
 
+    let aggr = dataModel.aggregate(agregat);
+    aggr.options = {allowDiskUse: true};
+    var strm = await aggr.cursor().exec().pipe(JSONStream.stringify()).pipe(res.type('json'));
+    //res.end();
+    return;
     var strm = dataModel.aggregate(agregat);
     strm.options = {allowDiskUse: true};
     strm = strm.cursor({ batchSize: 500 }).exec();
