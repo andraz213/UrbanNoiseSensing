@@ -20,7 +20,7 @@
 
 PJON<ThroughSerialAsync> bus(1);
 
-
+long last_recieve = 0;
 
 void error_handler(uint8_t code, uint16_t data, void *custom_pointer) {
   if (code == PJON_CONNECTION_LOST) {
@@ -95,6 +95,8 @@ void receiver_function(uint8_t *payload, uint16_t length, const PJON_Packet_Info
      overwritten when a new message is dispatched */
   int type = 0;
   memcpy(&type, (char*)payload, sizeof(int));
+
+  last_recieve = millis();
 
   Serial.println(length);
   Serial.println(type);
@@ -226,6 +228,23 @@ void TaskSerial( void *pvParameters ) {
 
     send_espnow_telemetry();
 
+
+    if(millis() - last_recieve > 30000){
+      Serial.println("hejhoj zaspanec ----------------------------------------");
+      pinMode(33, OUTPUT);
+      digitalWrite(33, LOW);
+      delay(50);
+      pinMode(33, INPUT);
+      last_recieve = millis();
+
+    }
+
+
     vTaskDelay(1);
   }
+}
+
+
+long get_last_recieve(){
+  return last_recieve;
 }

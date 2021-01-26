@@ -4,6 +4,8 @@
 
 
 void setup() {
+
+  pinMode(33, INPUT);
   // put your setup code here, to run once:
 
   Serial.begin(115200);
@@ -11,7 +13,7 @@ void setup() {
   Serial2.setRxBufferSize(1024);
 
   setCpuFrequencyMhz(240);
-  
+
   init_wifi();
 
   // init two tasks

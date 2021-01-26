@@ -15,10 +15,15 @@
 #include "handle_oled.h"
 #include "internal_config.h"
 #include <ArduinoJson.h>
-#include <ArduinoWebsockets.h>
+
 const char* ssid = "visitors";
 const char* password = "faculty1920";
 
+const char* ssid3 = "PSP256";
+const char* password3 = "siol2004";
+
+const char* ssid4 = "neda";
+const char* password4 = "stella77";
 
 const char* ssid2 = "UNSwifi";
 const char* password2 = "uns12wifi34";
@@ -37,14 +42,9 @@ int telemetry_tries = 0;
 
 HTTPClient http;
 
-
-const char* websockets_server_host =  "urbannoisesensing.biolab.si"; //"192.168.1.7"; //Enter server adress
-const uint16_t websockets_server_port = 90; //  3000; // Enter server port
-bool got_reply = false;
-using namespace websockets;
-
-WebsocketsClient client;
 HTTPClient httpClient;
+
+bool got_reply = false;
 
 uint8_t latest_rssi = 0;
 String latest_ssid = "";
@@ -163,6 +163,24 @@ void init_wifi() {
         }
       }
 
+      if (current.equals(ssid3)) {
+        print_text(String("Connecting to "), String(current), "", "");
+        delay(10);
+        WiFi.begin(String(ssid3).c_str(), String(password3).c_str());
+        if (handle_connecting(current)) {
+          return;
+        }
+      }
+
+      if (current.equals(ssid4)) {
+        print_text(String("Connecting to "), String(current), "", "");
+        delay(10);
+        WiFi.begin(String(ssid4).c_str(), String(password4).c_str());
+        if (handle_connecting(current)) {
+          return;
+        }
+      }
+
 
 
 
@@ -207,20 +225,15 @@ void TaskWifi( void *pvParameters ) {
   }
   get_wifi_config();
 
-  // bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
+
   bool connected = httpClient.begin(serverName);
 
   if (connected) {
     Serial.println("Connected!");
-    //client.send("Hello Server");
   } else {
     Serial.println("Not Connected!");
   }
 
-  // run callback when messages are received
-  client.onMessage([&](WebsocketsMessage message) {
-    got_reply = true;
-  });
 
   long prev_telem_gate = millis();
   for (;;) {
@@ -398,74 +411,6 @@ void send_telemetry() {
 }
 
 
-
-void send_data_websocket() {
-
-  StaticJsonDocument<500> doc;
-  message_queue * message = get_first();
-
-  if ((long)message != 0) {
-    if (message -> type == (int)SENSOR_READING) {
-      doc["type"] = "SENSOR_READING";
-      JsonArray mac = doc.createNestedArray("mac");
-      for (int i = 0; i < 6; i++) {
-        mac.add(message->mac[i]);
-      }
-      sending_list * data = (sending_list *)message->message;
-      doc["fft_range"] = data->fft_range;
-      doc["decibels"] = data->decibels;
-      doc["timestamp"] = data->timestamp;
-      JsonArray fft_values = doc.createNestedArray("fft_values");
-      for (int i = 0; i < 16; i++) {
-        fft_values.add(data->fft_values[i]);
-      }
-
-      String jsn;
-      serializeJson(doc, jsn);
-      got_reply = false;
-      client.send(jsn);
-      long sent = millis();
-      while (got_reply != true && millis() - sent < 1) {
-        if (client.available()) {
-          client.poll();
-        }
-      }
-
-      got_reply = true;
-
-      if (got_reply == true) {
-        long RTT = millis() - sent;
-        Serial.print("               RTT time for websockets: ");
-        Serial.println(RTT);
-        average_RTT[average_RTT_index][0] = millis();
-        average_RTT[average_RTT_index][1] = RTT;
-        average_RTT_index ++;
-        average_RTT_index %= 50;
-
-
-
-        remove_first();
-      }
-
-    }
-
-    if (message -> type == (int)SENOSR_TELEMETRY) {
-      doc["type"] = "SENOSR_TELEMETRY";
-
-
-      JsonArray mac = doc.createNestedArray("mac");
-      for (int i = 0; i < 6; i++) {
-        mac.add(message->mac[i]);
-      }
-      telemetry_message * data = (telemetry_message *)message->message;
-      doc["battery_voltage"] = data->battery_voltage;
-      String jsn;
-      serializeJson(doc, jsn);
-      client.send(jsn);
-      remove_first();
-    }
-  }
-}
 
 
 int get_RTT_average() {

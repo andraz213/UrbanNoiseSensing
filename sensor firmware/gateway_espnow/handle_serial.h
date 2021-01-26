@@ -3,6 +3,7 @@
 
 void TaskSerial( void *pvParameters );
 
+long get_last_recieve();
 
 
 #endif

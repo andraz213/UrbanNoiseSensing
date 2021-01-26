@@ -79,15 +79,17 @@ void TaskEspNow( void *pvParameters ) {
     if(millis() - prev_oled > 333){
     int last_second_messages = 0;
     for(int i = 0; i<100; i++){
-      if(millis() - last_messages[i] < 1000){
+      if(millis() - last_messages[i] < 2000){
         last_second_messages ++;
       }
     }
 
+    last_second_messages /= 2;
     uint8_t * mmm = (uint8_t *) heap_caps_malloc(sizeof(uint8_t) * 6, MALLOC_CAP_8BIT);
     esp_wifi_get_mac(WIFI_IF_STA, mmm);
+    String alive = String("Alive ") + String(millis() / 1000) + String("s ") + String((int)(heap_caps_get_free_size(MALLOC_CAP_8BIT) / 1000)) + String("kB");
     String mac = String(mmm[0], HEX) + ":" + String(mmm[1], HEX) + ":" + String(mmm[2], HEX) + ":" + String(mmm[3], HEX) + ":" + String(mmm[4], HEX) + ":" +String(mmm[5], HEX);
-    print_text(String("Messages last second"), String(last_second_messages), String(heap_caps_get_free_size(MALLOC_CAP_8BIT)), mac);
+    print_text(String("Messages last second"), String(last_second_messages), String(alive), mac);
     prev_oled = millis();
     free(mmm);
   }

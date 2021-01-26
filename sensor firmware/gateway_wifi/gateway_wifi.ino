@@ -85,7 +85,9 @@ void TaskOled( void *pvParameters ) {
 
   Serial.println("Oled Task");
   int n_zaporednih = 0;
+  long prev = 0;
   for (;;) {
+    prev = millis();
     if(heap_caps_get_free_size(MALLOC_CAP_8BIT) < 50000){
       n_zaporednih += 1;
       if(n_zaporednih > 60){
@@ -97,10 +99,13 @@ void TaskOled( void *pvParameters ) {
     Serial.println("-----------------------taskOled");
     int rtt_avg = get_RTT_average();
     String name = get_config_name();
-    print_text(name, String("Averge RTT: " + String(rtt_avg)), String(String("Alive ") + String((int(millis() / 1000))) + String("s ") + String(heap_caps_get_free_size(MALLOC_CAP_8BIT)) ), String(String("WiFi: ")+ get_ssid() + " (" + String((int)get_rssi() - 255) + ")"));
+    long ram = heap_caps_get_free_size(MALLOC_CAP_8BIT);
+    ram /= 1000;
+    String rams = String(ram) + "kB";
+    print_text(name, String("Averge RTT: " + String(rtt_avg)), String(String("Alive ") + String((int(millis() / 1000))) + String("s ") + String(rams) ), String(String("WiFi: ")+ get_ssid() + " (" + String((int)get_rssi() - 255) + ")"));
     //delay(10);
     Serial.println(get_ssid());
-    vTaskDelay(90);
+
 
     set_wifi_RTT(rtt_avg);
     set_wifi_ram((int) heap_caps_get_free_size(MALLOC_CAP_8BIT));
@@ -109,6 +114,10 @@ void TaskOled( void *pvParameters ) {
     set_wifi_rssi((int)get_rssi() - 255);
     set_wifi_messages(get_sent_in_last_second());
 
+    long del = 333 - (millis() - prev);
+    del = abs(del);
+
+    vTaskDelay(del);
 
 
   }

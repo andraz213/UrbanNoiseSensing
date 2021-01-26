@@ -20,7 +20,7 @@ String get_config_name() {
     }
   }
 
-  return String("not inited");
+  return String("ERROR");
 }
 
 
