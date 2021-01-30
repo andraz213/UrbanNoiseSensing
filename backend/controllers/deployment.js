@@ -15,9 +15,9 @@ const getAllDeployment = async (req, res) => {
            for(let i = 0; i<dataObj.length; i++){
                delete dataObj[i]['sensors'];
                delete dataObj[i]['gateways'];
-               /*if(!dataObj[i]['measurement_num'] ){
+               if(!dataObj[i]['measurement_num'] ){
                    dataObj[i]['measurement_num'] = await get_measurements(dataObj[i]["_id"]);
-               }*/
+               }
            }
            return res.status(200).json(dataObj);
        }
@@ -312,20 +312,10 @@ const get_measurements = async (id) => {
                 'deployment': mongoose.Types.ObjectId(id)
             }
         }, {
-            '$unwind': {
-                'path': '$data'
-            }
-        }, {
-            '$match': {
-                'data.measured_at': {
-                    '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
-                }
-            }
-        }, {
             '$group': {
                 '_id': '$sensor',
                 'num': {
-                    '$sum': 1
+                    '$sum': "$size"
                 }
             }
         }
@@ -364,20 +354,10 @@ const getDeploymentById = async (req, res) => {
                 'deployment': mongoose.Types.ObjectId(id)
             }
         }, {
-            '$unwind': {
-                'path': '$data'
-            }
-        }, {
-            '$match': {
-                'data.measured_at': {
-                    '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
-                }
-            }
-        }, {
             '$group': {
                 '_id': '$sensor',
                 'num': {
-                    '$sum': 1
+                    '$sum': "$size"
                 }
             }
         }
