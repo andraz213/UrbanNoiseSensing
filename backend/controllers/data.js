@@ -83,71 +83,89 @@ const streamAllDataByDeployment = async (req, res) => {
     *
     * */
 
-    let agregat = [
-        {
-            '$match': {
-                'deployment': new ObjectId(dep_id)
-            }
-        },
-       {
-            '$unwind': {
-                'path': '$data'
-            }
-        }, {
-            '$match': {
-                'data.measured_at': {
-                    '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
-                }
-            }
-        }, {
-            '$group': {
-                '_id': '$_id',
-                'size': {
-                    '$sum': 1
-                },
-                'location': {
-                    '$first': '$location'
-                },
-                'deployment': {
-                    '$first': '$deployment'
-                },
-                'sensor': {
-                    '$first': '$sensor'
-                },
-                'first': {
-                    '$min': '$data.measured_at'
-                },
-                'last': {
-                    '$max': '$data.measured_at'
-                },
-                'data': {
-                    '$push': '$data'
-                }
-            }
-        }
-    ];
+
     //res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+    let deployment = await deploymentModel.findById(dep_id).exec();
 
-    let aggr = dataModel.aggregate(agregat);
-    aggr.options = {allowDiskUse: true};
-    var strm = await aggr.cursor({ batchSize: 1000 }).exec().pipe(JSONStream.stringify()).pipe(res.type('json'));
-    //res.end();
-    return;
-    var strm = dataModel.aggregate(agregat);
-    strm.options = {allowDiskUse: true};
-    strm = strm.cursor({ batchSize: 500 }).exec();
+    console.log(deployment);
 
-    let doc;
 
-    //res.statusCode = 200;
-    //res.setHeader('Content-Type', 'application/json');
-    await strm.eachAsync(function (doc, i) {
-        //console.log(i);
-        res.write(JSON.stringify(doc));
-        res.write(',\n');
-        // use doc
-    });
+
+
+    res.type('json');
+
+    for(let s in deployment.sensors){
+
+        let current_sensor = deployment.sensors[s].sensor_id;
+
+        let agregat = [
+            {
+                '$match': {
+                    'deployment': new ObjectId(dep_id),
+                    'sensor': new ObjectId(current_sensor)
+                }
+            },
+            {
+                '$unwind': {
+                    'path': '$data'
+                }
+            }, {
+                '$match': {
+                    'data.measured_at': {
+                        '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
+                    }
+                }
+            }, {
+                '$group': {
+                    '_id': '$_id',
+                    'size': {
+                        '$sum': 1
+                    },
+                    'location': {
+                        '$first': '$location'
+                    },
+                    'deployment': {
+                        '$first': '$deployment'
+                    },
+                    'sensor': {
+                        '$first': '$sensor'
+                    },
+                    'first': {
+                        '$min': '$data.measured_at'
+                    },
+                    'last': {
+                        '$max': '$data.measured_at'
+                    },
+                    'data': {
+                        '$push': '$data'
+                    }
+                }
+            }
+        ];
+
+
+        var strm = dataModel.aggregate(agregat);
+        strm.options = {allowDiskUse: true};
+        strm = strm.cursor({ batchSize: 15 }).exec();
+
+
+        //res.statusCode = 200;
+        //res.setHeader('Content-Type', 'application/json');
+        await strm.eachAsync(function (doc, i) {
+           
+            res.write(JSON.stringify(doc));
+            res.write(',\n');
+            // use doc
+        });
+
+
+
+    }
+
+
     res.end();
+
+    /*
     return;
 
     //var strm = dataModel.find({'deployment': new ObjectId(dep_id)}).stream();
@@ -160,6 +178,20 @@ const streamAllDataByDeployment = async (req, res) => {
         res.end();
     });
     return;
+*/
+
+
+    /* let aggr = dataModel.aggregate(agregat);
+ aggr.options = {allowDiskUse: true};
+
+ var strm = await aggr.cursor({ batchSize: 1000 }).exec().pipe(JSONStream.stringify()).pipe(res.type('json'));
+ console.log("ss");
+ let aggr1 = dataModel.aggregate(agregat);
+ aggr1.options = {allowDiskUse: true};
+ //var strm1 = await aggr1.cursor({ batchSize: 1000 }).exec().pipe(JSONStream.stringify()).pipe(res.type('json'));
+ console.log("ss");
+ return;*/
+
 
     /*
     var strm = dataModel.aggregate(agregat).stream();
