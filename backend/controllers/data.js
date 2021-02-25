@@ -10,6 +10,136 @@ const sensorModel = mongoose.model('sensor');
 const gatewayModel = mongoose.model('gateway');
 const deploymentModel = mongoose.model('deployment');
 
+
+
+
+
+
+const streamAllDataByDeployment = async (req, res) => {
+    let dep_id = req.params.deployment_id;
+
+    /*
+    *  {
+            '$match': {
+                'deployment': new ObjectId(dep_id)
+            }
+        },
+    *
+    * */
+
+
+    //res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+    let deployment = await deploymentModel.findById(dep_id).exec();
+
+    console.log(deployment);
+
+
+    res.type('json');
+
+    for (let s in deployment.sensors) {
+
+        let current_sensor = deployment.sensors[s].sensor_id;
+
+        let agregat = [
+            {
+                '$match': {
+                    'deployment': new ObjectId(dep_id),
+                    'sensor': new ObjectId(current_sensor)
+                }
+            },
+            {
+                '$unwind': {
+                    'path': '$data'
+                }
+            }, {
+                '$match': {
+                    'data.measured_at': {
+                        '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
+                    }
+                }
+            }, {
+                '$group': {
+                    '_id': '$_id',
+                    'size': {
+                        '$sum': 1
+                    },
+                    'location': {
+                        '$first': '$location'
+                    },
+                    'deployment': {
+                        '$first': '$deployment'
+                    },
+                    'sensor': {
+                        '$first': '$sensor'
+                    },
+                    'first': {
+                        '$min': '$data.measured_at'
+                    },
+                    'last': {
+                        '$max': '$data.measured_at'
+                    },
+                    'data': {
+                        '$push': '$data'
+                    }
+                }
+            }
+        ];
+
+
+        var strm = dataModel.aggregate(agregat);
+        strm.options = {allowDiskUse: true};
+        strm = strm.cursor({batchSize: 15}).exec();
+        
+        await strm.eachAsync(function (doc, i) {
+
+            res.write(JSON.stringify(doc));
+            res.write(',\n');
+            // use doc
+        });
+
+
+    }
+
+
+    res.end();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const getAllDataByDeployment = async (req, res) => {
     let dep_id = req.params.deployment_id;
 
