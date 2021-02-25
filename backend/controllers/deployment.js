@@ -16,7 +16,7 @@ const getAllDeployment = async (req, res) => {
                delete dataObj[i]['sensors'];
                delete dataObj[i]['gateways'];
                if(!dataObj[i]['measurement_num'] ){
-                   dataObj[i]['measurement_num'] = await get_measurements(dataObj[i]["_id"]);
+                   //dataObj[i]['measurement_num'] = await get_measurements(dataObj[i]["_id"]);
                }
            }
            return res.status(200).json(dataObj);
@@ -381,7 +381,7 @@ const getDeploymentById = async (req, res) => {
 
     }
 
-
+	
 
     deploymentModel.findById(id, async (error, deployment) => {
         if (error) {

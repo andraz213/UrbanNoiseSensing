@@ -104,55 +104,24 @@ const streamAllDataByDeployment = async (req, res) => {
                     'deployment': new ObjectId(dep_id),
                     'sensor': new ObjectId(current_sensor)
                 }
-            },
-            {
-                '$unwind': {
-                    'path': '$data'
-                }
             }, {
-                '$match': {
-                    'data.measured_at': {
-                        '$gt': new Date('Wed, 01 Jan 2020 00:00:00 GMT')
-                    }
-                }
-            }, {
-                '$group': {
-                    '_id': '$_id',
-                    'size': {
-                        '$sum': 1
-                    },
-                    'location': {
-                        '$first': '$location'
-                    },
-                    'deployment': {
-                        '$first': '$deployment'
-                    },
-                    'sensor': {
-                        '$first': '$sensor'
-                    },
-                    'first': {
-                        '$min': '$data.measured_at'
-                    },
-                    'last': {
-                        '$max': '$data.measured_at'
-                    },
-                    'data': {
-                        '$push': '$data'
-                    }
-                }
-            }
+    		'$unset': [
+      		'data.fftValues', 'data.frequencyRange', 'data._id'
+    		]
+  	}
         ];
 
 
         var strm = dataModel.aggregate(agregat);
         strm.options = {allowDiskUse: true};
-        strm = strm.cursor({ batchSize: 15 }).exec();
+        strm = strm.cursor({ batchSize: 10 }).exec();
 
 
         //res.statusCode = 200;
         //res.setHeader('Content-Type', 'application/json');
         await strm.eachAsync(function (doc, i) {
-           
+	    console.log(current_sensor);
+		console.log(i);
             res.write(JSON.stringify(doc));
             res.write(',\n');
             // use doc
