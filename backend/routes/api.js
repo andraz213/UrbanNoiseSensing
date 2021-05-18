@@ -5,7 +5,7 @@ var gatewayController = require('../controllers/gateway');
 var dataController = require('../controllers/data');
 var deploymentController = require('../controllers/deployment');
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
     res.send('api');
 });
 
@@ -34,7 +34,6 @@ router.get('/deployment/interval/:deployment_id', deploymentController.getInterv
 router.delete('/deployment/:deployment_id', deploymentController.deleteDeployment);
 
 
-
 /*
 GET /api/data/deployment/{deployment.id}
 GET /api/data/deployment/{deployment.id}/{last_n}
@@ -57,8 +56,6 @@ router.post('/data/deployment/:deployment_id', dataController.getSpeceficDataByD
 router.get('/data/deployment/:deployment_id/:last_n', dataController.getLastNByDeployment);
 
 router.get('/data/deployment/:deployment_id/seconds/:last_seconds', dataController.getLastNSecondsByDeployment);
-
-
 
 
 /*

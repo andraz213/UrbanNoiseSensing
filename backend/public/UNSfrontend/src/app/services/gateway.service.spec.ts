@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { GatewayService } from './gateway.service';
+import {GatewayService} from './gateway.service';
 
 describe('GatewayService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));

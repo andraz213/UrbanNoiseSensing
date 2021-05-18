@@ -12,30 +12,32 @@ import {SensorService} from "../../services/sensor.service";
 export class SensorMapComponent implements OnInit {
 
   constructor(private deploymentService: DeploymentService,
-              private sensorService: SensorService,) { }
+              private sensorService: SensorService,) {
+  }
 
   @Input() id: string;
   @Input() deployment: Deployment;
   public mapType = "hybrid";
   public longitude = 0;
   public latitude = 0;
-  public sensors: {sensor: any, alpha:number}[];
+  public sensors: { sensor: any, alpha: number }[];
 
   ngOnInit() {
     console.log(this.deployment);
     this.getSensors();
   }
 
-  private getSensors(){
+  private getSensors() {
     this.sensors = [];
-    for(let sen of this.deployment.sensors) {
+    for (let sen of this.deployment.sensors) {
 
-        this.sensors.push({sensor: sen, alpha: 0.4});
-        this.longitude += sen.location[0] / this.deployment.sensors.length;
-        // @ts-ignore
-        this.latitude += sen.location[1] / this.deployment.sensors.length;
-        console.log(sen);
-      };
+      this.sensors.push({sensor: sen, alpha: 0.4});
+      this.longitude += sen.location[0] / this.deployment.sensors.length;
+      // @ts-ignore
+      this.latitude += sen.location[1] / this.deployment.sensors.length;
+      console.log(sen);
+    }
+
 
     console.log(this.deployment);
     console.log(this.sensors);

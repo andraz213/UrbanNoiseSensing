@@ -1,4 +1,4 @@
-import { Sensor } from './sensor';
+import {Sensor} from './sensor';
 
 describe('Sensor', () => {
   it('should create an instance', () => {

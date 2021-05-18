@@ -11,10 +11,6 @@ const gatewayModel = mongoose.model('gateway');
 const deploymentModel = mongoose.model('deployment');
 
 
-
-
-
-
 const streamAllDataByDeployment = async (req, res) => {
     let dep_id = req.params.deployment_id;
 
@@ -89,7 +85,7 @@ const streamAllDataByDeployment = async (req, res) => {
         var strm = dataModel.aggregate(agregat);
         strm.options = {allowDiskUse: true};
         strm = strm.cursor({batchSize: 15}).exec();
-        
+
         await strm.eachAsync(function (doc, i) {
 
             res.write(JSON.stringify(doc));
@@ -103,41 +99,6 @@ const streamAllDataByDeployment = async (req, res) => {
 
     res.end();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 const getAllDataByDeployment = async (req, res) => {
@@ -200,7 +161,6 @@ const getAllDataByDeployment = async (req, res) => {
 }
 
 
-
 const streamAllDataByDeployment = async (req, res) => {
     let dep_id = req.params.deployment_id;
 
@@ -220,11 +180,9 @@ const streamAllDataByDeployment = async (req, res) => {
     console.log(deployment);
 
 
-
-
     res.type('json');
 
-    for(let s in deployment.sensors){
+    for (let s in deployment.sensors) {
 
         let current_sensor = deployment.sensors[s].sensor_id;
 
@@ -235,28 +193,27 @@ const streamAllDataByDeployment = async (req, res) => {
                     'sensor': new ObjectId(current_sensor)
                 }
             }, {
-    		'$unset': [
-      		'data.fftValues', 'data.frequencyRange', 'data._id'
-    		]
-  	}
+                '$unset': [
+                    'data.fftValues', 'data.frequencyRange', 'data._id'
+                ]
+            }
         ];
 
 
         var strm = dataModel.aggregate(agregat);
         strm.options = {allowDiskUse: true};
-        strm = strm.cursor({ batchSize: 10 }).exec();
+        strm = strm.cursor({batchSize: 10}).exec();
 
 
         //res.statusCode = 200;
         //res.setHeader('Content-Type', 'application/json');
         await strm.eachAsync(function (doc, i) {
-	    console.log(current_sensor);
-		console.log(i);
+            console.log(current_sensor);
+            console.log(i);
             res.write(JSON.stringify(doc));
             res.write(',\n');
             // use doc
         });
-
 
 
     }
@@ -341,8 +298,6 @@ const streamAllDataByDeployment = async (req, res) => {
     });*/
 
 }
-
-
 
 
 const getSpeceficDataByDeployment = (req, res) => {

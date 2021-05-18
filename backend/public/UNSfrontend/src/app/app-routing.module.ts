@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {Routes, RouterModule} from '@angular/router';
 
-import { componentFactoryName } from "@angular/compiler";
+import {componentFactoryName} from "@angular/compiler";
 import {HomeComponent} from "../app/components/home/home.component";
 import {DeploymentsComponent} from "../app/components/deployments/deployments.component";
 import {SensorsComponent} from "../app/components/sensors/sensors.component";
@@ -48,11 +48,12 @@ const routes: Routes = [
 
     ]
   },
-  { path: '**', redirectTo: '' }
+  {path: '**', redirectTo: ''}
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

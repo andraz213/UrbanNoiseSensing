@@ -34,9 +34,9 @@ wss.on('connection', socket => {
         console.log(dataObj.type);
         socket.send("ok");
         console.log(dataObj);
-        if(dataObj.type == 'SENSOR_READING') {
+        if (dataObj.type == 'SENSOR_READING') {
             sensorController.postDataSensorWebsocket(message).then(r => console.log(r));
-        }else {
+        } else {
             sensorController.PostSensorTelemetryWebsockets(message).then(r => console.log(r));
         }
     });

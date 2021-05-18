@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Deployment } from "../../models/deployment";
-import { DeploymentService } from "../../services/deployment.service";
-import { DeploymentCreationDTO } from "../../classes/deployment-creation-dto"
-import { Router } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {Deployment} from "../../models/deployment";
+import {DeploymentService} from "../../services/deployment.service";
+import {DeploymentCreationDTO} from "../../classes/deployment-creation-dto"
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-deployments',
@@ -11,7 +11,8 @@ import { Router } from '@angular/router';
 })
 export class DeploymentsComponent implements OnInit {
 
-  constructor(private deploymentService: DeploymentService, private router: Router) { }
+  constructor(private deploymentService: DeploymentService, private router: Router) {
+  }
 
   public deployments: Deployment[];
   public creating = false;
@@ -21,7 +22,8 @@ export class DeploymentsComponent implements OnInit {
   ngOnInit() {
     this.getDeployments();
   }
-  private getDeployments(){
+
+  private getDeployments() {
     this.deploymentService.getDeployments().then(result => {
       this.deployments = result;
       console.log(result);
@@ -29,11 +31,11 @@ export class DeploymentsComponent implements OnInit {
 
   }
 
-  public switchCreating(){
-      this.creating = !this.creating;
+  public switchCreating() {
+    this.creating = !this.creating;
   }
 
-  public createDeployment(){
+  public createDeployment() {
     console.log("creating");
     console.log(this.newdep.name);
     this.deploymentService.createDeployment(this.newdep).then(result => {
@@ -46,15 +48,15 @@ export class DeploymentsComponent implements OnInit {
 
   }
 
-  public navigateToEdit(id:string){
+  public navigateToEdit(id: string) {
     this.router.navigateByUrl(`editdeployment/${id}`);
   }
 
-  public navigateToFinished(id:string){
+  public navigateToFinished(id: string) {
     this.router.navigateByUrl(`finisheddeployment/${id}`);
   }
 
-  public navigateToReview(id:string){
+  public navigateToReview(id: string) {
     this.router.navigateByUrl(`reviewdeployment/${id}`);
   }
 

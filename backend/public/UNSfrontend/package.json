@@ -24,7 +24,7 @@
     "@ng-bootstrap/ng-bootstrap": "^5.3.1",
     "@swimlane/ngx-charts": "^16.0.0",
     "bootstrap": "^4.5.2",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "ng2-charts": "^2.4.1",
     "ngx-bootstrap": "^5.6.1",
     "rxjs": "~6.6.3",
@@ -32,8 +32,8 @@
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.1001.4",
-    "@angular/cli": "~10.1.4",
+    "@angular-devkit/build-angular": "^12.0.0",
+    "@angular/cli": "^12.0.0",
     "@angular/compiler-cli": "~10.1.4",
     "@angular/language-service": "~10.1.4",
     "@types/jasmine": "~3.3.8",
@@ -42,7 +42,7 @@
     "codelyzer": "^5.1.2",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~5.0.0",
-    "karma": "~5.0.0",
+    "karma": "^6.3.2",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage-istanbul-reporter": "~3.0.2",
     "karma-jasmine": "~4.0.0",

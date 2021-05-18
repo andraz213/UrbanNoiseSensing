@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { SenosrMapComponent } from './senosr-map.component';
+import {SenosrMapComponent} from './senosr-map.component';
 
 describe('SenosrMapComponent', () => {
   let component: SenosrMapComponent;
@@ -8,9 +8,9 @@ describe('SenosrMapComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SenosrMapComponent ]
+      declarations: [SenosrMapComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

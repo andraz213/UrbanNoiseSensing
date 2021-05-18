@@ -1,7 +1,7 @@
 import {Component, HostListener, Input, OnInit} from '@angular/core';
 import {DataService} from "../../services/data.service";
-import { BrowserModule } from '@angular/platform-browser';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgxChartsModule} from '@swimlane/ngx-charts';
 
 @Component({
   selector: 'app-average-chart',
@@ -29,30 +29,31 @@ export class AverageChartComponent implements OnInit {
   };
 
 
-  average_data:[any];
+  average_data: [any];
 
-  constructor(private dataservice: DataService) { }
+  constructor(private dataservice: DataService) {
+  }
 
   ngOnInit(): void {
     this.getAverages();
   }
 
 
-  private getAverages(){
+  private getAverages() {
 
-    this.dataservice.getAverageDeployment(this.id).then(data =>{
+    this.dataservice.getAverageDeployment(this.id).then(data => {
 
       let max = 0;
       let max_dec = 0;
       let min_dec = 20000;
-      for(let dd of data) {
-        if(dd.num > max){
+      for (let dd of data) {
+        if (dd.num > max) {
           max = dd.num;
         }
-        if(dd.average > max_dec){
+        if (dd.average > max_dec) {
           max_dec = dd.average;
         }
-        if(dd.average < min_dec){
+        if (dd.average < min_dec) {
           min_dec = dd.average;
         }
 
@@ -68,7 +69,7 @@ export class AverageChartComponent implements OnInit {
       temp_data_num["series"] = [];
 
 
-      for(let dd of data){
+      for (let dd of data) {
         let one = {};
         one["name"] = this.formatDateXAxis(new Date(dd.time));
         one["value"] = dd.average;
@@ -77,7 +78,7 @@ export class AverageChartComponent implements OnInit {
         let one_num = {};
 
         one_num["name"] = this.formatDateXAxis(new Date(dd.time));
-        one_num["value"] = ((dd.num / max)*(max_dec- min_dec)) + min_dec;
+        one_num["value"] = ((dd.num / max) * (max_dec - min_dec)) + min_dec;
         temp_data_num["series"].push(one_num);
 
         console.log(one["name"]);
@@ -90,8 +91,8 @@ export class AverageChartComponent implements OnInit {
     });
   }
 
-  scrHeight:any;
-  scrWidth:any;
+  scrHeight: any;
+  scrWidth: any;
 
   @HostListener('window:resize', ['$event'])
   getScreenSize(event?) {
@@ -115,26 +116,26 @@ export class AverageChartComponent implements OnInit {
   }
 
 
-  formatDateXAxis(date: Date){
+  formatDateXAxis(date: Date) {
     let res = "";
 
-    if(date.getDate() < 10){
+    if (date.getDate() < 10) {
       res += "0";
     }
     res += date.getDate();
     res += ".";
-    if(date.getMonth() < 10){
+    if (date.getMonth() < 10) {
       res += "0";
     }
-    res += date.getMonth() +1;
+    res += date.getMonth() + 1;
     res += ". ";
-    if(date.getHours() < 10){
+    if (date.getHours() < 10) {
       res += "0";
     }
 
     res += date.getHours();
     res += ":";
-    if(date.getMinutes() < 10){
+    if (date.getMinutes() < 10) {
       res += "0";
     }
     res += date.getMinutes();

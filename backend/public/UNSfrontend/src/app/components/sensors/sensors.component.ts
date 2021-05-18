@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { SensorService } from "../../services/sensor.service";
-import { Sensor} from "../../models/sensor";
+import {Component, OnInit} from '@angular/core';
+import {SensorService} from "../../services/sensor.service";
+import {Sensor} from "../../models/sensor";
 import {DeploymentService} from "../../services/deployment.service";
 import {Deployment} from "../../models/deployment";
 
@@ -15,7 +15,8 @@ export class SensorsComponent implements OnInit {
   constructor(
     private sensorService: SensorService,
     private deploymentService: DeploymentService
-  ) { }
+  ) {
+  }
 
   public sensors: Sensor[];
   public deployments: Deployment[];
@@ -26,7 +27,7 @@ export class SensorsComponent implements OnInit {
     console.log(this.sensorService);
   }
 
-  private getSensors(){
+  private getSensors() {
     this.sensorService.getSensors().then(result => {
       console.log(result);
       this.sensors = result;
@@ -36,12 +37,12 @@ export class SensorsComponent implements OnInit {
   }
 
 
-  private getDeployments(){
-    this.deploymentService.getDeployments().then(result =>{
-      for(let dep of result){
-        for(let sn of this.sensors){
-          if(sn.current_deployment != null){
-            if(sn.current_deployment == dep._id){
+  private getDeployments() {
+    this.deploymentService.getDeployments().then(result => {
+      for (let dep of result) {
+        for (let sn of this.sensors) {
+          if (sn.current_deployment != null) {
+            if (sn.current_deployment == dep._id) {
               // @ts-ignore
               sn.deployment_name = dep.name;
             }

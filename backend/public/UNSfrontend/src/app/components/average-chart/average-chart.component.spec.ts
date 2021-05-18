@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { AverageChartComponent } from './average-chart.component';
+import {AverageChartComponent} from './average-chart.component';
 
 describe('AverageChartComponent', () => {
   let component: AverageChartComponent;
@@ -8,9 +8,9 @@ describe('AverageChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AverageChartComponent ]
+      declarations: [AverageChartComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

@@ -4,7 +4,7 @@ const measurementSchema = new mongoose.Schema({
     frequencyRange: Number,
     fftValues: [Number],
     decibels: Number,
-    measured_at: { type : Date, default: Date.now, index: true},
+    measured_at: {type: Date, default: Date.now, index: true},
 });
 
 const dataSchema = new mongoose.Schema({
@@ -12,8 +12,8 @@ const dataSchema = new mongoose.Schema({
     deployment: {type: mongoose.Types.ObjectId, required: true, index: true},
     location: {type: [Number], required: true, index: '2dsphere'},
     size: Number,
-    first: { type : Date, default: Date.now },
-    last: { type : Date, default: Date.now },
+    first: {type: Date, default: Date.now},
+    last: {type: Date, default: Date.now},
     data: [measurementSchema]
 });
 
@@ -21,8 +21,8 @@ const sensorSchema = new mongoose.Schema({
     name: {type: String, required: true},
     mac: {type: [Number], required: true, index: true},
     deployments: [mongoose.Types.ObjectId],
-    current_deployment: {type: mongoose.Types.ObjectId,  index: true},
-    current_location: {type:[Number], index: '2dsphere'},
+    current_deployment: {type: mongoose.Types.ObjectId, index: true},
+    current_location: {type: [Number], index: '2dsphere'},
     last_telemetry: Date,
     last_data: mongoose.Types.ObjectId,
     all_data: [mongoose.Types.ObjectId],
@@ -50,7 +50,6 @@ const dataDeploymentSchema = new mongoose.Schema({
     delivered: {Type: Boolean, default: false},
     mac: {type: [Number], required: true}
 });
-
 
 
 const deploymentSchema = new mongoose.Schema({

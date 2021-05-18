@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Gateway } from "../../models/gateway";
-import { GatewayService } from "../../services/gateway.service";
+import {Component, OnInit} from '@angular/core';
+import {Gateway} from "../../models/gateway";
+import {GatewayService} from "../../services/gateway.service";
 import {Deployment} from "../../models/deployment";
-import { DeploymentService } from "../../services/deployment.service";
+import {DeploymentService} from "../../services/deployment.service";
 
 @Component({
   selector: 'app-gateways',
@@ -14,7 +14,8 @@ export class GatewaysComponent implements OnInit {
   constructor(
     private gatewayService: GatewayService,
     private deploymentService: DeploymentService
-  ) { }
+  ) {
+  }
 
   public gateways: Gateway[];
   public deployments: Deployment[];
@@ -25,7 +26,7 @@ export class GatewaysComponent implements OnInit {
 
   }
 
-  private getGateways(){
+  private getGateways() {
     this.gatewayService.getGateways().then(result => {
       console.log(result);
       this.gateways = result;
@@ -34,17 +35,17 @@ export class GatewaysComponent implements OnInit {
 
   }
 
-  private getDeployments(){
-    this.deploymentService.getDeployments().then(result =>{
-      for(let dep of result){
-       for(let gw of this.gateways){
-        if(gw.current_deployment != null){
-          if(gw.current_deployment == dep._id){
-           // @ts-ignore
-            gw.deployment_name = dep.name;
+  private getDeployments() {
+    this.deploymentService.getDeployments().then(result => {
+      for (let dep of result) {
+        for (let gw of this.gateways) {
+          if (gw.current_deployment != null) {
+            if (gw.current_deployment == dep._id) {
+              // @ts-ignore
+              gw.deployment_name = dep.name;
+            }
           }
         }
-       }
       }
       console.log(this.gateways);
     });

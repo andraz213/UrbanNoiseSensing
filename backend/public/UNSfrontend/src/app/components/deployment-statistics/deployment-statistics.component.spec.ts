@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { DeploymentStatisticsComponent } from './deployment-statistics.component';
+import {DeploymentStatisticsComponent} from './deployment-statistics.component';
 
 describe('DeploymentStatisticsComponent', () => {
   let component: DeploymentStatisticsComponent;
@@ -8,9 +8,9 @@ describe('DeploymentStatisticsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DeploymentStatisticsComponent ]
+      declarations: [DeploymentStatisticsComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

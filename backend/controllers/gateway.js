@@ -101,25 +101,25 @@ const postTelemetryGateway = (req, res) => {
     console.log(dataObj.telemetry);
     let telemetry = dataObj[0]["telemetry"];
     console.log(dataObj[0]["telemetry"]);
-    gatewayModel.update({_id :id },{$set : {telemetry: telemetry}});
+    gatewayModel.update({_id: id}, {$set: {telemetry: telemetry}});
     //return res.status(200);
 
 
     gatewayModel.findById(id, (err, gateway) => {
-        if(err){
+        if (err) {
             console.log(err);
             return res.status(400).json(err);
-        } else{
+        } else {
             console.log(gateway);
-            if(!gateway || gateway.length == 0){
+            if (!gateway || gateway.length == 0) {
                 return res.status(204).json({'message': `Gateway ${id} dose not exist!`});
             }
             gateway['telemetry'] = telemetry;
             console.log(gateway);
             gateway.save((err, gateway_sv) => {
-                if(err){
+                if (err) {
                     return res.status(500).json(err);
-                }else{
+                } else {
                     return res.status(200).json(gateway_sv);
                 }
             })

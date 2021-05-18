@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
-import { Gateway } from '../models/gateway';
+import {Gateway} from '../models/gateway';
 import {environment} from "../../environments/environment";
 
 @Injectable({
@@ -10,11 +10,11 @@ import {environment} from "../../environments/environment";
 export class GatewayService {
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient, ) { }
+  constructor(private http: HttpClient,) {
+  }
 
 
-
-  public getGateways(): Promise<Gateway[]>{
+  public getGateways(): Promise<Gateway[]> {
     const url = `${this.apiUrl}/gateway`;
     return this.http
       .get(url)
@@ -23,7 +23,7 @@ export class GatewayService {
       .catch(this.obdelajNapako);
   }
 
-  public getOneGateway(id: string): Promise<Gateway>{
+  public getOneGateway(id: string): Promise<Gateway> {
     const url = `${this.apiUrl}/gateway/` + id;
     return this.http
       .get(url)
@@ -32,7 +32,7 @@ export class GatewayService {
       .catch(this.obdelajNapako);
   }
 
-  public updateGateway(id: string, body: any): Promise<any>{
+  public updateGateway(id: string, body: any): Promise<any> {
     const url = `${this.apiUrl}/gateway/` + id;
     return this.http
       .put(url, body)

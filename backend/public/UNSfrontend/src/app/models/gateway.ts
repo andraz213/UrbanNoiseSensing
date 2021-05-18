@@ -1,5 +1,5 @@
 export class Gateway {
-  _id:string;
+  _id: string;
   name: string;
   mac: [number];
   deployments: [string];

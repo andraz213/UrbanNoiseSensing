@@ -1,5 +1,8 @@
-agm-map { height: 600px; /* height is required */ }
-.deployment-div{
+agm-map {
+  height: 600px; /* height is required */
+}
+
+.deployment-div {
   border: #bbbbff;
   border-radius: 0.4em;
   border-style: solid;
@@ -8,15 +11,14 @@ agm-map { height: 600px; /* height is required */ }
 }
 
 
-
-.wifi-div{
+.wifi-div {
   border: #bbbbff;
   border-radius: 0.4em;
   border-style: solid;
   border-width: 0.001em;
 }
 
-.wifi-spec{
+.wifi-spec {
   border-radius: 5px;
   background: #ddeeff;
   padding: 0.251em;

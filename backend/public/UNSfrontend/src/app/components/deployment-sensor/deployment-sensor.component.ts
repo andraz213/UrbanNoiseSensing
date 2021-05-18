@@ -19,14 +19,15 @@ export class DeploymentSensorComponent implements OnInit {
               private gatewayService: GatewayService,
               private activatedRoute: ActivatedRoute,
               private modalService: BsModalService,
-              private router: Router) { }
+              private router: Router) {
+  }
 
   @Input() id: string;
   @Input() deployment: Deployment;
   public mapType = "hybrid";
   public longitude = 0;
   public latitude = 0;
-  public sensors: {sensor: Sensor, alpha:number, measurements:number}[];
+  public sensors: { sensor: Sensor, alpha: number, measurements: number }[];
 
   ngOnInit() {
 
@@ -36,10 +37,10 @@ export class DeploymentSensorComponent implements OnInit {
   }
 
 
-  private findnumber(id: String){
-    for(let sn of this.deployment.number_agregate){
-      if(sn.sensor == id){
-        return(sn.num);
+  private findnumber(id: String) {
+    for (let sn of this.deployment.number_agregate) {
+      if (sn.sensor == id) {
+        return (sn.num);
       }
 
     }
@@ -47,9 +48,9 @@ export class DeploymentSensorComponent implements OnInit {
 
   }
 
-  private getSensors(){
+  private getSensors() {
     this.sensors = [];
-    for(let sen of this.deployment.sensors) {
+    for (let sen of this.deployment.sensors) {
       this.sensorService.getOneSensor(sen.sensor_id).then((reses) => {
         console.log(reses);
         let res = reses[0];

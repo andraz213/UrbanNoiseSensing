@@ -19,11 +19,12 @@ export class ReviewDeploymentComponent implements OnInit {
   constructor(private deploymentService: DeploymentService,
               private sensorService: SensorService,
               private gatewayService: GatewayService,
-              private activatedRoute: ActivatedRoute) { }
+              private activatedRoute: ActivatedRoute) {
+  }
 
 
   public deployment: Deployment;
-  public id:string;
+  public id: string;
   modalRef: BsModalRef;
 
   public openTab = "overview";
@@ -34,7 +35,7 @@ export class ReviewDeploymentComponent implements OnInit {
     this.getDeployment();
   }
 
-  private getDeployment(){
+  private getDeployment() {
     this.deploymentService.getOneDeployment(this.id).then((res) => {
       this.deployment = res;
       console.log(res);
@@ -43,8 +44,7 @@ export class ReviewDeploymentComponent implements OnInit {
   }
 
 
-
-  public switchTab(name: string){
+  public switchTab(name: string) {
     this.openTab = name;
   }
 

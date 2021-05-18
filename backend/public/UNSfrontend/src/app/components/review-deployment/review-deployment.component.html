@@ -1,77 +1,70 @@
-
-
-
-
-
-
-
 <div *ngIf="deployment">
   <h2 class="mt-5 ml-5 mb-3">{{deployment.name}}</h2>
   <p class="ml-5 mb-5">{{deployment.description}}</p>
 
-  </div>
+</div>
 <div class="m-3">
-<ul class="nav nav-tabs">
+  <ul class="nav nav-tabs">
 
-  <div *ngIf="openTab != 'overview'">
-  <li class="nav-item">
-    <a class="nav-link" (click)="switchTab('overview')">Overview</a>
-  </li>
-  </div>
-  <div *ngIf="openTab == 'overview'">
-    <li class="nav-item">
-      <a class="nav-link active" (click)="switchTab('overview')">Overview</a>
-    </li>
-  </div>
+    <div *ngIf="openTab != 'overview'">
+      <li class="nav-item">
+        <a class="nav-link" (click)="switchTab('overview')">Overview</a>
+      </li>
+    </div>
+    <div *ngIf="openTab == 'overview'">
+      <li class="nav-item">
+        <a class="nav-link active" (click)="switchTab('overview')">Overview</a>
+      </li>
+    </div>
 
-  <div *ngIf="openTab != 'sensors'">
-    <li class="nav-item">
-      <a class="nav-link" (click)="switchTab('sensors')">Sensors</a>
-    </li>
-  </div>
-  <div *ngIf="openTab == 'sensors'">
-    <li class="nav-item">
-      <a class="nav-link active" (click)="switchTab('sensors')">Sensors</a>
-    </li>
-  </div>
+    <div *ngIf="openTab != 'sensors'">
+      <li class="nav-item">
+        <a class="nav-link" (click)="switchTab('sensors')">Sensors</a>
+      </li>
+    </div>
+    <div *ngIf="openTab == 'sensors'">
+      <li class="nav-item">
+        <a class="nav-link active" (click)="switchTab('sensors')">Sensors</a>
+      </li>
+    </div>
 
-  <div *ngIf="openTab != 'gateways'">
-    <li class="nav-item">
-      <a class="nav-link" (click)="switchTab('gateways')">Gateways</a>
-    </li>
-  </div>
-  <div *ngIf="openTab == 'gateways'">
-    <li class="nav-item">
-      <a class="nav-link active" (click)="switchTab('gateways')">Gateways</a>
-    </li>
-  </div>
+    <div *ngIf="openTab != 'gateways'">
+      <li class="nav-item">
+        <a class="nav-link" (click)="switchTab('gateways')">Gateways</a>
+      </li>
+    </div>
+    <div *ngIf="openTab == 'gateways'">
+      <li class="nav-item">
+        <a class="nav-link active" (click)="switchTab('gateways')">Gateways</a>
+      </li>
+    </div>
 
-  <div *ngIf="openTab != 'data'">
-    <li class="nav-item">
-      <a class="nav-link" (click)="switchTab('data')">Data</a>
-    </li>
-  </div>
-  <div *ngIf="openTab == 'data'">
-    <li class="nav-item">
-      <a class="nav-link active" (click)="switchTab('data')">Data</a>
-    </li>
-  </div>
+    <div *ngIf="openTab != 'data'">
+      <li class="nav-item">
+        <a class="nav-link" (click)="switchTab('data')">Data</a>
+      </li>
+    </div>
+    <div *ngIf="openTab == 'data'">
+      <li class="nav-item">
+        <a class="nav-link active" (click)="switchTab('data')">Data</a>
+      </li>
+    </div>
 
-</ul>
+  </ul>
 </div>
 
 <div *ngIf="deployment">
-<div *ngIf="openTab == 'sensors'">
-  <app-deployment-sensor [deployment]="deployment" [id]="id"></app-deployment-sensor>
-</div>
+  <div *ngIf="openTab == 'sensors'">
+    <app-deployment-sensor [deployment]="deployment" [id]="id"></app-deployment-sensor>
+  </div>
 
-<div *ngIf="openTab == 'gateways'">
-  <app-deployment-gateway [deployment]="deployment" [id]="id"></app-deployment-gateway>
-</div>
+  <div *ngIf="openTab == 'gateways'">
+    <app-deployment-gateway [deployment]="deployment" [id]="id"></app-deployment-gateway>
+  </div>
 
 
-<div *ngIf="openTab == 'overview'">
-  <app-deployment-overview [deployment]="deployment" [id]="id"></app-deployment-overview>
-</div>
+  <div *ngIf="openTab == 'overview'">
+    <app-deployment-overview [deployment]="deployment" [id]="id"></app-deployment-overview>
+  </div>
 </div>
 

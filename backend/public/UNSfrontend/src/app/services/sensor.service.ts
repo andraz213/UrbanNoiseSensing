@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
-import { Sensor } from '../models/sensor';
+import {Sensor} from '../models/sensor';
 import {environment} from "../../environments/environment";
 
 @Injectable({
@@ -10,9 +10,10 @@ import {environment} from "../../environments/environment";
 export class SensorService {
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient, ) { }
+  constructor(private http: HttpClient,) {
+  }
 
-  public getSensors(): Promise<Sensor[]>{
+  public getSensors(): Promise<Sensor[]> {
     console.log(this.apiUrl);
     const url = `${this.apiUrl}/sensor`;
     return this.http
@@ -22,7 +23,7 @@ export class SensorService {
       .catch(this.obdelajNapako);
   }
 
-  public getOneSensor(id: string): Promise<Sensor>{
+  public getOneSensor(id: string): Promise<Sensor> {
     const url = `${this.apiUrl}/sensor/` + id;
     return this.http
       .get(url)
@@ -31,7 +32,7 @@ export class SensorService {
       .catch(this.obdelajNapako);
   }
 
-  public updateSensor(id: string, body: string): Promise<Sensor[]>{
+  public updateSensor(id: string, body: string): Promise<Sensor[]> {
     const url = `${this.apiUrl}/sensor/` + id;
     return this.http
       .put(url, body)

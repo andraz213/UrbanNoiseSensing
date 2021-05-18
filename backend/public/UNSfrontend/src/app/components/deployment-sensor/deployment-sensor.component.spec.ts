@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { DeploymentSensorComponent } from './deployment-sensor.component';
+import {DeploymentSensorComponent} from './deployment-sensor.component';
 
 describe('DeploymentSensorComponent', () => {
   let component: DeploymentSensorComponent;
@@ -8,9 +8,9 @@ describe('DeploymentSensorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeploymentSensorComponent ]
+      declarations: [DeploymentSensorComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

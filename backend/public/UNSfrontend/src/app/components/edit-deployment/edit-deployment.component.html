@@ -74,84 +74,84 @@
 </div>
 
 
-  <div class="deployment-div m-3">
-    <div class="m-3">
-      <h4>Gateways</h4>
-      <small>Select the gateways by clicking on them. <br>Unselect the gateways in similar fashion. <br>Gateway location
-        is
-        not saved. Please remember it or write it down in deployment description. </small>
-      <div *ngIf="gateways.length > 0">
-        <p>Free gateways</p>
-        <div class="row">
-          <div *ngFor="let gw of gateways">
-            <div class="col-1" *ngIf="gw.chosen == false">
-              <button type="button" (click)="addGatewayToDeploy(gw.gateway._id)"
-                      class="btn btn-outline-primary">{{gw.gateway.name}}</button>
-            </div>
-          </div>
-        </div>
-
-
-        <p>Selected gateways</p>
-        <div class="row">
-          <div *ngFor="let gw of gateways">
-            <div class="col-1" *ngIf="gw.chosen == true">
-              <button type="button" (click)="addGatewayToDeploy(gw.gateway._id)"
-                      class="btn btn-outline-success">{{gw.gateway.name}}</button>
-            </div>
+<div class="deployment-div m-3">
+  <div class="m-3">
+    <h4>Gateways</h4>
+    <small>Select the gateways by clicking on them. <br>Unselect the gateways in similar fashion. <br>Gateway location
+      is
+      not saved. Please remember it or write it down in deployment description. </small>
+    <div *ngIf="gateways.length > 0">
+      <p>Free gateways</p>
+      <div class="row">
+        <div *ngFor="let gw of gateways">
+          <div class="col-1" *ngIf="gw.chosen == false">
+            <button type="button" (click)="addGatewayToDeploy(gw.gateway._id)"
+                    class="btn btn-outline-primary">{{gw.gateway.name}}</button>
           </div>
         </div>
       </div>
 
-      <p>Gateway WiFi credentials</p>
 
-        <form (submit)="saveChangesForm()">
-
-          <div class="form-group">
-            <label for="ssid">WiFi SSID</label>
-            <input [(ngModel)]="wifis.ssid" name="name" type="text" class="form-control" id="ssid"
-                   placeholder="Enter WiFi SSID">
+      <p>Selected gateways</p>
+      <div class="row">
+        <div *ngFor="let gw of gateways">
+          <div class="col-1" *ngIf="gw.chosen == true">
+            <button type="button" (click)="addGatewayToDeploy(gw.gateway._id)"
+                    class="btn btn-outline-success">{{gw.gateway.name}}</button>
           </div>
-
-
-          <div class="form-group">
-            <label for="deploymentDescription">WiFi password</label>
-            <input [(ngModel)]="wifis.password" name="deploymentDescription" type="textarea" class="form-control"
-                   id="password" placeholder="Enter WiFi password">
-            </div>
-        </form>
-
-
-      <div *ngIf="gateways.length == 0">
-        <p>No free gateways currently availale.</p>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="deployment-div m-3">
-    <div class="m-3">
-      <h4>NOTE: Once the deployment is deployed, it cannot be changed!!!</h4>
-      <button type="button" (click)="openModal(not_ok, ok)" class="btn btn-outline-danger">DEPLOY</button>
+
+    <p>Gateway WiFi credentials</p>
+
+    <form (submit)="saveChangesForm()">
+
+      <div class="form-group">
+        <label for="ssid">WiFi SSID</label>
+        <input [(ngModel)]="wifis.ssid" name="name" type="text" class="form-control" id="ssid"
+               placeholder="Enter WiFi SSID">
+      </div>
+
+
+      <div class="form-group">
+        <label for="deploymentDescription">WiFi password</label>
+        <input [(ngModel)]="wifis.password" name="deploymentDescription" type="textarea" class="form-control"
+               id="password" placeholder="Enter WiFi password">
+      </div>
+    </form>
+
+
+    <div *ngIf="gateways.length == 0">
+      <p>No free gateways currently availale.</p>
     </div>
   </div>
-<div class="m-3 mt-0">
-<app-delete-deployment [deployment]="deployment" [id]="id"></app-delete-deployment>
 </div>
-  <ng-template #not_ok>
-    <div class="modal-body text-center bg-custom">
-      <div *ngFor="let err of errorMessages">
-        <p>{{err}}</p>
-      </div>
-      <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Close</button>
+<div class="deployment-div m-3">
+  <div class="m-3">
+    <h4>NOTE: Once the deployment is deployed, it cannot be changed!!!</h4>
+    <button type="button" (click)="openModal(not_ok, ok)" class="btn btn-outline-danger">DEPLOY</button>
+  </div>
+</div>
+<div class="m-3 mt-0">
+  <app-delete-deployment [deployment]="deployment" [id]="id"></app-delete-deployment>
+</div>
+<ng-template #not_ok>
+  <div class="modal-body text-center bg-custom">
+    <div *ngFor="let err of errorMessages">
+      <p>{{err}}</p>
     </div>
-  </ng-template>
+    <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Close</button>
+  </div>
+</ng-template>
 
-  <ng-template #ok>
-    <div class="modal-body text-center bg-custom">
-      <p>You are about to deploy this deployment.</p>
-      <button type="button" class="btn btn-outline-primary m-1 " (click)="deployDeployment(done, error)">Deploy</button>
-      <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Not yet</button>
-    </div>
-  </ng-template>
+<ng-template #ok>
+  <div class="modal-body text-center bg-custom">
+    <p>You are about to deploy this deployment.</p>
+    <button type="button" class="btn btn-outline-primary m-1 " (click)="deployDeployment(done, error)">Deploy</button>
+    <button type="button" class="btn btn-outline-dark m-1" (click)="decline()">Not yet</button>
+  </div>
+</ng-template>
 
 <ng-template #done>
   <div class="modal-body text-center bg-custom">

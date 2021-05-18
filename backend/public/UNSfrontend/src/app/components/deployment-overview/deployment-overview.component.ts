@@ -13,15 +13,14 @@ export class DeploymentOverviewComponent implements OnInit {
 
   constructor(private deploymentService: DeploymentService,
               private modalService: BsModalService,
-              private router: Router) { }
+              private router: Router) {
+  }
 
   @Input() id: string;
   @Input() deployment: Deployment;
   modalRef: BsModalRef;
 
   public depDTO: Deployment;
-
-
 
 
   ngOnInit() {
@@ -31,9 +30,9 @@ export class DeploymentOverviewComponent implements OnInit {
   }
 
   public saveChangesForm(bad_interval: TemplateRef<any>, updated_interval: TemplateRef<any>) {
-    if(this.depDTO.measurement_interval < 1){
+    if (this.depDTO.measurement_interval < 1) {
       this.modalRef = this.modalService.show(bad_interval, {class: 'modal-sm'});
-    }else {
+    } else {
       this.deploymentService.updateDeploymentInterval(this.id, this.depDTO.measurement_interval).then(res => {
         console.log(res);
         this.deployment = res;
@@ -44,9 +43,8 @@ export class DeploymentOverviewComponent implements OnInit {
   }
 
 
-
-  public finishDeployment(){
-    this.deploymentService.finishDeployment(this.deployment._id).then((data) =>{
+  public finishDeployment() {
+    this.deploymentService.finishDeployment(this.deployment._id).then((data) => {
       console.log(data);
       this.modalRef.hide();
       this.navigateBack();
@@ -64,7 +62,7 @@ export class DeploymentOverviewComponent implements OnInit {
     this.modalRef.hide();
   }
 
-  public navigateBack(){
+  public navigateBack() {
     this.router.navigateByUrl(`deployments`);
   }
 

@@ -6,9 +6,8 @@ import {GatewayService} from "../../services/gateway.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BsModalService} from "ngx-bootstrap/modal";
 import {Deployment} from "../../models/deployment";
-import { interval } from 'rxjs';
-import { takeWhile } from 'rxjs/operators';
-
+import {interval} from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 
 @Component({
@@ -23,7 +22,8 @@ export class DeploymentGatewayComponent implements OnInit {
               private gatewayService: GatewayService,
               private activatedRoute: ActivatedRoute,
               private modalService: BsModalService,
-              private router: Router) { }
+              private router: Router) {
+  }
 
   @Input() id: string;
   @Input() deployment: Deployment;
@@ -43,9 +43,9 @@ export class DeploymentGatewayComponent implements OnInit {
   }
 
 
-  private getGateways(){
+  private getGateways() {
     let temp_gateways = [];
-    for(let gw of this.deployment.gateways){
+    for (let gw of this.deployment.gateways) {
       this.gatewayService.getOneGateway(gw.sensor_id).then((res) => {
         temp_gateways.push(res);
         console.log(res);
@@ -54,9 +54,9 @@ export class DeploymentGatewayComponent implements OnInit {
     this.gateways = temp_gateways;
   }
 
-  private updateGateways(){
+  private updateGateways() {
 
-    for(let gw of this.gateways){
+    for (let gw of this.gateways) {
       this.gatewayService.getOneGateway(gw._id).then((res) => {
         gw.telemetry = res.telemetry;
 

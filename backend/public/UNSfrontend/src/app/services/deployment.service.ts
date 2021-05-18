@@ -1,8 +1,7 @@
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-
-import { Deployment } from '../models/deployment';
+import {Deployment} from '../models/deployment';
 import {environment} from "../../environments/environment";
 
 
@@ -12,10 +11,11 @@ import {environment} from "../../environments/environment";
 export class DeploymentService {
   private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient,) { }
+  constructor(private http: HttpClient,) {
+  }
 
 
-  public getDeployments(): Promise<Deployment[]>{
+  public getDeployments(): Promise<Deployment[]> {
     const url = `${this.apiUrl}/deployment`;
     return this.http
       .get(url)
@@ -24,7 +24,7 @@ export class DeploymentService {
       .catch(this.obdelajNapako);
   }
 
-  public finishDeployment(id: string): Promise<any>{
+  public finishDeployment(id: string): Promise<any> {
     const url = `${this.apiUrl}/deployment/finish/` + id;
     return this.http
       .get(url)
@@ -33,7 +33,7 @@ export class DeploymentService {
       .catch(this.obdelajNapako);
   }
 
-  public getOneDeployment(id: string): Promise<Deployment>{
+  public getOneDeployment(id: string): Promise<Deployment> {
     const url = `${this.apiUrl}/deployment/` + id;
     return this.http
       .get(url)
@@ -42,7 +42,7 @@ export class DeploymentService {
       .catch(this.obdelajNapako);
   }
 
-  public deployDeployment(id: string): Promise<any>{
+  public deployDeployment(id: string): Promise<any> {
     const url = `${this.apiUrl}/deployment/deploy/` + id;
     return this.http
       .get(url)
@@ -51,7 +51,7 @@ export class DeploymentService {
       .catch(this.obdelajNapako);
   }
 
-  public updateDeployment(id: string, body: any): Promise<Deployment[]>{
+  public updateDeployment(id: string, body: any): Promise<Deployment[]> {
     const url = `${this.apiUrl}/deployment/` + id;
     return this.http
       .put(url, body)
@@ -60,7 +60,7 @@ export class DeploymentService {
       .catch(this.obdelajNapako);
   }
 
-  public createDeployment(body: any): Promise<Deployment>{
+  public createDeployment(body: any): Promise<Deployment> {
     const url = `${this.apiUrl}/deployment/`;
     return this.http
       .post(url, body)
@@ -70,7 +70,7 @@ export class DeploymentService {
   }
 
 
-  public updateDeploymentInterval(id: string, interval:number): Promise<Deployment>{
+  public updateDeploymentInterval(id: string, interval: number): Promise<Deployment> {
     const url = `${this.apiUrl}/deployment/interval/` + id + '/' + interval;
     return this.http
       .get(url)
@@ -80,7 +80,7 @@ export class DeploymentService {
   }
 
 
-  public deleteDeployment(id:string): Promise<any>{
+  public deleteDeployment(id: string): Promise<any> {
     const url = `${this.apiUrl}/deployment/` + id;
     return this.http
       .delete(url)
@@ -88,7 +88,6 @@ export class DeploymentService {
       .then(answer => answer as any)
       .catch(this.obdelajNapako);
   }
-
 
 
   private obdelajNapako(napaka: any): Promise<any> {

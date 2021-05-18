@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { SensorMapComponent } from './sensor-map.component';
+import {SensorMapComponent} from './sensor-map.component';
 
 describe('SensorMapComponent', () => {
   let component: SensorMapComponent;
@@ -8,9 +8,9 @@ describe('SensorMapComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SensorMapComponent ]
+      declarations: [SensorMapComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

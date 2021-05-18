@@ -16,7 +16,8 @@ export class DeleteDeploymentComponent implements OnInit {
 
   constructor(private deploymentService: DeploymentService,
               private modalService: BsModalService,
-              private router: Router) { }
+              private router: Router) {
+  }
 
   ngOnInit(): void {
   }
@@ -24,8 +25,8 @@ export class DeleteDeploymentComponent implements OnInit {
   modalRef: BsModalRef;
 
 
-  public deleteDeployment(){
-    this.deploymentService.deleteDeployment(this.deployment._id).then(res =>{
+  public deleteDeployment() {
+    this.deploymentService.deleteDeployment(this.deployment._id).then(res => {
       this.decline();
       console.log(res);
       this.router.navigateByUrl(`deployments`);

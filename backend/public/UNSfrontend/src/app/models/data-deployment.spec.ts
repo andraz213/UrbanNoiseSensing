@@ -1,4 +1,4 @@
-import { DataDeployment } from './data-deployment';
+import {DataDeployment} from './data-deployment';
 
 describe('DataDeployment', () => {
   it('should create an instance', () => {

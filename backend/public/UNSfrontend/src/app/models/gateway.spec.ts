@@ -1,4 +1,4 @@
-import { Gateway } from './gateway';
+import {Gateway} from './gateway';
 
 describe('Gateway', () => {
   it('should create an instance', () => {

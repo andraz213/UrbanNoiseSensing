@@ -1,33 +1,33 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { HttpClientModule , HttpHeaders } from '@angular/common/http';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { SensorsComponent } from './components/sensors/sensors.component';
-import { GatewaysComponent } from './components/gateways/gateways.component';
-import { DeploymentsComponent } from './components/deployments/deployments.component';
-import { HomeComponent } from './components/home/home.component';
-import { CreateDeploymentComponent } from './components/create-deployment/create-deployment.component';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {HttpClientModule, HttpHeaders} from '@angular/common/http';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {SensorsComponent} from './components/sensors/sensors.component';
+import {GatewaysComponent} from './components/gateways/gateways.component';
+import {DeploymentsComponent} from './components/deployments/deployments.component';
+import {HomeComponent} from './components/home/home.component';
+import {CreateDeploymentComponent} from './components/create-deployment/create-deployment.component';
 import {FormsModule} from "@angular/forms";
-import { EditDeploymentComponent } from './components/edit-deployment/edit-deployment.component';
-import { AgmCoreModule } from '@agm/core';
+import {EditDeploymentComponent} from './components/edit-deployment/edit-deployment.component';
+import {AgmCoreModule} from '@agm/core';
 import {environment} from "../environments/environment";
-import { SensorMapComponent } from './components/sensor-map/sensor-map.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {SensorMapComponent} from './components/sensor-map/sensor-map.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
-import { ModalModule } from 'ngx-bootstrap/modal';
-import { ReviewDeploymentComponent } from './components/review-deployment/review-deployment.component';
-import { ExploreMomentsComponent } from './components/explore-moments/explore-moments.component';
-import { DeploymentOverviewComponent } from './components/deployment-overview/deployment-overview.component';
-import { DeploymentSensorComponent } from './components/deployment-sensor/deployment-sensor.component';
-import { DeploymentGatewayComponent } from './components/deployment-gateway/deployment-gateway.component';
-import { DeploymentDataComponent } from './components/deployment-data/deployment-data.component';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { AverageChartComponent } from './components/average-chart/average-chart.component';
-import { DeleteDeploymentComponent } from './components/delete-deployment/delete-deployment.component';
-import { FinishedDeploymentComponent } from './components/finished-deployment/finished-deployment.component';
-import { DeploymentStatisticsComponent } from './components/deployment-statistics/deployment-statistics.component';
-import { SenosrMapComponent } from './components/senosr-map/senosr-map.component';
+import {ModalModule} from 'ngx-bootstrap/modal';
+import {ReviewDeploymentComponent} from './components/review-deployment/review-deployment.component';
+import {ExploreMomentsComponent} from './components/explore-moments/explore-moments.component';
+import {DeploymentOverviewComponent} from './components/deployment-overview/deployment-overview.component';
+import {DeploymentSensorComponent} from './components/deployment-sensor/deployment-sensor.component';
+import {DeploymentGatewayComponent} from './components/deployment-gateway/deployment-gateway.component';
+import {DeploymentDataComponent} from './components/deployment-data/deployment-data.component';
+import {NgxChartsModule} from '@swimlane/ngx-charts';
+import {AverageChartComponent} from './components/average-chart/average-chart.component';
+import {DeleteDeploymentComponent} from './components/delete-deployment/delete-deployment.component';
+import {FinishedDeploymentComponent} from './components/finished-deployment/finished-deployment.component';
+import {DeploymentStatisticsComponent} from './components/deployment-statistics/deployment-statistics.component';
+import {SenosrMapComponent} from './components/senosr-map/senosr-map.component';
 
 @NgModule({
   declarations: [
@@ -64,4 +64,5 @@ import { SenosrMapComponent } from './components/senosr-map/senosr-map.component
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

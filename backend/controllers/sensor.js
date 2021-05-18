@@ -93,17 +93,20 @@ const postTelemetrySensor = async (req, res) => {
 
     let dataObj = JSON.parse(JSON.stringify(req.body));
 
-    for(let data of dataObj) {
+    for (let data of dataObj) {
 
         let sensorMac = data.mac;
         let currentSensor = await sensorModel.find({mac: sensorMac}).limit(1).exec();
-        await sensorModel.updateOne({_id: currentSensor[0].id}, {battery_voltage: data.battery_voltage, last_telemetry: Date.now()}).exec();
+        await sensorModel.updateOne({_id: currentSensor[0].id}, {
+            battery_voltage: data.battery_voltage,
+            last_telemetry: Date.now()
+        }).exec();
 
-      /*  currentSensor.save((err, sens)=>{
-            if(err) {
-                console.log(err);
-            }
-        });*/
+        /*  currentSensor.save((err, sens)=>{
+              if(err) {
+                  console.log(err);
+              }
+          });*/
         /*
         sensorModel.findById(id, (err, sensor) => {
             if (err) {
@@ -332,7 +335,6 @@ const postDataSensorWebsocket = async (JSNdata) => {
                 //newSize = (await dataModel.aggregate([{$match: {_id: currentData._id}}, {$project: {data: {$size: '$data'}}}]))[0].data + 1;
                 newSize = currentData.size + 1;
             }
-
 
 
             let measurement = {

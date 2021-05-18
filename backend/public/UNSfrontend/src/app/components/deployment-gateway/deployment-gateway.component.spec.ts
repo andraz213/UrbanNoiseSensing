@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { DeploymentGatewayComponent } from './deployment-gateway.component';
+import {DeploymentGatewayComponent} from './deployment-gateway.component';
 
 describe('DeploymentGatewayComponent', () => {
   let component: DeploymentGatewayComponent;
@@ -8,9 +8,9 @@ describe('DeploymentGatewayComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeploymentGatewayComponent ]
+      declarations: [DeploymentGatewayComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

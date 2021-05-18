@@ -1,4 +1,4 @@
-import { DeploymentCreationDTO } from './deployment-creation-dto';
+import {DeploymentCreationDTO} from './deployment-creation-dto';
 
 describe('DeploymentCreationDTO', () => {
   it('should create an instance', () => {

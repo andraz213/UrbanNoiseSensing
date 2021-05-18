@@ -29,14 +29,14 @@ export class EditDeploymentComponent implements OnInit {
   public errorMessages: string[];
   public depDTO: Deployment;
   public sensors: { sensor: Sensor, chosen: boolean, latitude: number, longitude: number, alpha: number }[];
-  public gateways: { gateway: Gateway, chosen: boolean,}[];
+  public gateways: { gateway: Gateway, chosen: boolean, }[];
   public deployment: Deployment;
   public id: string;
   modalRef: BsModalRef;
 
   public wifis = {"ssid": "", "password": ""};
 
-  public wifiCredentials: { ssid: string, password: string}[];
+  public wifiCredentials: { ssid: string, password: string }[];
 
   ngOnInit() {
     this.id = this.activatedRoute.snapshot.paramMap.get("id");
@@ -50,7 +50,7 @@ export class EditDeploymentComponent implements OnInit {
   private getSensors() {
     this.sensorService.getSensors().then(result => {
       console.log(result);
-      let sorted =  result.sort((a, b) => this.getTime(b.last_telemetry) - this.getTime(a.last_telemetry));
+      let sorted = result.sort((a, b) => this.getTime(b.last_telemetry) - this.getTime(a.last_telemetry));
       console.log(result);
       console.log(sorted);
       this.sensors = [];
@@ -64,7 +64,7 @@ export class EditDeploymentComponent implements OnInit {
   }
 
   private getTime(date?: Date) {
-    console.log( date != null ? date.valueOf() : 0);
+    console.log(date != null ? date.valueOf() : 0);
     return date != null ? date.valueOf() : 0;
   }
 
@@ -72,34 +72,34 @@ export class EditDeploymentComponent implements OnInit {
     this.errorMessages = [];
 
     let gw_num = 0;
-    for(let gw of this.gateways){
-      if(gw.chosen == true){
+    for (let gw of this.gateways) {
+      if (gw.chosen == true) {
         gw_num++;
       }
     }
-    if(gw_num < 1){
+    if (gw_num < 1) {
       this.errorMessages.push("You don't have any gateways selected!");
     }
 
     let sn_num = 0;
-    for(let sn of this.sensors){
-      if(sn.chosen == true){
+    for (let sn of this.sensors) {
+      if (sn.chosen == true) {
         sn_num++;
       }
     }
-    if(sn_num < 1){
+    if (sn_num < 1) {
       this.errorMessages.push("Place at least one sensor!");
     }
 
-    if(!this.deployment.name || this.deployment.name == ''){
+    if (!this.deployment.name || this.deployment.name == '') {
       this.errorMessages.push("Save the name of this deployment!");
     }
 
-    if(this.deployment.status != 'pending'){
-        this.errorMessages.push("Something went wrong with your deployment. Is it already deployed?");
+    if (this.deployment.status != 'pending') {
+      this.errorMessages.push("Something went wrong with your deployment. Is it already deployed?");
     }
 
-    if(this.errorMessages.length != 0) {
+    if (this.errorMessages.length != 0) {
       this.modalRef = this.modalService.show(not_ok, {class: 'modal-sm'});
     } else {
 
@@ -127,10 +127,10 @@ export class EditDeploymentComponent implements OnInit {
   }
 
 
-  public deployDeployment(done: TemplateRef<any>, error: TemplateRef<any>){
+  public deployDeployment(done: TemplateRef<any>, error: TemplateRef<any>) {
     this.errorMessages = [];
-    for(let sn of this.sensors){
-      if(sn.chosen == true){
+    for (let sn of this.sensors) {
+      if (sn.chosen == true) {
         let data_dep = new DataDeployment();
         data_dep.location = [sn.latitude, sn.longitude];
         data_dep.sensor_id = sn.sensor._id;
@@ -143,8 +143,8 @@ export class EditDeploymentComponent implements OnInit {
     jsn_wifi["wifi_credentials"] = [this.wifis["ssid"], this.wifis["password"]];
     console.log(JSON.stringify((jsn_wifi)));
 
-    for(let gw of this.gateways){
-      if(gw.chosen == true){
+    for (let gw of this.gateways) {
+      if (gw.chosen == true) {
         let data_dep = new DataDeployment();
         data_dep.sensor_id = gw.gateway._id;
         data_dep.location = [0, 0];
@@ -158,10 +158,10 @@ export class EditDeploymentComponent implements OnInit {
       console.log(res);
       this.getDeployment();
 
-      this.deploymentService.deployDeployment(this.deployment._id).then((data) =>{
+      this.deploymentService.deployDeployment(this.deployment._id).then((data) => {
 
-        for(let gw of this.gateways){
-          if(gw.chosen == true) {
+        for (let gw of this.gateways) {
+          if (gw.chosen == true) {
             this.gatewayService.updateGateway(gw.gateway._id, jsn_wifi);
           }
         }
@@ -176,21 +176,20 @@ export class EditDeploymentComponent implements OnInit {
   }
 
 
-  public navigateToReview(id:string){
+  public navigateToReview(id: string) {
     this.router.navigateByUrl(`reviewdeployment/${id}`);
   }
 
 
-
-  public addGatewayToDeploy(id:string){
-    for(let gw of this.gateways){
-      if(gw.gateway._id == id){
+  public addGatewayToDeploy(id: string) {
+    for (let gw of this.gateways) {
+      if (gw.gateway._id == id) {
         gw.chosen = !gw.chosen;
       }
     }
   }
 
-  public addWifiCredentials(){
+  public addWifiCredentials() {
     this.wifiCredentials.push({ssid: "", password: ""});
   }
 
@@ -200,7 +199,7 @@ export class EditDeploymentComponent implements OnInit {
       this.deployment = result;
       this.depDTO = result;
       console.log(this.deployment);
-      if(this.deployment.status == 'deployed'){
+      if (this.deployment.status == 'deployed') {
         this.router.navigateByUrl(`reviewdeployment/${this.deployment._id}`);
       }
     })

@@ -1,6 +1,6 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { SensorService } from './sensor.service';
+import {SensorService} from './sensor.service';
 
 describe('SensorService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
